@@ -1,4 +1,4 @@
-import { prismaLib } from "@/app/lib/prisma";
+import { prismaLib } from "@/lib/prisma";
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
