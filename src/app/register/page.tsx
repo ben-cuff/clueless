@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 // Custom signin page for next-auth
-export default function SignInPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -107,7 +107,7 @@ export default function SignInPage() {
         </form>
       </Card>
       <Link
-        href="/signin"
+        href="/login"
         className="mt-4 inline-block text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         Sign In

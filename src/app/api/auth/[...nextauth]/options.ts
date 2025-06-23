@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch(`${process.env.BASE_URL}/api/auth/signin`, {
+        const res = await fetch(`${process.env.BASE_URL}/api/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -60,6 +60,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/signin",
+    signIn: "/login",
   },
 };
