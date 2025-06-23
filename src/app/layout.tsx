@@ -1,3 +1,4 @@
+import Navbar from "@/components/navigation/navbar";
 import { ClientProviders } from "@/components/providers/client-providers";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ClientProviders>{children}</ClientProviders>
+        <ClientProviders>
+          <Navbar />
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );
