@@ -3,6 +3,17 @@ import argon2 from "argon2";
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
+
+  if (!username || !password) {
+    return new Response(
+      JSON.stringify({ error: "Username and password are required" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
   const hashed_password = await argon2.hash(password);
 
   if (!username || !password) {

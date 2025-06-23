@@ -5,6 +5,18 @@ export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
 
+    if (!username || !password) {
+      return new Response(
+        JSON.stringify({ error: "Username and password are required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+
+
     const user = await prismaLib.account.findUnique({
       where: { username },
     });
