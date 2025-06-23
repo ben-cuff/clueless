@@ -1,26 +1,21 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/options";
 
-import ThemeToggle from "@/components/theme/theme-toggle";
-import { signOut, useSession } from "next-auth/react";
-import Link from "next/link";
+export default async function Home() {
+  const session = await getServerSession(authOptions);
 
-export default function Home() {
-  const { data, status } = useSession();
-
-  if (status === "loading") {
-    return <p>Loading</p>;
+  if (!session?.user.id) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <header className="w-full flex flex-col items-center justify-center p-6 text-center">
+          <h1 className="text-3xl font-bold">Welcome to Clueless</h1>
+        </header>
+      </div>
+    );
   }
-
   return (
     <>
-      <Link href="/signin">Sign In</Link>
-      <Link href="/signin">Register</Link>
-      <button type="button" onClick={() => signOut()}>
-        Sign Out
-      </button>
-      <ThemeToggle />
-      <p>{data?.user?.username || "Not signed in"}</p>
-      <p>{data?.user?.id || "Not signed in"}</p>
+      <h1>Home page</h1>
     </>
   );
 }
