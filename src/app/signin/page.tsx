@@ -28,7 +28,7 @@ export default function SignInPage() {
     } else {
       console.error("Login failed.");
       alert(
-        "Login failed. Make sure you entered the correct username, email, and password"
+        "Login failed. Make sure you entered the correct username, and password"
       );
     }
   };
@@ -39,7 +39,9 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="mb-4">
-              <Label htmlFor="username">Username:</Label>
+              <Label htmlFor="username" className="mb-1">
+                Username:
+              </Label>
               <Input
                 type="text"
                 id="username"
@@ -49,7 +51,9 @@ export default function SignInPage() {
               />
             </div>
             <div className="mb-6">
-              <Label htmlFor="password">Password:</Label>
+              <Label htmlFor="password" className="mb-1">
+                Password:
+              </Label>
               <Input
                 type="password"
                 id="password"
@@ -60,7 +64,7 @@ export default function SignInPage() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full hover:cursor-pointer">
               Sign In
             </Button>
           </CardFooter>
@@ -68,7 +72,7 @@ export default function SignInPage() {
       </Card>
       <Link
         href="/register"
-        className="mt-4 inline-block text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="mt-4 inline-block text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-gray-200 hover:bg-gray-400  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         Register
       </Link>

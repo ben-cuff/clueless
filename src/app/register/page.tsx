@@ -14,24 +14,21 @@ export default function SignInPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // form validation for length of password
     if (password.length < 8) {
       alert("Password must be at least 8 characters long");
       return;
     }
 
-    // password and passwordCopy must be the same
-    if (password !== password2) {
+    if (password !== confirmPassword) {
       alert("Make sure the passwords are the same");
       return;
     }
 
-    // attempts to register the user with the api
     const response = await fetch(`/api/auth/register`, {
       method: "POST",
       headers: {
@@ -43,7 +40,6 @@ export default function SignInPage() {
       }),
     });
 
-    // if the registration fails, alert the user to the error
     if (!response.ok) {
       const errorData = await response.json();
       alert(`Error: ${errorData.error}`);
@@ -67,7 +63,9 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="mb-4">
-              <Label htmlFor="username">Username:</Label>
+              <Label htmlFor="username" className="mb-1">
+                Username:
+              </Label>
               <Input
                 type="text"
                 id="username"
@@ -77,7 +75,9 @@ export default function SignInPage() {
               />
             </div>
             <div className="mb-6">
-              <Label htmlFor="password">Password:</Label>
+              <Label htmlFor="password" className="mb-1">
+                Password:
+              </Label>
               <Input
                 type="password"
                 id="password"
@@ -87,26 +87,28 @@ export default function SignInPage() {
               />
             </div>
             <div className="mb-6">
-              <Label htmlFor="password">Confirm Password:</Label>
+              <Label htmlFor="password" className="mb-1">
+                Confirm Password:
+              </Label>
               <Input
                 type="password"
                 id="password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button type="submit" className="w-full hover:cursor-pointer">
+              Register
             </Button>
           </CardFooter>
         </form>
       </Card>
       <Link
         href="/signin"
-        className="mt-4 inline-block text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="mt-4 inline-block text-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         Sign In
       </Link>
