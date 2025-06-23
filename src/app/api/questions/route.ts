@@ -90,11 +90,41 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    // TODO: Implement pagination, full text search, and filtering by difficulty and topic
+    // TODO: Implement pagination, full text search
+    const url = new URL(req.url);
+
+    const topics = url.searchParams.get("topics");
+    const difficulty = url.searchParams.get("difficulty");
+
+    let whereClause = {};
+
+    if (topics) {
+      const topicArray = topics.split(" ").map((t) => TOPICS[t as Topic]);
+      whereClause = {
+        topics: {
+          hasSome: topicArray,
+        },
+      };
+    }
+
+    if (difficulty) {
+      const difficultyArray = difficulty
+        .split(" ")
+        .map((d) => DIFFICULTIES[d as Difficulty]);
+
+      whereClause = {
+        ...whereClause,
+        difficulty: { in: difficultyArray },
+      };
+    }
+
+    console.log("Where clause for question retrieval:", whereClause);
 
     const questions = await prismaLib.question.findMany({
       orderBy: { questionNumber: "asc" },
+      where: whereClause,
     });
+
     return new Response(JSON.stringify(questions), {
       status: 200,
       headers: { "Content-Type": "application/json" },
