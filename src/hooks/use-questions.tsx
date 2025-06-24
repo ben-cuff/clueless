@@ -98,7 +98,7 @@ export default function useQuestions() {
     setSearchInput(searchInput);
   }, []);
 
-  const handleDifficultySelectChange = useCallback((difficulty) => {
+  const handleDifficultySelectChange = useCallback((difficulty: string) => {
     setDifficulty(difficulty);
   }, []);
 
