@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { READABLE_COMPANIES } from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
@@ -22,13 +23,62 @@ type Question = {
 export default function QuestionsPage() {
   const [questionsData, setQuestionsData] = useState<Question[]>();
   const [isLoading, setIsLoading] = useState(true);
+  const [takeSize, setTakeSize] = useState(20);
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     (async () => {
-      const data = await apiQuestions.getQuestions();
+      const data = await apiQuestions.getQuestions(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        takeSize
+      );
       setQuestionsData(data);
       setIsLoading(false);
     })();
-  }, []);
+  }, [takeSize]);
+
+  function handleNextPage() {
+    setIsLoading(true);
+    (async () => {
+      let lastQuestionNumber: number | undefined = undefined;
+      if (questionsData && questionsData.length >= takeSize) {
+        lastQuestionNumber = questionsData[takeSize - 1].questionNumber;
+      }
+      const data = await apiQuestions.getQuestions(
+        undefined,
+        undefined,
+        undefined,
+        lastQuestionNumber,
+        takeSize
+      );
+      setQuestionsData(data);
+
+      setCurrentPage((prev) => prev + 1);
+      setIsLoading(false);
+    })();
+  }
+
+  function handlePreviousPage() {
+    setIsLoading(true);
+    (async () => {
+      let firstQuestionNumber: number | undefined = undefined;
+      if (questionsData && questionsData.length > 0) {
+        firstQuestionNumber = questionsData[0].questionNumber;
+      }
+      const data = await apiQuestions.getQuestions(
+        undefined,
+        undefined,
+        undefined,
+        firstQuestionNumber,
+        -takeSize
+      );
+      setQuestionsData(data);
+      setCurrentPage((prev) => prev - 1);
+      setIsLoading(false);
+    })();
+  }
 
   return (
     <div className="w-full mx-auto p-8">
@@ -88,6 +138,22 @@ export default function QuestionsPage() {
               </div>
             </div>
           ))}
+          <div className="flex w-full ">
+            <Button
+              className="hover:cursor-pointer"
+              disabled={currentPage === 1}
+              onClick={handlePreviousPage}
+            >
+              Previous
+            </Button>
+            <Button
+              className="ml-auto hover:cursor-pointer"
+              disabled={questionsData.length !== takeSize}
+              onClick={handleNextPage}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       ) : (
         <div>No questions found.</div>
