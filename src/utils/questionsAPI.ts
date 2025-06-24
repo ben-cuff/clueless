@@ -31,6 +31,7 @@ export const apiQuestions = {
       }
       if (query && query.trim() !== "") {
         params.append("query", query);
+        params.append("sortBy", "rank");
       }
 
       const response = await fetch(

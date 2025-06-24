@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Pagination,
   PaginationContent,
@@ -24,6 +26,7 @@ import {
 } from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
 import { READABLE_TOPICS, TOPIC_LIST, TopicInfo } from "@/constants/topics";
+import useDebounce from "@/hooks/use-debouncer";
 import { apiQuestions } from "@/utils/questionsAPI";
 import { useCallback, useEffect, useState } from "react";
 
@@ -45,7 +48,10 @@ export default function QuestionsPage() {
   const [takeSize, setTakeSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const [topics, setTopics] = useState<TopicInfo[]>();
+  const [searchInput, setSearchInput] = useState("");
   const [companies, setCompanies] = useState<CompanyInfo[]>();
+
+  const debouncedSearch = useDebounce(searchInput, 500) as string;
 
   const fetchQuestions = useCallback(
     async (
@@ -71,12 +77,14 @@ export default function QuestionsPage() {
         undefined,
         companiesIdList,
         after,
-        take
+        take,
+        undefined,
+        debouncedSearch
       );
       setQuestionsData(data);
       setIsLoading(false);
     },
-    [takeSize, topics, companies]
+    [takeSize, topics, companies, debouncedSearch]
   );
 
   useEffect(() => {
@@ -119,6 +127,13 @@ export default function QuestionsPage() {
   return (
     <div className="w-full mx-auto p-8">
       <h1 className="w-full text-2xl font-bold mb-6">Questions</h1>
+      <div className="flex flex-row text-2xl mb-2">
+        <Label className="mr-4">Search:</Label>
+        <Input
+          placeholder="Search for questions..."
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
       <div className="flex flex-row space-x-2">
         <MultiSelect
           options={COMPANY_LIST.map((company) => company.readable)}
@@ -144,6 +159,7 @@ export default function QuestionsPage() {
               <Skeleton className="h-7 w-48 rounded" />
               <Skeleton className="h-7 w-20 rounded ml-5" />
               <div className="flex flex-wrap gap-2 ml-auto">
+                <Skeleton className="h-7 w-16 rounded-full" />
                 <Skeleton className="h-7 w-16 rounded-full" />
                 <Skeleton className="h-7 w-16 rounded-full" />
               </div>
@@ -201,9 +217,7 @@ export default function QuestionsPage() {
                   </PaginationItem>
                 )}
                 <PaginationItem>
-                  <PaginationLink isActive>
-                    {currentPage}
-                  </PaginationLink>
+                  <PaginationLink isActive>{currentPage}</PaginationLink>
                 </PaginationItem>
                 {questionsData && questionsData.length === takeSize && (
                   <PaginationItem>
@@ -242,7 +256,9 @@ export default function QuestionsPage() {
           </div>
         </div>
       ) : (
-        <div className="flex justify-center text-3xl mt-12">No questions found.</div>
+        <div className="flex justify-center text-3xl mt-12">
+          No questions found.
+        </div>
       )}
     </div>
   );
