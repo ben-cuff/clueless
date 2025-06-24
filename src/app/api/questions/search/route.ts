@@ -4,7 +4,6 @@ export async function GET(req: Request) {
     try {
         // TODO: add filtering by difficulty, topics, companies
         // TODO: add pagination
-        // TODO: make more results available
 
     const url = new URL(req.url);
     const search = url.searchParams.get("query");
@@ -34,7 +33,7 @@ export async function GET(req: Request) {
       FROM "Question"
       WHERE
         to_tsvector('english', "title") @@ plainto_tsquery('english', ${search})
-        OR levenshtein(lower("title"), lower(${search})) <= 2
+        OR levenshtein(lower("title"), lower(${search})) <= 3
       ORDER BY rank DESC
       LIMIT 20
     `;
