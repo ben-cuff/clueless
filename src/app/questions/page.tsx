@@ -1,6 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { READABLE_COMPANIES } from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
@@ -139,20 +146,43 @@ export default function QuestionsPage() {
             </div>
           ))}
           <div className="flex w-full ">
-            <Button
-              className="hover:cursor-pointer"
-              disabled={currentPage === 1}
-              onClick={handlePreviousPage}
-            >
-              Previous
-            </Button>
-            <Button
-              className="ml-auto hover:cursor-pointer"
-              disabled={questionsData.length !== takeSize}
-              onClick={handleNextPage}
-            >
-              Next
-            </Button>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={handlePreviousPage}
+                    isActive={currentPage === 1}
+                  />
+                </PaginationItem>
+                {currentPage > 1 && (
+                  <PaginationItem>
+                    <PaginationLink href="#" onClick={handlePreviousPage}>
+                      {currentPage - 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                )}
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    {currentPage}
+                  </PaginationLink>
+                </PaginationItem>
+                {questionsData && questionsData.length === takeSize && (
+                  <PaginationItem>
+                    <PaginationLink href="#" onClick={handleNextPage}>
+                      {currentPage + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={handleNextPage}
+                    isActive={!questionsData || questionsData.length < takeSize}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       ) : (
