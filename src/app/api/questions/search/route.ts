@@ -1,12 +1,16 @@
+import { COMPANIES, Company } from "@/constants/companies";
+import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
+import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
 
 export async function GET(req: Request) {
-    try {
-        // TODO: add filtering by difficulty, topics, companies
-        // TODO: add pagination
+  try {
+    // TODO: add pagination
 
     const url = new URL(req.url);
     const search = url.searchParams.get("query");
+
+    const whereClause = getWhereClause(url);
 
     if (!search) {
       return new Response(
@@ -18,7 +22,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const questions = await prismaLib.$queryRaw`
+    let baseQuery = `
       SELECT 
         "questionNumber", 
         "title", 
@@ -29,14 +33,22 @@ export async function GET(req: Request) {
         "prompt", 
         "createdAt", 
         "updatedAt",
-        ts_rank(to_tsvector('english', "title"), plainto_tsquery('english', ${search})) AS rank
+        ts_rank(to_tsvector('english', "title"), plainto_tsquery('english', $1)) AS rank
       FROM "Question"
       WHERE
-        to_tsvector('english', "title") @@ plainto_tsquery('english', ${search})
-        OR levenshtein(lower("title"), lower(${search})) <= 3
-      ORDER BY rank DESC
-      LIMIT 20
+        (
+          to_tsvector('english', "title") @@ plainto_tsquery('english', $1)
+          OR levenshtein(lower("title"), lower($1)) <= 3
+        )
     `;
+    if (whereClause) {
+      baseQuery += ` AND ${whereClause}`;
+    }
+    baseQuery += ` ORDER BY rank DESC LIMIT 20`;
+
+    console.log("Executing query:", baseQuery);
+
+    const questions = await prismaLib.$queryRawUnsafe(baseQuery, search);
 
     return new Response(JSON.stringify({ questions }), {
       status: 200,
@@ -49,4 +61,56 @@ export async function GET(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   }
+}
+
+function getWhereClause(url: URL) {
+  const topics = url.searchParams.get("topics");
+  const difficulty = url.searchParams.get("difficulty");
+  const companies = url.searchParams.get("companies");
+
+  let whereClause = "";
+
+  // topics should be formatted as a space-separated string of topic keys
+  if (topics) {
+    let topicArray: (string | undefined)[] = topics
+      .split(" ")
+      .map((t) => TOPICS[t as Topic]);
+    topicArray = topicArray.filter((t) => t !== undefined);
+    if (topicArray.length !== 0) {
+      if (whereClause) whereClause += " AND ";
+      whereClause += `"topics" && ARRAY[${topicArray
+        .map((t) => `'${t}'`)
+        .join(",")}]::"Topic"[]`;
+    }
+  }
+
+  // difficulty should be formatted as a space-separated string of difficulty levels
+  if (difficulty) {
+    let difficultyArray: (number | undefined)[] = difficulty
+      .split(" ")
+      .map((d) => DIFFICULTIES[d as Difficulty]);
+    difficultyArray = difficultyArray.filter((d) => d !== undefined);
+    if (difficultyArray.length !== 0) {
+      if (whereClause) whereClause += " AND ";
+      whereClause += `"difficulty" IN (${difficultyArray
+        .map((d) => `'${d}'`)
+        .join(",")})`;
+    }
+  }
+
+  // companies should be formatted as a space-separated string of company keys
+  if (companies) {
+    let companyArray: (string | undefined)[] = companies
+      .split(" ")
+      .map((c) => COMPANIES[c as Company]);
+    companyArray = companyArray.filter((c) => c !== undefined);
+    if (companyArray.length !== 0) {
+      if (whereClause) whereClause += " AND ";
+      whereClause += `"companies" && ARRAY[${companyArray
+        .map((c) => `'${c}'`)
+        .join(",")}]::"Company"[]`;
+    }
+  }
+
+  return whereClause;
 }
