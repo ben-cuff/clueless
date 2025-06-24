@@ -257,7 +257,20 @@ function getPagination(url: URL) {
 
 export async function DELETE(req: Request) {
   try {
-    await prismaLib.question.deleteMany();
+    try {
+      await prismaLib.question.deleteMany();
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: "Failed to delete questions",
+          errorData: error,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
