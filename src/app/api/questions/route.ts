@@ -190,7 +190,6 @@ function getWhereClause(url: URL) {
   // difficulty should be formatted as a space-separated string of difficulty levels
   // e.g. "easy medium hard"
   if (difficulty) {
-    console.log("Difficulty:", difficulty);
     let difficultyArray: (number | undefined)[] = difficulty
       .split(" ")
       .map((d) => DIFFICULTIES[d as Difficulty]);
@@ -225,8 +224,6 @@ function getWhereClause(url: URL) {
       };
     }
   }
-
-  console.log("Where clause:", whereClause);
 
   return whereClause;
 }

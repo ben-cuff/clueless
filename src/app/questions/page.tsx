@@ -18,111 +18,38 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
-  COMPANY_LIST,
-  CompanyInfo,
-  READABLE_COMPANIES,
-} from "@/constants/companies";
-import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
-import { READABLE_TOPICS, TOPIC_LIST, TopicInfo } from "@/constants/topics";
-import useDebounce from "@/hooks/use-debouncer";
-import { apiQuestions } from "@/utils/questionsAPI";
-import { useCallback, useEffect, useState } from "react";
-
-type Question = {
-  accuracy: number;
-  companies: string[];
-  createdAt: string;
-  difficulty: number;
-  prompt: string;
-  questionNumber: number;
-  title: string;
-  topics: string[];
-  updatedAt: string;
-};
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { COMPANY_LIST, READABLE_COMPANIES } from "@/constants/companies";
+import {
+  DIFFICULTY_LIST,
+  READABLE_DIFFICULTIES,
+} from "@/constants/difficulties";
+import { READABLE_TOPICS, TOPIC_LIST } from "@/constants/topics";
+import useQuestions from "@/hooks/use-questions";
 
 export default function QuestionsPage() {
-  const [questionsData, setQuestionsData] = useState<Question[]>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [takeSize, setTakeSize] = useState(20);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [topics, setTopics] = useState<TopicInfo[]>();
-  const [searchInput, setSearchInput] = useState("");
-  const [companies, setCompanies] = useState<CompanyInfo[]>();
-
-  const debouncedSearch = useDebounce(searchInput, 500) as string;
-
-  const fetchQuestions = useCallback(
-    async (
-      direction: "next" | "prev" | "init" = "init",
-      refQuestionNumber?: number
-    ) => {
-      setIsLoading(true);
-      const topicsIdList = topics?.map((topic) => topic.id);
-      const companiesIdList = companies?.map((company) => company.id);
-
-      let take = takeSize;
-      let after: number | undefined = undefined;
-
-      if (direction === "next") {
-        after = refQuestionNumber;
-      } else if (direction === "prev") {
-        after = refQuestionNumber;
-        take = -takeSize;
-      }
-
-      const data = await apiQuestions.getQuestions(
-        topicsIdList,
-        undefined,
-        companiesIdList,
-        after,
-        take,
-        undefined,
-        debouncedSearch
-      );
-      setQuestionsData(data);
-      setIsLoading(false);
-    },
-    [takeSize, topics, companies, debouncedSearch]
-  );
-
-  useEffect(() => {
-    fetchQuestions("init");
-    setCurrentPage(1);
-  }, [takeSize, topics, fetchQuestions]);
-
-  function handleNextPage() {
-    if (!questionsData || questionsData.length < takeSize) {
-      return;
-    }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.questionNumber;
-    fetchQuestions("next", lastQuestionNumber);
-    setCurrentPage((prev) => prev + 1);
-  }
-
-  function handlePreviousPage() {
-    if (!questionsData || questionsData.length === 0) {
-      return;
-    }
-    const firstQuestionNumber = questionsData[0]?.questionNumber;
-    fetchQuestions("prev", firstQuestionNumber);
-    setCurrentPage((prev) => prev - 1);
-  }
-
-  function handleTopicsChange(selected: string[]) {
-    const selectedTopics = TOPIC_LIST.filter((topic) =>
-      selected.includes(topic.readable)
-    );
-    setTopics(selectedTopics);
-  }
-
-  function handleCompaniesChange(selected: string[]) {
-    const selectedCompanies = COMPANY_LIST.filter((company) =>
-      selected.includes(company.readable)
-    );
-    setCompanies(selectedCompanies);
-  }
+  const {
+    companies,
+    handleCompaniesChange,
+    topics,
+    handleTopicsChange,
+    isLoading,
+    questionsData,
+    currentPage,
+    handlePreviousPage,
+    handleNextPage,
+    takeSize,
+    handleTakeSizeChange,
+    handleSearchInputChange,
+    handleDifficultySelectChange,
+  } = useQuestions();
 
   return (
     <div className="w-full mx-auto p-8">
@@ -131,8 +58,21 @@ export default function QuestionsPage() {
         <Label className="mr-4">Search:</Label>
         <Input
           placeholder="Search for questions..."
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={(e) => handleSearchInputChange(e.target.value)}
         />
+        <Select defaultValue="" onValueChange={handleDifficultySelectChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select Difficulty" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={"none"}>All</SelectItem>
+            {DIFFICULTY_LIST.map((difficulty) => (
+              <SelectItem key={difficulty.id} value={difficulty.id}>
+                {difficulty.readable}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-row space-x-2">
         <MultiSelect
@@ -245,7 +185,7 @@ export default function QuestionsPage() {
                 {[20, 50, 100].map((size) => (
                   <DropdownMenuItem
                     key={size}
-                    onSelect={() => setTakeSize(size)}
+                    onSelect={() => handleTakeSizeChange(size)}
                     className={takeSize === size ? "font-bold" : ""}
                   >
                     {size}
