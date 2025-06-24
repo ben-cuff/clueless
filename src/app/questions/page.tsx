@@ -1,12 +1,9 @@
 "use client";
 
 import QuestionsHeader from "@/components/questions/questions-header";
+import QuestionsList from "@/components/questions/questions-list";
 import QuestionsLoading from "@/components/questions/questions-loading";
 import QuestionsPagination from "@/components/questions/questions-pagination";
-import { Badge } from "@/components/ui/badge";
-import { READABLE_COMPANIES } from "@/constants/companies";
-import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
-import { READABLE_TOPICS } from "@/constants/topics";
 import useQuestions from "@/hooks/use-questions";
 
 export default function QuestionsPage() {
@@ -40,39 +37,7 @@ export default function QuestionsPage() {
         <QuestionsLoading takeSize={takeSize} />
       ) : questionsData && questionsData.length != 0 ? (
         <div className="flex flex-col w-full space-y-2">
-          {questionsData.map((q, idx) => (
-            <div
-              key={idx}
-              className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
-            >
-              <h2 className="text-xl font-semibold">
-                {q.questionNumber}. {q.title}
-              </h2>
-              <div
-                className={
-                  q.difficulty === 1
-                    ? "text-green-600"
-                    : q.difficulty === 2
-                    ? "text-yellow-600"
-                    : "text-red-600"
-                }
-              >
-                {READABLE_DIFFICULTIES[q.difficulty]}
-              </div>
-              <div className="ml-5 font-bold">
-                {q.companies
-                  .map((company) => READABLE_COMPANIES[company])
-                  .join(", ")}
-              </div>
-              <div className="flex flex-wrap gap-2 ml-auto">
-                {q.topics.map((topic) => (
-                  <Badge key={topic} className="px-2 py-1 rounded-full text-sm">
-                    {READABLE_TOPICS[topic]}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          ))}
+          <QuestionsList questionsData={questionsData} />
           <QuestionsPagination
             currentPage={currentPage}
             handlePreviousPage={handlePreviousPage}
