@@ -138,7 +138,6 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
 
     const whereClause = getWhereClause(url);
-
     const pagination = getPagination(url);
 
     const questions = await prismaLib.question.findMany({
@@ -252,6 +251,7 @@ function getPagination(url: URL) {
   return {
     take,
     skip,
+    cursor: { questionNumber: 0 },
   };
 }
 

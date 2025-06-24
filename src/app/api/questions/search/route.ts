@@ -49,8 +49,6 @@ export async function GET(req: Request) {
 
     baseQuery += paginationSQL;
 
-    console.log("Executing query:", baseQuery);
-
     const questions = await prismaLib.$queryRawUnsafe(baseQuery, search);
 
     return new Response(JSON.stringify({ questions }), {
