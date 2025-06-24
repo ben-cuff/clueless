@@ -42,9 +42,20 @@ export async function POST(req: Request) {
       (company: Company) => COMPANIES[company]
     );
 
+    // validate topics by converting them to the format defined in TOPICS
+    // replace spaces and dashed with underscores, and remove parentheses
     const validTopics = topics.map(
-      (topic: Topic) => TOPICS[topic.toLowerCase().replace(" ", "_") as Topic]
+      (topic: Topic) =>
+        TOPICS[
+          topic
+            .toLowerCase()
+            .replace(/ +/g, "_")
+            .replace(/-/g, "_")
+            .replace(/[()]/g, "") as Topic
+        ]
     );
+
+    console.log("Valid topics:", validTopics);
 
     const validDifficulty =
       DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
@@ -66,9 +77,12 @@ export async function POST(req: Request) {
           article,
         },
       });
-    } catch {
+    } catch (error) {
       return new Response(
-        JSON.stringify({ error: "A question with that number already exists" }),
+        JSON.stringify({
+          error: "A question with that number already exists",
+          errorData: error,
+        }),
         {
           status: 409,
           headers: { "Content-Type": "application/json" },
@@ -90,14 +104,17 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    // TODO: Implement pagination, full text search
+    // TODO: full text search
     // To implement full text, we will need to use raw SQL queries
 
     const url = new URL(req.url);
 
     const whereClause = getWhereClause(url);
 
+    const pagination = getPagination(url);
+
     const questions = await prismaLib.question.findMany({
+      ...pagination,
       orderBy: { questionNumber: "asc" },
       where: whereClause,
     });
@@ -122,6 +139,8 @@ function getWhereClause(url: URL) {
 
   let whereClause = {};
 
+  // topics should be formatted as a space-separated string of topic names
+  // e.g. "array string hash_table"
   if (topics) {
     const topicArray = topics.split(" ").map((t) => TOPICS[t as Topic]);
     whereClause = {
@@ -131,6 +150,8 @@ function getWhereClause(url: URL) {
     };
   }
 
+  // difficulty should be formatted as a space-separated string of difficulty levels
+  // e.g. "easy medium hard"
   if (difficulty) {
     const difficultyArray = difficulty
       .split(" ")
@@ -142,6 +163,8 @@ function getWhereClause(url: URL) {
     };
   }
 
+  // companies should be formatted as a space-separated string of company names
+  // e.g. "google microsoft amazon"
   if (companies) {
     const companyArray = companies
       .split(" ")
@@ -154,4 +177,43 @@ function getWhereClause(url: URL) {
   }
 
   return whereClause;
+}
+
+function getPagination(url: URL) {
+  const cursor = parseInt(url.searchParams.get("cursor") || "0");
+  const take = parseInt(url.searchParams.get("take") || "20");
+  const skip = parseInt(url.searchParams.get("skip") || "0");
+
+  // If cursor is provided, we use it to set the cursor for pagination
+  if (cursor !== 0) {
+    return {
+      take,
+      skip: 1,
+      cursor: {
+        questionNumber: cursor,
+      },
+    };
+  }
+
+  // If cursor is not provided, we use skip and take for pagination
+  return {
+    take,
+    skip,
+  };
+}
+
+export async function DELETE(req: Request) {
+  try {
+    await prismaLib.question.deleteMany();
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error during question deletion:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
