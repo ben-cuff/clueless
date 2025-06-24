@@ -91,34 +91,11 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     // TODO: Implement pagination, full text search
+    // To implement full text, we will need to use raw SQL queries
+
     const url = new URL(req.url);
 
-    const topics = url.searchParams.get("topics");
-    const difficulty = url.searchParams.get("difficulty");
-
-    let whereClause = {};
-
-    if (topics) {
-      const topicArray = topics.split(" ").map((t) => TOPICS[t as Topic]);
-      whereClause = {
-        topics: {
-          hasSome: topicArray,
-        },
-      };
-    }
-
-    if (difficulty) {
-      const difficultyArray = difficulty
-        .split(" ")
-        .map((d) => DIFFICULTIES[d as Difficulty]);
-
-      whereClause = {
-        ...whereClause,
-        difficulty: { in: difficultyArray },
-      };
-    }
-
-    console.log("Where clause for question retrieval:", whereClause);
+    const whereClause = getWhereClause(url);
 
     const questions = await prismaLib.question.findMany({
       orderBy: { questionNumber: "asc" },
@@ -136,4 +113,45 @@ export async function GET(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   }
+}
+
+function getWhereClause(url: URL) {
+  const topics = url.searchParams.get("topics");
+  const difficulty = url.searchParams.get("difficulty");
+  const companies = url.searchParams.get("companies");
+
+  let whereClause = {};
+
+  if (topics) {
+    const topicArray = topics.split(" ").map((t) => TOPICS[t as Topic]);
+    whereClause = {
+      topics: {
+        hasSome: topicArray,
+      },
+    };
+  }
+
+  if (difficulty) {
+    const difficultyArray = difficulty
+      .split(" ")
+      .map((d) => DIFFICULTIES[d as Difficulty]);
+
+    whereClause = {
+      ...whereClause,
+      difficulty: { in: difficultyArray },
+    };
+  }
+
+  if (companies) {
+    const companyArray = companies
+      .split(" ")
+      .map((c) => COMPANIES[c as Company]);
+
+    whereClause = {
+      ...whereClause,
+      companies: { hasSome: companyArray },
+    };
+  }
+
+  return whereClause;
 }
