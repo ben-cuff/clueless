@@ -5,12 +5,13 @@ import { prismaLib } from "@/lib/prisma";
 
 export async function GET(req: Request) {
   try {
-    // TODO: add pagination
+    // TODO: protect from SQL injection?
 
     const url = new URL(req.url);
     const search = url.searchParams.get("query");
 
     const whereClause = getWhereClause(url);
+    const paginationSQL = getPaginationSQL(url);
 
     if (!search) {
       return new Response(
@@ -41,10 +42,12 @@ export async function GET(req: Request) {
           OR levenshtein(lower("title"), lower($1)) <= 3
         )
     `;
+
     if (whereClause) {
       baseQuery += ` AND ${whereClause}`;
     }
-    baseQuery += ` ORDER BY rank DESC LIMIT 20`;
+
+    baseQuery += paginationSQL;
 
     console.log("Executing query:", baseQuery);
 
@@ -113,4 +116,30 @@ function getWhereClause(url: URL) {
   }
 
   return whereClause;
+}
+
+function getPaginationSQL(url: URL) {
+  const cursor = parseInt(url.searchParams.get("cursor") || "0");
+  const take = parseInt(url.searchParams.get("take") || "20");
+  const skip = parseInt(url.searchParams.get("skip") || "0");
+  const sortBy = url.searchParams.get("sortBy") || "rank";
+
+  let cursorClause = "";
+  if (cursor !== 0) {
+    cursorClause = ` AND "questionNumber" > ${cursor}`;
+  }
+
+  let orderLimitOffset = "";
+  if (sortBy === "rank") {
+    orderLimitOffset += ` ORDER BY "rank" DESC`;
+  } else {
+    orderLimitOffset += ` ORDER BY "questionNumber" ASC`;
+  }
+
+  if (skip > 0) {
+    orderLimitOffset += ` OFFSET ${skip}`;
+  }
+  orderLimitOffset += ` LIMIT ${take}`;
+
+  return cursorClause + orderLimitOffset;
 }
