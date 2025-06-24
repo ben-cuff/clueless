@@ -5,3 +5,9 @@ export const DIFFICULTIES = {
 };
 
 export type Difficulty = keyof typeof DIFFICULTIES;
+
+export const READABLE_DIFFICULTIES: Record<number, string> = {
+  1: "Easy",
+  2: "Medium",
+  3: "Hard",
+};

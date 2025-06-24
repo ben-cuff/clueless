@@ -132,9 +132,6 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    // TODO: full text search
-    // To implement full text, we will need to use raw SQL queries
-
     const url = new URL(req.url);
 
     const whereClause = getWhereClause(url);
@@ -193,6 +190,7 @@ function getWhereClause(url: URL) {
   // difficulty should be formatted as a space-separated string of difficulty levels
   // e.g. "easy medium hard"
   if (difficulty) {
+    console.log("Difficulty:", difficulty);
     let difficultyArray: (number | undefined)[] = difficulty
       .split(" ")
       .map((d) => DIFFICULTIES[d as Difficulty]);
@@ -228,6 +226,8 @@ function getWhereClause(url: URL) {
     }
   }
 
+  console.log("Where clause:", whereClause);
+
   return whereClause;
 }
 
@@ -251,7 +251,7 @@ function getPagination(url: URL) {
   return {
     take,
     skip,
-    cursor: { questionNumber: 0 },
+    cursor: { questionNumber: 1 },
   };
 }
 

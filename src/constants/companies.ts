@@ -16,3 +16,20 @@ export const COMPANIES = {
 };
 
 export type Company = keyof typeof COMPANIES;
+
+export const READABLE_COMPANIES: Record<string, string> = {
+  GOOGLE: "Google",
+  AMAZON: "Amazon",
+  META: "Meta",
+  MICROSOFT: "Microsoft",
+  BLOOMBERG: "Bloomberg",
+  APPLE: "Apple",
+  UBER: "Uber",
+  ADOBE: "Adobe",
+  TIKTOK: "TikTok",
+  ORACLE: "Oracle",
+  LINKEDIN: "LinkedIn",
+  NVIDIA: "Nvidia",
+  ROBLOX: "Roblox",
+  INTUIT: "Intuit",
+};
