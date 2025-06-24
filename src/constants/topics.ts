@@ -147,3 +147,15 @@ export const READABLE_TOPICS: Record<string, string> = {
     REJECTION_SAMPLING: "Rejection Sampling",
     BICONNECTED_COMPONENT: "Biconnected Component",
 };
+
+export interface TopicInfo {
+    id: string;
+    db: string;
+    readable: string;
+}
+
+export const TOPIC_LIST: TopicInfo[] = Object.entries(TOPICS).map(([id, db]) => ({
+    id,
+    db,
+    readable: READABLE_TOPICS[db] ?? db,
+}));

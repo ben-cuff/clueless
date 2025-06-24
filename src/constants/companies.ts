@@ -33,3 +33,17 @@ export const READABLE_COMPANIES: Record<string, string> = {
   ROBLOX: "Roblox",
   INTUIT: "Intuit",
 };
+
+export interface CompanyInfo {
+  id: Company;
+  db: string;
+  readable: string;
+}
+
+export const COMPANY_LIST: CompanyInfo[] = Object.entries(COMPANIES).map(
+  ([id, db]) => ({
+    id: id as Company,
+    db,
+    readable: READABLE_COMPANIES[db] ?? db,
+  })
+);

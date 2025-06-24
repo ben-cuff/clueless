@@ -1,6 +1,13 @@
 "use client";
 
+import { MultiSelect } from "@/components/questions/multi-select";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Pagination,
   PaginationContent,
@@ -10,11 +17,15 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { READABLE_COMPANIES } from "@/constants/companies";
+import {
+  COMPANY_LIST,
+  CompanyInfo,
+  READABLE_COMPANIES,
+} from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
-import { READABLE_TOPICS } from "@/constants/topics";
+import { READABLE_TOPICS, TOPIC_LIST, TopicInfo } from "@/constants/topics";
 import { apiQuestions } from "@/utils/questionsAPI";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Question = {
   accuracy: number;
@@ -33,66 +44,95 @@ export default function QuestionsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [takeSize, setTakeSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
-  const [topics, setTopics] = useState();
+  const [topics, setTopics] = useState<TopicInfo[]>();
+  const [companies, setCompanies] = useState<CompanyInfo[]>();
+
+  const fetchQuestions = useCallback(
+    async (
+      direction: "next" | "prev" | "init" = "init",
+      refQuestionNumber?: number
+    ) => {
+      setIsLoading(true);
+      const topicsIdList = topics?.map((topic) => topic.id);
+      const companiesIdList = companies?.map((company) => company.id);
+
+      let take = takeSize;
+      let after: number | undefined = undefined;
+
+      if (direction === "next") {
+        after = refQuestionNumber;
+      } else if (direction === "prev") {
+        after = refQuestionNumber;
+        take = -takeSize;
+      }
+
+      const data = await apiQuestions.getQuestions(
+        topicsIdList,
+        undefined,
+        companiesIdList,
+        after,
+        take
+      );
+      setQuestionsData(data);
+      setIsLoading(false);
+    },
+    [takeSize, topics, companies]
+  );
 
   useEffect(() => {
-    (async () => {
-      const data = await apiQuestions.getQuestions(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        takeSize
-      );
-      setQuestionsData(data);
-      setIsLoading(false);
-    })();
-  }, [takeSize]);
+    fetchQuestions("init");
+    setCurrentPage(1);
+  }, [takeSize, topics, fetchQuestions]);
 
   function handleNextPage() {
-    setIsLoading(true);
-    (async () => {
-      let lastQuestionNumber: number | undefined = undefined;
-      if (questionsData && questionsData.length >= takeSize) {
-        lastQuestionNumber = questionsData[takeSize - 1].questionNumber;
-      }
-      const data = await apiQuestions.getQuestions(
-        undefined,
-        undefined,
-        undefined,
-        lastQuestionNumber,
-        takeSize
-      );
-      setQuestionsData(data);
-
-      setCurrentPage((prev) => prev + 1);
-      setIsLoading(false);
-    })();
+    if (!questionsData || questionsData.length < takeSize) {
+      return;
+    }
+    const lastQuestionNumber = questionsData[takeSize - 1]?.questionNumber;
+    fetchQuestions("next", lastQuestionNumber);
+    setCurrentPage((prev) => prev + 1);
   }
 
   function handlePreviousPage() {
-    setIsLoading(true);
-    (async () => {
-      let firstQuestionNumber: number | undefined = undefined;
-      if (questionsData && questionsData.length > 0) {
-        firstQuestionNumber = questionsData[0].questionNumber;
-      }
-      const data = await apiQuestions.getQuestions(
-        undefined,
-        undefined,
-        undefined,
-        firstQuestionNumber,
-        -takeSize
-      );
-      setQuestionsData(data);
-      setCurrentPage((prev) => prev - 1);
-      setIsLoading(false);
-    })();
+    if (!questionsData || questionsData.length === 0) {
+      return;
+    }
+    const firstQuestionNumber = questionsData[0]?.questionNumber;
+    fetchQuestions("prev", firstQuestionNumber);
+    setCurrentPage((prev) => prev - 1);
+  }
+
+  function handleTopicsChange(selected: string[]) {
+    const selectedTopics = TOPIC_LIST.filter((topic) =>
+      selected.includes(topic.readable)
+    );
+    setTopics(selectedTopics);
+  }
+
+  function handleCompaniesChange(selected: string[]) {
+    const selectedCompanies = COMPANY_LIST.filter((company) =>
+      selected.includes(company.readable)
+    );
+    setCompanies(selectedCompanies);
   }
 
   return (
     <div className="w-full mx-auto p-8">
       <h1 className="w-full text-2xl font-bold mb-6">Questions</h1>
+      <div className="flex flex-row space-x-2">
+        <MultiSelect
+          options={COMPANY_LIST.map((company) => company.readable)}
+          selected={(companies ?? []).map((company) => company.readable)}
+          onChange={handleCompaniesChange}
+          placeholder="Select companies"
+        />
+        <MultiSelect
+          options={TOPIC_LIST.map((topic) => topic.readable)}
+          selected={(topics ?? []).map((topic) => topic.readable)}
+          onChange={handleTopicsChange}
+          placeholder="Select topics..."
+        />
+      </div>
       {isLoading ? (
         <div className="flex flex-col w-full space-y-2">
           {Array.from({ length: 20 }).map((_, idx) => (
@@ -110,7 +150,7 @@ export default function QuestionsPage() {
             </div>
           ))}
         </div>
-      ) : questionsData ? (
+      ) : questionsData && questionsData.length != 0 ? (
         <div className="flex flex-col w-full space-y-2">
           {questionsData.map((q, idx) => (
             <div
@@ -149,44 +189,60 @@ export default function QuestionsPage() {
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={handlePreviousPage}
-                    isActive={currentPage === 1}
-                  />
+                  {currentPage !== 1 && (
+                    <PaginationPrevious onClick={handlePreviousPage} />
+                  )}
                 </PaginationItem>
                 {currentPage > 1 && (
                   <PaginationItem>
-                    <PaginationLink href="#" onClick={handlePreviousPage}>
+                    <PaginationLink onClick={handlePreviousPage}>
                       {currentPage - 1}
                     </PaginationLink>
                   </PaginationItem>
                 )}
                 <PaginationItem>
-                  <PaginationLink href="#" isActive>
+                  <PaginationLink isActive>
                     {currentPage}
                   </PaginationLink>
                 </PaginationItem>
                 {questionsData && questionsData.length === takeSize && (
                   <PaginationItem>
-                    <PaginationLink href="#" onClick={handleNextPage}>
+                    <PaginationLink onClick={handleNextPage}>
                       {currentPage + 1}
                     </PaginationLink>
                   </PaginationItem>
                 )}
                 <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={handleNextPage}
-                    isActive={!questionsData || questionsData.length < takeSize}
-                  />
+                  {questionsData && questionsData.length === takeSize && (
+                    <PaginationNext
+                      href="#"
+                      onClick={handleNextPage}
+                      isActive={
+                        !questionsData || questionsData.length < takeSize
+                      }
+                    />
+                  )}
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
+            <DropdownMenu>
+              <DropdownMenuTrigger>{takeSize} per page</DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {[20, 50, 100].map((size) => (
+                  <DropdownMenuItem
+                    key={size}
+                    onSelect={() => setTakeSize(size)}
+                    className={takeSize === size ? "font-bold" : ""}
+                  >
+                    {size}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       ) : (
-        <div>No questions found.</div>
+        <div className="flex justify-center text-3xl mt-12">No questions found.</div>
       )}
     </div>
   );

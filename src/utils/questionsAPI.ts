@@ -5,7 +5,8 @@ export const apiQuestions = {
     companies?: string[],
     cursor?: number,
     take?: number,
-    skip?: number
+    skip?: number,
+    query?: string
   ) {
     try {
       const params = new URLSearchParams();
@@ -28,11 +29,19 @@ export const apiQuestions = {
       if (skip && typeof skip === "number") {
         params.append("skip", skip.toString());
       }
+      if (query && query.trim() !== "") {
+        params.append("query", query);
+      }
 
-      const response = await fetch(`/api/questions?${params.toString()}`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `/api/questions/search?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
       const data = await response.json();
+      console.log(data);
       return data;
     } catch (error) {
       console.error("Error fetching questions:", error);

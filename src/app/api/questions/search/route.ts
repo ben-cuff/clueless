@@ -5,23 +5,11 @@ import { prismaLib } from "@/lib/prisma";
 
 export async function GET(req: Request) {
   try {
-    // TODO: protect from SQL injection?
-
     const url = new URL(req.url);
     const search = url.searchParams.get("query");
 
     const whereClause = getWhereClause(url);
     const paginationSQL = getPaginationSQL(url);
-
-    if (!search) {
-      return new Response(
-        JSON.stringify({ error: "Search query is required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
 
     let baseQuery = `
       SELECT 
@@ -36,12 +24,17 @@ export async function GET(req: Request) {
         "updatedAt",
         ts_rank(to_tsvector('english', "title"), plainto_tsquery('english', $1)) AS rank
       FROM "Question"
-      WHERE
-        (
+      WHERE 1=1
+    `;
+
+    if (search) {
+      baseQuery += `
+        AND (
           to_tsvector('english', "title") @@ plainto_tsquery('english', $1)
           OR levenshtein(lower("title"), lower($1)) <= 3
         )
-    `;
+      `;
+    }
 
     if (whereClause) {
       baseQuery += ` AND ${whereClause}`;
@@ -49,9 +42,9 @@ export async function GET(req: Request) {
 
     baseQuery += paginationSQL;
 
-    const questions = await prismaLib.$queryRawUnsafe(baseQuery, search);
+    const questions = await prismaLib.$queryRawUnsafe(baseQuery, search ?? "");
 
-    return new Response(JSON.stringify({ questions }), {
+    return new Response(JSON.stringify(questions), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -120,7 +113,7 @@ function getPaginationSQL(url: URL) {
   const cursor = parseInt(url.searchParams.get("cursor") || "0");
   const take = parseInt(url.searchParams.get("take") || "20");
   const skip = parseInt(url.searchParams.get("skip") || "0");
-  const sortBy = url.searchParams.get("sortBy") || "rank";
+  const sortBy = url.searchParams.get("sortBy") || "questionNumber";
 
   let cursorClause = "";
   if (cursor !== 0) {
