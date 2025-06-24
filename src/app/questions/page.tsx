@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
   PaginationContent,
@@ -32,6 +33,8 @@ export default function QuestionsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [takeSize, setTakeSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
+  const [topics, setTopics] = useState();
+
   useEffect(() => {
     (async () => {
       const data = await apiQuestions.getQuestions(
@@ -135,12 +138,9 @@ export default function QuestionsPage() {
               </div>
               <div className="flex flex-wrap gap-2 ml-auto">
                 {q.topics.map((topic) => (
-                  <span
-                    key={topic}
-                    className="px-2 py-1 bg-card rounded-full text-sm"
-                  >
+                  <Badge key={topic} className="px-2 py-1 rounded-full text-sm">
                     {READABLE_TOPICS[topic]}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
