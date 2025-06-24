@@ -188,7 +188,7 @@ function getPagination(url: URL) {
   if (cursor !== 0) {
     return {
       take,
-      skip: 1,
+      skip: 1 + skip, // skip the cursor question
       cursor: {
         questionNumber: cursor,
       },
