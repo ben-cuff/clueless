@@ -145,6 +145,12 @@ export async function GET(req: Request) {
       ...pagination,
       orderBy: { questionNumber: "asc" },
       where: whereClause,
+      omit: {
+        testcases: true,
+        starterCode: true,
+        solutions: true,
+        article: true,
+      },
     });
 
     return new Response(JSON.stringify(questions), {
