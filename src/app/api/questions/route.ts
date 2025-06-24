@@ -38,13 +38,23 @@ export async function POST(req: Request) {
       });
     }
 
-    const validCompanies = companies.map(
+    const validCompanies: (string | undefined)[] = companies.map(
       (company: Company) => COMPANIES[company]
     );
 
+    if (validCompanies.includes(undefined)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid company(ies) provided" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // validate topics by converting them to the format defined in TOPICS
     // replace spaces and dashed with underscores, and remove parentheses
-    const validTopics = topics.map(
+    const validTopics: (string | undefined)[] = topics.map(
       (topic: Topic) =>
         TOPICS[
           topic
@@ -55,10 +65,28 @@ export async function POST(req: Request) {
         ]
     );
 
-    console.log("Valid topics:", validTopics);
+    if (validTopics.includes(undefined)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid topic(s) provided" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const validDifficulty =
       DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
+
+    if (validDifficulty === undefined) {
+      return new Response(
+        JSON.stringify({ error: "Invalid difficulty level" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     let question;
     try {
@@ -142,38 +170,57 @@ function getWhereClause(url: URL) {
   // topics should be formatted as a space-separated string of topic names
   // e.g. "array string hash_table"
   if (topics) {
-    const topicArray = topics.split(" ").map((t) => TOPICS[t as Topic]);
-    whereClause = {
-      topics: {
-        hasSome: topicArray,
-      },
-    };
+    let topicArray: (string | undefined)[] = topics
+      .split(" ")
+      .map((t) => TOPICS[t as Topic]);
+    if (topicArray.includes(undefined)) {
+      topicArray = topicArray.filter((t) => t !== undefined);
+    }
+    if (topicArray.length !== 0) {
+      whereClause = {
+        topics: {
+          hasSome: topicArray,
+        },
+      };
+    }
   }
 
   // difficulty should be formatted as a space-separated string of difficulty levels
   // e.g. "easy medium hard"
   if (difficulty) {
-    const difficultyArray = difficulty
+    let difficultyArray: (number | undefined)[] = difficulty
       .split(" ")
       .map((d) => DIFFICULTIES[d as Difficulty]);
 
-    whereClause = {
-      ...whereClause,
-      difficulty: { in: difficultyArray },
-    };
+    if (difficultyArray.includes(undefined)) {
+      difficultyArray = difficultyArray.filter((d) => d !== undefined);
+    }
+
+    if (difficultyArray.length !== 0) {
+      whereClause = {
+        ...whereClause,
+        difficulty: { in: difficultyArray },
+      };
+    }
   }
 
   // companies should be formatted as a space-separated string of company names
   // e.g. "google microsoft amazon"
   if (companies) {
-    const companyArray = companies
+    let companyArray: (string | undefined)[] = companies
       .split(" ")
       .map((c) => COMPANIES[c as Company]);
 
-    whereClause = {
-      ...whereClause,
-      companies: { hasSome: companyArray },
-    };
+    if (companyArray.includes(undefined)) {
+      companyArray = companyArray.filter((c) => c !== undefined);
+    }
+
+    if (companyArray.length !== 0) {
+      whereClause = {
+        ...whereClause,
+        companies: { hasSome: companyArray },
+      };
+    }
   }
 
   return whereClause;
