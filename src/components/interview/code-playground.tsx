@@ -2,8 +2,10 @@
 
 import useCodePlayground from "@/hooks/use-code-playground";
 import useDebounce from "@/hooks/use-debouncer";
+import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
 import { useEffect } from "react";
+import ChatArea from "./chat-area";
 import CodeEditor from "./code-editor";
 import LanguagesSelect from "./language-select";
 import OutputArea from "./output-area";
@@ -14,9 +16,13 @@ import ThemeSelect from "./theme-select";
 export default function CodePlayground({
   question,
   handleCodeSave,
+  messages,
+  handleMessageSubmit,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
+  messages: Message[];
+  handleMessageSubmit: (message: string) => Promise<void>;
 }) {
   const {
     theme,
@@ -40,7 +46,7 @@ export default function CodePlayground({
         questionNumber={question.questionNumber}
         difficulty={question.difficulty}
       />
-      <div className="flex flex-row min-w-128 max-w-1/4 justify-around mb-1">
+      <div className="flex flex-row min-w-128 justify-around mb-1">
         <LanguagesSelect handleLanguageChange={handleLanguageChange} />
         <ThemeSelect handleThemeChange={handleThemeChange} />
       </div>
@@ -51,6 +57,12 @@ export default function CodePlayground({
           difficulty={question.difficulty}
           questionNumber={question.questionNumber}
         />
+        <div className="min-w-1/3">
+          <ChatArea
+            messages={messages}
+            handleMessageSubmit={handleMessageSubmit}
+          />
+        </div>
         <CodeEditor
           languageValue={language.value}
           theme={theme}
