@@ -13,12 +13,158 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Account {
-  id                 Int            @id @default(autoincrement())
-  username           String         @unique
-  hashed_password    String
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  id             Int         @id @default(autoincrement())
+  username       String      @unique
+  hashedPassword String      @map("hashed_password")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  activity       Activity[]
+  interview      Interview[]
+
   @@index([username])
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  userId    Int
+  account   Account  @relation(fields: [userId], references: [id])
+  date      DateTime
+  count     Int      @default(0)
+  totalTime Int      @default(0)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model Question {
+  questionNumber Int         @id
+  title          String
+  accuracy       Float
+  testcases      Json
+  starterCode    Json
+  solutions      Json
+  article        String
+  topics         Topic[]
+  prompt         String
+  companies      Company[]
+  difficulty     Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  titleSlug      String?
+  interviews     Interview[]
+}
+
+model Interview {
+  id             String   @id
+  userId         Int
+  account        Account  @relation(fields: [userId], references: [id])
+  messages       Json
+  questionNumber Int
+  question       Question @relation(fields: [questionNumber], references: [questionNumber])
+  code           String?
+  codeLanguage   Language
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  feedback       String?
+  completed      Boolean  @default(false)
+}
+
+enum Company {
+  GOOGLE
+  AMAZON
+  META
+  MICROSOFT
+  BLOOMBERG
+  APPLE
+  UBER
+  ADOBE
+  TIKTOK
+  ORACLE
+  LINKEDIN
+  NVIDIA
+  ROBLOX
+  INTUIT
+}
+
+enum Language {
+  CSHARP
+  CPP
+  JAVA
+  PYTHON
+  JAVASCRIPT
+}
+
+enum Topic {
+  ARRAY
+  STRING
+  HASH_TABLE
+  DYNAMIC_PROGRAMMING
+  MATH
+  SORTING
+  GREEDY
+  DEPTH_FIRST_SEARCH
+  BINARY_SEARCH
+  DATABASE
+  MATRIX
+  TREE
+  BREADTH_FIRST_SEARCH
+  BIT_MANIPULATION
+  TWO_POINTERS
+  PREFIX_SUM
+  HEAP_PRIORITY_QUEUE
+  SIMULATION
+  BINARY_TREE
+  STACK
+  GRAPH
+  COUNTING
+  SLIDING_WINDOW
+  DESIGN
+  ENUMERATION
+  BACKTRACKING
+  UNION_FIND
+  LINKED_LIST
+  NUMBER_THEORY
+  ORDERED_SET
+  MONOTONIC_STACK
+  SEGMENT_TREE
+  TRIE
+  COMBINATORICS
+  BITMASK
+  RECURSION
+  QUEUE
+  DIVIDE_AND_CONQUER
+  BINARY_INDEXED_TREE
+  MEMOIZATION
+  BINARY_SEARCH_TREE
+  GEOMETRY
+  HASH_FUNCTION
+  STRING_MATCHING
+  TOPOLOGICAL_SORT
+  SHORTEST_PATH
+  ROLLING_HASH
+  GAME_THEORY
+  INTERACTIVE
+  DATA_STREAM
+  MONOTONIC_QUEUE
+  BRAINTEASER
+  DOUBLY_LINKED_LIST
+  MERGE_SORT
+  RANDOMIZED
+  COUNTING_SORT
+  ITERATOR
+  CONCURRENCY
+  QUICKSELECT
+  LINE_SWEEP
+  PROBABILITY_AND_STATISTICS
+  SUFFIX_ARRAY
+  BUCKET_SORT
+  MINIMUM_SPANNING_TREE
+  SHELL
+  RESERVOIR_SAMPLING
+  RADIX_SORT
+  EULERIAN_CIRCUIT
+  STRONGLY_CONNECTED_COMPONENT
+  REJECTION_SAMPLING
+  BICONNECTED_COMPONENT
 }

@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const hashed_password = await argon2.hash(password);
+    const hashedPassword = await argon2.hash(password);
 
     if (!username || !password) {
       return new Response(
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       user = await prismaLib.account.create({
         data: {
           username: username,
-          hashed_password: hashed_password,
+          hashedPassword,
         },
       });
     } catch {
