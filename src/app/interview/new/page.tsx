@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export default async function NewInterviewPage() {
-  const numberOfQuestions = 500;
+  const numberOfQuestions = 1;
   const interviewId = uuidv4();
 
   const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;

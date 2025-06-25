@@ -74,7 +74,7 @@ export default function CodePlayground({
           setCode={setCode}
         />
       </div>
-      <OutputArea />
+      <OutputArea question={question} language={language} code={code} />
     </div>
   );
 }

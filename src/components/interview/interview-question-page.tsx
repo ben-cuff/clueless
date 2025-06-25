@@ -99,14 +99,12 @@ export default function InterviewQuestionPage({
   );
 
   return (
-    <div>
-      <CodePlayground
-        question={question}
-        handleCodeSave={handleCodeSave}
-        messages={messages}
-        handleMessageSubmit={handleMessageSubmit}
-        codeRef={codeRef}
-      />
-    </div>
+    <CodePlayground
+      question={question}
+      handleCodeSave={handleCodeSave}
+      messages={messages}
+      handleMessageSubmit={handleMessageSubmit}
+      codeRef={codeRef}
+    />
   );
 }
