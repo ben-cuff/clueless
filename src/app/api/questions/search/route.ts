@@ -2,6 +2,7 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
@@ -14,15 +15,12 @@ export async function GET(req: Request) {
     let baseQuery = `
       SELECT 
         "questionNumber", 
-        "title", 
+        "title",
         "accuracy", 
         "difficulty",
         "topics",
         "companies",
-        "prompt",
-        "titleSlug", 
-        "createdAt", 
-        "updatedAt",
+        "titleSlug",
         ts_rank(to_tsvector('english', "title"), plainto_tsquery('english', $1)) AS rank
       FROM "Question"
       WHERE 1=1
@@ -43,7 +41,14 @@ export async function GET(req: Request) {
 
     baseQuery += paginationSQL;
 
-    const questions = await prismaLib.$queryRawUnsafe(baseQuery, search ?? "");
+    // use of any here is straight fronm Prisma documentation
+    // https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries#safely-using-queryraw-and-executeraw-in-more-complex-scenarios
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sqlQuery: any = Prisma.sql([baseQuery]);
+
+    sqlQuery.values = [search ?? ""];
+
+    const questions = await prismaLib.$queryRaw(sqlQuery);
 
     return new Response(JSON.stringify(questions), {
       status: 200,
@@ -72,7 +77,9 @@ function getWhereClause(url: URL) {
       .map((t) => TOPICS[t as Topic]);
     topicArray = topicArray.filter((t) => t !== undefined);
     if (topicArray.length !== 0) {
-      if (whereClause) whereClause += " AND ";
+      if (whereClause) {
+        whereClause += " AND ";
+      }
       whereClause += `"topics" && ARRAY[${topicArray
         .map((t) => `'${t}'`)
         .join(",")}]::"Topic"[]`;
@@ -86,7 +93,9 @@ function getWhereClause(url: URL) {
       .map((d) => DIFFICULTIES[d as Difficulty]);
     difficultyArray = difficultyArray.filter((d) => d !== undefined);
     if (difficultyArray.length !== 0) {
-      if (whereClause) whereClause += " AND ";
+      if (whereClause) {
+        whereClause += " AND ";
+      }
       whereClause += `"difficulty" IN (${difficultyArray
         .map((d) => `'${d}'`)
         .join(",")})`;
@@ -100,7 +109,9 @@ function getWhereClause(url: URL) {
       .map((c) => COMPANIES[c as Company]);
     companyArray = companyArray.filter((c) => c !== undefined);
     if (companyArray.length !== 0) {
-      if (whereClause) whereClause += " AND ";
+      if (whereClause) {
+        whereClause += " AND ";
+      }
       whereClause += `"companies" && ARRAY[${companyArray
         .map((c) => `'${c}'`)
         .join(",")}]::"Company"[]`;
