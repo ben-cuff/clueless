@@ -11,7 +11,7 @@ export default function ChatArea({
   handleMessageSubmit: (message: string) => Promise<void>;
 }) {
   return (
-    <Card className="flex flex-col h-[calc(100vh-15rem)] overflow-hidden">
+    <Card className="flex flex-col h-full overflow-hidden">
       <ChatMessages messages={messages} />
       <ChatInput handleMessageSubmit={handleMessageSubmit} />
     </Card>

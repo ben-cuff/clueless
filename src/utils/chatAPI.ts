@@ -3,7 +3,7 @@ import { Message } from "@/types/message";
 export const chatAPI = {
   getGeminiResponse: async (messages: Message[], userMessage: Message) => {
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

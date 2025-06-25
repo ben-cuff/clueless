@@ -35,7 +35,9 @@ export const apiQuestions = {
       }
 
       const response = await fetch(
-        `/api/questions/search?${params.toString()}`,
+        `${
+          process.env.NEXT_PUBLIC_BASE_URL
+        }/api/questions/search?${params.toString()}`,
         {
           method: "GET",
         }
@@ -49,9 +51,12 @@ export const apiQuestions = {
   },
   async getQuestionById(id: number) {
     try {
-      const response = await fetch(`/api/questions/${id}`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/${id}`,
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error fetching question with ID ${id}`);

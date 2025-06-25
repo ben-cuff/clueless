@@ -4,7 +4,7 @@ import useCodePlayground from "@/hooks/use-code-playground";
 import useDebounce from "@/hooks/use-debouncer";
 import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
-import { useEffect } from "react";
+import { RefObject, useEffect } from "react";
 import ChatArea from "./chat-area";
 import CodeEditor from "./code-editor";
 import LanguagesSelect from "./language-select";
@@ -18,11 +18,13 @@ export default function CodePlayground({
   handleCodeSave,
   messages,
   handleMessageSubmit,
+  codeRef,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
   messages: Message[];
   handleMessageSubmit: (message: string) => Promise<void>;
+  codeRef: RefObject<string>;
 }) {
   const {
     theme,
@@ -38,6 +40,8 @@ export default function CodePlayground({
   useEffect(() => {
     handleCodeSave(debouncedCode as string);
   }, [debouncedCode, handleCodeSave]);
+
+  codeRef.current = code;
 
   return (
     <div className="flex flex-col">

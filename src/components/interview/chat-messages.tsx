@@ -6,7 +6,7 @@ import { ScrollArea } from "../ui/scroll-area";
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="flex-1 overflow-auto">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4">
           {messages.map((message, idx) => (
