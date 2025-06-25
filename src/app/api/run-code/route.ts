@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Failed to run code" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
