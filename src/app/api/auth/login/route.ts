@@ -15,8 +15,6 @@ export async function POST(req: Request) {
       );
     }
 
-
-
     const user = await prismaLib.account.findUnique({
       where: { username },
     });
@@ -31,7 +29,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const isValid = await argon2.verify(user.hashed_password, password);
+    const isValid = await argon2.verify(user.hashedPassword, password);
 
     if (isValid) {
       return new Response(
