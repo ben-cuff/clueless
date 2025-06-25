@@ -20,20 +20,21 @@ export async function POST(req: Request) {
       titleSlug,
     } = await req.json();
 
-    if (
-      typeof questionNumber !== "number" ||
-      typeof title !== "string" ||
-      typeof accuracy !== "number" ||
-      typeof prompt !== "string" ||
-      typeof difficulty !== "string" ||
-      !Array.isArray(topics) ||
-      !Array.isArray(companies) ||
-      typeof testcases !== "object" ||
-      typeof starterCode !== "object" ||
-      typeof solutions !== "object" ||
-      typeof article !== "string" ||
-      typeof titleSlug !== "string"
-    ) {
+    const isValid =
+      typeof questionNumber === "number" &&
+      typeof title === "string" &&
+      typeof accuracy === "number" &&
+      typeof prompt === "string" &&
+      typeof difficulty === "string" &&
+      Array.isArray(topics) &&
+      Array.isArray(companies) &&
+      typeof testcases === "object" &&
+      typeof starterCode === "object" &&
+      typeof solutions === "object" &&
+      typeof article === "string" &&
+      typeof titleSlug === "string";
+
+    if (!isValid) {
       return new Response(JSON.stringify({ error: "Invalid input data" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -76,7 +77,6 @@ export async function POST(req: Request) {
         }
       );
     }
-
     const validDifficulty =
       DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
 
