@@ -1,6 +1,6 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
-import { Question } from "@/constants/question";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
+import { Question } from "@/types/question";
 import { apiQuestions } from "@/utils/questionsAPI";
 import { useCallback, useEffect, useState } from "react";
 import useDebounce from "./use-debouncer";

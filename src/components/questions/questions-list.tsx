@@ -1,4 +1,4 @@
-import { Question } from "@/constants/question";
+import { Question } from "@/types/question";
 import QuestionCard from "./question-card";
 
 export default function QuestionsList({
