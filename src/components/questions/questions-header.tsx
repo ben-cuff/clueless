@@ -3,7 +3,7 @@ import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import DifficultySelect from "./difficulty-select";
-import { MultiSelect } from "./multi-select";
+import { MultiSelect } from "../ui/multi-select";
 
 export default function QuestionsHeader({
   handleSearchInputChange,
