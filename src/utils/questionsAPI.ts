@@ -47,4 +47,20 @@ export const apiQuestions = {
       console.error("Error fetching questions:", error);
     }
   },
+  async getQuestionById(id: number) {
+    try {
+      const response = await fetch(`/api/questions/${id}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error fetching question with ID ${id}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching question by ID:", error);
+    }
+  },
 };
