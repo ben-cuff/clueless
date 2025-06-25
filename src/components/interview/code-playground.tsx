@@ -37,7 +37,7 @@ export default function CodePlayground({
     <div className="flex flex-col">
       <QuestionHeader
         title={question.title ?? "Error"}
-        questionNumber={question.questionNumber ?? 0}
+        questionNumber={question.questionNumber}
         difficulty={question.difficulty}
       />
       <div className="flex flex-row min-w-128 max-w-1/4 justify-around mb-1">
@@ -46,10 +46,10 @@ export default function CodePlayground({
       </div>
       <div className="flex flex-row">
         <QuestionPrompt
-          title={question.title ?? ""}
-          prompt={question.prompt ?? ""}
+          title={question.title}
+          prompt={question.prompt}
           difficulty={question.difficulty}
-          questionNumber={question.questionNumber ?? 0}
+          questionNumber={question.questionNumber}
         />
         <CodeEditor
           languageValue={language.value}

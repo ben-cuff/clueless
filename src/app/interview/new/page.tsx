@@ -31,7 +31,6 @@ export default function NewInterviewPage() {
   }, []);
 
   async function handleCodeSave(code: string) {
-    // useDebouncer here to autosave after 1 second of no edits
     console.log(code);
   }
   return (
