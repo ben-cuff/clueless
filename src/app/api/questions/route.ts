@@ -17,6 +17,7 @@ export async function POST(req: Request) {
       companies,
       difficulty,
       article,
+      titleSlug,
     } = await req.json();
 
     if (
@@ -30,7 +31,8 @@ export async function POST(req: Request) {
       typeof testcases !== "object" ||
       typeof starterCode !== "object" ||
       typeof solutions !== "object" ||
-      typeof article !== "string"
+      typeof article !== "string" ||
+      typeof titleSlug !== "string"
     ) {
       return new Response(JSON.stringify({ error: "Invalid input data" }), {
         status: 400,
@@ -103,6 +105,7 @@ export async function POST(req: Request) {
           topics: validTopics,
           companies: validCompanies,
           article,
+          titleSlug,
         },
       });
     } catch (error) {

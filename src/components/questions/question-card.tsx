@@ -1,5 +1,6 @@
 import { READABLE_COMPANIES } from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
+import { Question } from "@/constants/question";
 import { READABLE_TOPICS } from "@/constants/topics";
 import { Badge } from "../ui/badge";
 
@@ -33,15 +34,3 @@ export default function QuestionCard({ question }: { question: Question }) {
     </div>
   );
 }
-
-type Question = {
-  accuracy: number;
-  companies: string[];
-  createdAt: string;
-  difficulty: number;
-  prompt: string;
-  questionNumber: number;
-  title: string;
-  topics: string[];
-  updatedAt: string;
-};

@@ -19,7 +19,8 @@ export async function GET(req: Request) {
         "difficulty",
         "topics",
         "companies",
-        "prompt", 
+        "prompt",
+        "titleSlug", 
         "createdAt", 
         "updatedAt",
         ts_rank(to_tsvector('english', "title"), plainto_tsquery('english', $1)) AS rank

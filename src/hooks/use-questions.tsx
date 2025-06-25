@@ -1,4 +1,5 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
+import { Question } from "@/constants/question";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
 import { apiQuestions } from "@/utils/questionsAPI";
 import { useCallback, useEffect, useState } from "react";
@@ -118,15 +119,3 @@ export default function useQuestions() {
     handleDifficultySelectChange,
   };
 }
-
-type Question = {
-  accuracy: number;
-  companies: string[];
-  createdAt: string;
-  difficulty: number;
-  prompt: string;
-  questionNumber: number;
-  title: string;
-  topics: string[];
-  updatedAt: string;
-};

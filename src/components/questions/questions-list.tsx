@@ -1,3 +1,4 @@
+import { Question } from "@/constants/question";
 import QuestionCard from "./question-card";
 
 export default function QuestionsList({
@@ -13,15 +14,3 @@ export default function QuestionsList({
     </>
   );
 }
-
-type Question = {
-  accuracy: number;
-  companies: string[];
-  createdAt: string;
-  difficulty: number;
-  prompt: string;
-  questionNumber: number;
-  title: string;
-  topics: string[];
-  updatedAt: string;
-};

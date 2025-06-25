@@ -1,3 +1,4 @@
+import { Question } from "@/constants/question";
 import PaginationDropdown from "./pagination-dropdown";
 import PaginationSelect from "./pagination-select";
 
@@ -32,15 +33,3 @@ export default function QuestionsPagination({
     </div>
   );
 }
-
-type Question = {
-  accuracy: number;
-  companies: string[];
-  createdAt: string;
-  difficulty: number;
-  prompt: string;
-  questionNumber: number;
-  title: string;
-  topics: string[];
-  updatedAt: string;
-};
