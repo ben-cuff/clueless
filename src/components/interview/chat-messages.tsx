@@ -21,13 +21,7 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
                   {message.role === "model" ? "AI" : "ME"}
                 </AvatarFallback>
               </Avatar>
-              <div
-                className={`rounded-lg px-4 max-w-[80%] ${
-                  message.role === "model"
-                    ? "bg-muted prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 max-w-none"
-                    : "bg-primary text-primary-foreground py-4"
-                }`}
-              >
+              <div className="rounded-lg p-4 max-w-[80%] bg-muted">
                 <div className="text-sm whitespace-pre-wrap">
                   <Markdown>{message.parts[0].text}</Markdown>
                 </div>

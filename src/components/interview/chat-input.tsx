@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -6,16 +7,20 @@ export default function ChatInput({
 }: {
   handleMessageSubmit: (message: string) => Promise<void>;
 }) {
-  const formSubmit = async (e: Event) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const formSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.target as HTMLFormElement;
+    const form = e.currentTarget;
     const textarea = form.querySelector("textarea");
     if (textarea?.value.trim() === "") {
       return;
     }
 
     if (textarea) {
+      setIsDisabled(true);
       await handleMessageSubmit(textarea.value);
+      setIsDisabled(false);
       textarea.value = "";
     }
   };
@@ -26,8 +31,9 @@ export default function ChatInput({
         className="m-2 flex-1"
         placeholder="Your message here"
         rows={2}
+        disabled={isDisabled}
       />
-      <Button type="submit" className="m-2 h-10">
+      <Button type="submit" className="m-2 h-10" disabled={isDisabled}>
         Submit
       </Button>
     </form>
