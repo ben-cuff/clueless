@@ -74,21 +74,23 @@ export default function NewInterviewPage() {
       const decoder = new TextDecoder();
       let content = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      let done = false;
+      while (!done) {
+        const result = await reader.read();
+        done = result.done;
+        if (!done) {
+          const chunk = decoder.decode(result.value);
+          content += chunk;
 
-        const chunk = decoder.decode(value);
-        content += chunk;
-
-        setMessages((prev) => {
-          const updated = [...(prev || [])];
-          updated[updated.length - 1] = {
-            ...updated[updated.length - 1],
-            parts: [{ text: content }],
-          };
-          return updated;
-        });
+          setMessages((prev) => {
+            const updated = [...(prev || [])];
+            updated[updated.length - 1] = {
+              ...updated[updated.length - 1],
+              parts: [{ text: content }],
+            };
+            return updated;
+          });
+        }
       }
     },
     [messages]
