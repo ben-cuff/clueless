@@ -13,7 +13,6 @@ export default function NewInterviewPage() {
   const interviewId = uuidv4();
 
   const [question, setQuestion] = useState<Question_Extended>();
-  const [isLoadingOnMount, setIsLoadingOnMount] = useState(true);
   const [messages, setMessages] = useState<Message[]>();
   const [isLoadingAIResponse, setisLoadingAIResponse] = useState(false);
 
@@ -41,8 +40,6 @@ export default function NewInterviewPage() {
 
       setQuestion(fetchedQuestion);
     })();
-
-    setIsLoadingOnMount(false);
   }, []);
 
   const handleCodeSave = useCallback(async (code: string) => {
