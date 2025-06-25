@@ -29,10 +29,15 @@ export default function NewInterviewPage() {
 
     setIsLoadingOnMount(false);
   }, []);
+
+  async function handleCodeSave(code: string) {
+    // useDebouncer here to autosave after 1 second of no edits
+    console.log(code);
+  }
   return (
     <div>
       {question != null ? (
-        <CodePlayground question={question} />
+        <CodePlayground question={question} handleCodeSave={handleCodeSave} />
       ) : (
         <p>Loading</p>
       )}

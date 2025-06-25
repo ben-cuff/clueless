@@ -1,7 +1,9 @@
 "use client";
 
 import useCodePlayground from "@/hooks/use-code-playground";
+import useDebounce from "@/hooks/use-debouncer";
 import { Question_Extended } from "@/types/question";
+import { useEffect } from "react";
 import CodeEditor from "./code-editor";
 import LanguagesSelect from "./language-select";
 import OutputArea from "./output-area";
@@ -11,8 +13,10 @@ import ThemeSelect from "./theme-select";
 
 export default function CodePlayground({
   question,
+  handleCodeSave,
 }: {
   question: Question_Extended;
+  handleCodeSave(code: string): Promise<void>;
 }) {
   const {
     theme,
@@ -22,6 +26,12 @@ export default function CodePlayground({
     code,
     setCode,
   } = useCodePlayground(question);
+
+  const debouncedCode = useDebounce(code, 1000);
+
+  useEffect(() => {
+    handleCodeSave(debouncedCode as string);
+  }, [debouncedCode, handleCodeSave]);
 
   return (
     <div className="flex flex-col">
