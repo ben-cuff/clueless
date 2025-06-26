@@ -12,7 +12,7 @@ export default async function NewInterviewPage({
 }: {
   searchParams: { questionNumber: number };
 }) {
-  const numberOfQuestions = 1;
+  const numberOfQuestions = 3586;
   const interviewId = uuidv4();
 
   const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;

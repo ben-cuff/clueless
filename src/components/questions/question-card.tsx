@@ -1,17 +1,11 @@
 import { READABLE_COMPANIES } from "@/constants/companies";
-import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
 import { READABLE_TOPICS } from "@/constants/topics";
 import { Question } from "@/types/question";
 import Link from "next/link";
+import DifficultyBadge from "../diffculty-badge";
 import { Badge } from "../ui/badge";
 
 export default function QuestionCard({ question }: { question: Question }) {
-  const difficultyClassMap: Record<number, string> = {
-    1: "text-green-600",
-    2: "text-yellow-600",
-    3: "text-red-600",
-  };
-
   const leetcodeLink = `https://leetcode.com/problems/${question.titleSlug}`;
 
   return (
@@ -20,9 +14,7 @@ export default function QuestionCard({ question }: { question: Question }) {
         <h2 className="text-xl font-semibold">
           {question.questionNumber}. {question.title}
         </h2>
-        <div className={difficultyClassMap[question.difficulty]}>
-          {READABLE_DIFFICULTIES[question.difficulty]}
-        </div>
+        <DifficultyBadge difficulty={question.difficulty} />
         <div className="ml-5 font-bold">
           {question.companies
             .map((company: string) => READABLE_COMPANIES[company])

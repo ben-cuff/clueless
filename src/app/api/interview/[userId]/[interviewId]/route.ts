@@ -53,3 +53,55 @@ export async function GET(req: Request) {
     });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const segments = url.pathname.split("/");
+    const userId = Number(segments[segments.length - 2]);
+    const interviewId = segments[segments.length - 1];
+
+    if (isNaN(userId)) {
+      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (!interviewId) {
+      return new Response(JSON.stringify({ error: "Invalid interview ID" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const session = await getServerSession(authOptions);
+    if (session?.user.id !== userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    try {
+      const deletedInterview = await prismaLib.interview.delete({
+        where: { id: interviewId, userId },
+      });
+      return new Response(JSON.stringify(deletedInterview), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch {
+      return new Response(JSON.stringify({ error: "Interview not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting interview:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}

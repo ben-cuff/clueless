@@ -76,4 +76,21 @@ export const interviewAPI = {
       console.error("Error fetching interviews by user ID:", error);
     }
   },
+  async deleteInterview(userId: number, interviewId: string) {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting interview:", error);
+      return {
+        success: false,
+      };
+    }
+  },
 };
