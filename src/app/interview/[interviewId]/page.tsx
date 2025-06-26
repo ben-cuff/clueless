@@ -20,18 +20,12 @@ export default async function ResumeInterviewPage({
   const question: Question_Extended = await apiQuestions.getQuestionById(
     questionNumber
   );
-
-  const session = await getServerSession(authOptions);
-
-  if (!session || typeof session.user.id !== "number") {
-    redirect("/");
-  }
+    
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <InterviewQuestionPage
         question={question}
         interviewId={interviewId}
-        userId={session.user.id}
       />
     </Suspense>
   );

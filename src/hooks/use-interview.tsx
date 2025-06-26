@@ -1,12 +1,12 @@
+import { UserIdContext } from "@/components/user-id-context";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 export default function useInterview(
   interviewId: string,
-  questionNumber: number,
-  userId: number
+  questionNumber: number
 ) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -22,6 +22,7 @@ export default function useInterview(
     },
   ]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
 

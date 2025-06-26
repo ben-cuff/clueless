@@ -64,4 +64,16 @@ export const interviewAPI = {
       console.error("Error fetching interview:", error);
     }
   },
+  async getInterviewsByUserId(userId: number) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}`
+      );
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching interviews by user ID:", error);
+    }
+  },
 };

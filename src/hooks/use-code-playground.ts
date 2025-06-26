@@ -1,16 +1,17 @@
+import { UserIdContext } from "@/components/user-id-context";
 import { LanguageOption, languageOptions } from "@/constants/language-options";
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";
 import { Theme } from "@/types/theme";
 import { interviewAPI } from "@/utils/interview-api";
 import { useTheme } from "next-themes";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 export default function useCodePlayground(
   question: Question_Extended,
-  interviewId: string,
-  userId: number
+  interviewId: string
 ) {
+  const userId = useContext(UserIdContext);
   const { theme: systemTheme } = useTheme();
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
