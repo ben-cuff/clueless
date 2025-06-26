@@ -4,6 +4,8 @@ import CodePlayground from "@/components/interview/code-playground";
 import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
 import { chatAPI } from "@/utils/chat-api";
+import { interviewAPI } from "@/utils/interview-api";
+import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function InterviewQuestionPage({
@@ -15,6 +17,7 @@ export default function InterviewQuestionPage({
 }) {
   // this will be refactored into a useInterview Hook in a later PR
 
+  const { data: sessionData } = useSession();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
@@ -28,6 +31,7 @@ export default function InterviewQuestionPage({
       ],
     },
   ]);
+  const [isStreaming, setIsStreaming] = useState(false);
   const codeRef = useRef("");
 
   const handleCodeSave = useCallback(async (code: string) => {
@@ -75,6 +79,7 @@ export default function InterviewQuestionPage({
       const decoder = new TextDecoder();
       let content = "";
 
+      setIsStreaming(true);
       let done = false;
       while (!done) {
         const result = await reader.read();
@@ -93,9 +98,31 @@ export default function InterviewQuestionPage({
           });
         }
       }
+      setIsStreaming(false);
     },
     [messages]
   );
+
+  useEffect(() => {
+    (async () => {
+      if (!isStreaming) {
+        await interviewAPI.createOrUpdateInterview(
+          sessionData?.user?.id ? sessionData.user.id.toString() : "",
+          interviewId,
+          messages,
+          question.questionNumber,
+          codeRef.current,
+          "python"
+        );
+      }
+    })();
+  }, [
+    interviewId,
+    isStreaming,
+    messages,
+    question.questionNumber,
+    sessionData?.user.id,
+  ]);
 
   const handleMessageSubmit = useCallback(
     async (message: string) => {
@@ -115,19 +142,6 @@ export default function InterviewQuestionPage({
     [addUserMessage, streamModelResponse]
   );
 
-  const handleOutputChange = useCallback(
-    async (outputMessage: string) => {
-      handleMessageSubmit(outputMessage);
-    },
-    [handleMessageSubmit]
-  );
-
-  useEffect(() => {
-    (async () => {
-      
-    })();
-  }, [messages]);
-
   return (
     <CodePlayground
       question={question}
@@ -135,7 +149,6 @@ export default function InterviewQuestionPage({
       messages={messages}
       handleMessageSubmit={handleMessageSubmit}
       codeRef={codeRef}
-      handleOutputChange={handleOutputChange}
     />
   );
 }
