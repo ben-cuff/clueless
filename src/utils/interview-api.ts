@@ -2,7 +2,7 @@ import { Message } from "@/types/message";
 
 export const interviewAPI = {
   async createOrUpdateInterview(
-    userId: string,
+    userId: number,
     id: string,
     messages: Message[],
     questionNumber: number,
@@ -33,7 +33,7 @@ export const interviewAPI = {
       console.error("Error creating or updating interview:", error);
     }
   },
-  async updateCodeForInterview(userId: string, id: string, code: string) {
+  async updateCodeForInterview(userId: number, id: string, code: string) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/code`,
@@ -52,7 +52,7 @@ export const interviewAPI = {
       console.error("Error updating code for interview:", error);
     }
   },
-  async getInterview(userId: string, interviewId: string) {
+  async getInterview(userId: number, interviewId: string) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`

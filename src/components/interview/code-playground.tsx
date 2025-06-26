@@ -19,12 +19,16 @@ export default function CodePlayground({
   messages,
   handleMessageSubmit,
   codeRef,
+  interviewId,
+  userId,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
   messages: Message[];
   handleMessageSubmit: (message: string) => Promise<void>;
   codeRef: RefObject<string>;
+  interviewId: string;
+  userId: number;
 }) {
   const {
     theme,
@@ -33,7 +37,7 @@ export default function CodePlayground({
     handleLanguageChange,
     code,
     setCode,
-  } = useCodePlayground(question);
+  } = useCodePlayground(question, interviewId, userId);
 
   const debouncedCode = useDebounce(code, 1000);
 

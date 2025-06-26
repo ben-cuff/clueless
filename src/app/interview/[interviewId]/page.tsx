@@ -4,23 +4,20 @@ import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { getServerSession } from "next-auth";
 import { Suspense } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-export default async function NewInterviewPage({
+export default async function ResumeInterviewPage({
+  params,
   searchParams,
 }: {
+  params: { interviewId: string };
   searchParams: { questionNumber: number };
 }) {
-  const numberOfQuestions = 1;
-  const interviewId = uuidv4();
-
-  const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;
+  const { interviewId } = params;
 
   const { questionNumber } = searchParams;
 
-  const questionId = questionNumber ? questionNumber : randomQuestionId;
   const question: Question_Extended = await apiQuestions.getQuestionById(
-    questionId
+    questionNumber
   );
 
   const session = await getServerSession(authOptions);

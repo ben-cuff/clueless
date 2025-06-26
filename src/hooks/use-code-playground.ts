@@ -2,10 +2,15 @@ import { LanguageOption, languageOptions } from "@/constants/language-options";
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";
 import { Theme } from "@/types/theme";
+import { interviewAPI } from "@/utils/interview-api";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
 
-export default function useCodePlayground(question: Question_Extended) {
+export default function useCodePlayground(
+  question: Question_Extended,
+  interviewId: string,
+  userId: number
+) {
   const { theme: systemTheme } = useTheme();
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
@@ -29,14 +34,23 @@ export default function useCodePlayground(question: Question_Extended) {
   }, []);
 
   useEffect(() => {
-    if (question?.starterCode) {
-      setCode(
-        question.starterCode[
-          language.value as keyof typeof question.starterCode
-        ] || ""
+    (async () => {
+      const interview = await interviewAPI.getInterview(
+        userId || -1,
+        interviewId
       );
-    }
-  }, [language.value, question]);
+      console.log("Interview data:", interview);
+      if (!interview.error) {
+        setCode(interview.code || "");
+      } else if (question?.starterCode) {
+        setCode(
+          question.starterCode[
+            language.value as keyof typeof question.starterCode
+          ] || ""
+        );
+      }
+    })();
+  }, [language.value, question, interviewId, userId]);
 
   return {
     theme,
