@@ -12,7 +12,9 @@ export default function InterviewQuestionPage({
 }: {
   interviewId: string;
   question: Question_Extended;
-}) {
+  }) {
+  // this will be refactored into a useInterview Hook in a later PR
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",

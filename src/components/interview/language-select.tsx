@@ -14,7 +14,7 @@ export default function LanguagesSelect({
 }) {
   return (
     <Select
-      defaultValue="71"
+      defaultValue="71" // python
       onValueChange={(value) => {
         handleLanguageChange(
           languageOptions.find((lang) => lang.id.toString() === value)!
