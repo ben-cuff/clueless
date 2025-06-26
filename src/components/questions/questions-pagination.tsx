@@ -1,4 +1,4 @@
-import { Question } from "@/constants/question";
+import { Question } from "@/types/question";
 import PaginationDropdown from "./pagination-dropdown";
 import PaginationSelect from "./pagination-select";
 

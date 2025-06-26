@@ -1,7 +1,7 @@
 import { READABLE_COMPANIES } from "@/constants/companies";
 import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
-import { Question } from "@/constants/question";
 import { READABLE_TOPICS } from "@/constants/topics";
+import { Question } from "@/types/question";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 

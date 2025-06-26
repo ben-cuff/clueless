@@ -1,4 +1,4 @@
-import { Question } from "@/constants/question";
+import { Question } from "@/types/question";
 import {
   Pagination,
   PaginationContent,

@@ -1,7 +1,7 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
-import { Question } from "@/constants/question";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
-import { apiQuestions } from "@/utils/questionsAPI";
+import { Question } from "@/types/question";
+import { apiQuestions } from "@/utils/questions-api";
 import { useCallback, useEffect, useState } from "react";
 import useDebounce from "./use-debouncer";
 
