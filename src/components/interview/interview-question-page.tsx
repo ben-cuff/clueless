@@ -4,7 +4,7 @@ import CodePlayground from "@/components/interview/code-playground";
 import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
 import { chatAPI } from "@/utils/chat-api";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function InterviewQuestionPage({
   interviewId,
@@ -121,6 +121,12 @@ export default function InterviewQuestionPage({
     },
     [handleMessageSubmit]
   );
+
+  useEffect(() => {
+    (async () => {
+      
+    })();
+  }, [messages]);
 
   return (
     <CodePlayground
