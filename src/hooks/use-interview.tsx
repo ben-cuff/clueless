@@ -1,4 +1,5 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
+import { initialMessage, userCodeInclusion } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
@@ -43,9 +44,7 @@ export default function useInterview(
         parts: [
           {
             text:
-              userMessage.parts[0].text +
-              "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n" +
-              codeRef.current,
+              userMessage.parts[0].text + userCodeInclusion + codeRef.current,
           },
         ],
       };
@@ -139,10 +138,7 @@ export default function useInterview(
             role: "model",
             parts: [
               {
-                text:
-                  "Welcome to the interview! Before we begin, do you have any questions? " +
-                  "When you're ready, please talk through your approach to the problem before you start coding. " +
-                  "Explaining your thought process and communication skills are an important part of the interview.",
+                text: initialMessage,
               },
             ],
           },
