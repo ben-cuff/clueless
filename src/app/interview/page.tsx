@@ -14,7 +14,6 @@ export default function InterviewPage() {
 
   useEffect(() => {
     (async () => {
-      console.log(userId);
       if (userId !== -1) {
         const data = await interviewAPI.getInterviewsByUserId(userId);
         setPastInterviewData(data);
