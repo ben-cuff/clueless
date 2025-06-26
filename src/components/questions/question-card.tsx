@@ -1,6 +1,6 @@
 import { Question } from "@/types/question";
 import Link from "next/link";
-import DifficultyBadge from "../diffculty-badge";
+import DifficultyBadge from "../difficulty-badge";
 import CompaniesList from "./companies-list";
 import QuestionCardHeader from "./question-card-header";
 import TopicsBadges from "./topics-badges";

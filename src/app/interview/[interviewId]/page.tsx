@@ -1,3 +1,4 @@
+import InterviewLoading from "@/components/interview/interview-loading";
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
@@ -19,7 +20,7 @@ export default async function ResumeInterviewPage({
   );
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<InterviewLoading />}>
       <InterviewQuestionPage question={question} interviewId={interviewId} />
     </Suspense>
   );

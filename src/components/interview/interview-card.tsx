@@ -1,5 +1,5 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import DifficultyBadge from "../diffculty-badge";
+import DifficultyBadge from "../difficulty-badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
