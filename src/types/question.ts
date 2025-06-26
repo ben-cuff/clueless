@@ -35,3 +35,5 @@ export interface Question_Extended extends Question {
   };
   article: string;
 }
+
+export type TestcasesKey = keyof Question_Extended["testcases"];
