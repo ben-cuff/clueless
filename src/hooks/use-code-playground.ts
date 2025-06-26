@@ -39,7 +39,6 @@ export default function useCodePlayground(
         userId || -1,
         interviewId
       );
-      console.log("Interview data:", interview);
       if (!interview.error) {
         setCode(interview.code || "");
       } else if (question?.starterCode) {

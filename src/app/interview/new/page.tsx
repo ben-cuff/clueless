@@ -3,6 +3,7 @@ import InterviewQuestionPage from "@/components/interview/interview-question-pag
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,13 +25,16 @@ export default async function NewInterviewPage({
   );
 
   const session = await getServerSession(authOptions);
+  if (!session || typeof session.user.id !== "number") {
+    redirect("/");
+  }
 
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <InterviewQuestionPage
         question={question}
         interviewId={interviewId}
-        userId={session?.user.id || 1}
+        userId={session.user.id}
       />
     </Suspense>
   );

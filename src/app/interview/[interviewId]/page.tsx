@@ -3,6 +3,7 @@ import InterviewQuestionPage from "@/components/interview/interview-question-pag
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function ResumeInterviewPage({
@@ -22,12 +23,15 @@ export default async function ResumeInterviewPage({
 
   const session = await getServerSession(authOptions);
 
+  if (!session || typeof session.user.id !== "number") {
+    redirect("/");
+  }
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <InterviewQuestionPage
         question={question}
         interviewId={interviewId}
-        userId={session?.user.id || 1}
+        userId={session.user.id}
       />
     </Suspense>
   );
