@@ -34,7 +34,6 @@ export default async function NewInterviewPage({
       <InterviewQuestionPage
         question={question}
         interviewId={interviewId}
-        userId={session.user.id}
       />
     </Suspense>
   );
