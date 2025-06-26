@@ -27,11 +27,8 @@ export const interviewAPI = {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to create or update interview");
-      }
-
-      return await response.json();
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error("Error creating or updating interview:", error);
     }
@@ -49,13 +46,22 @@ export const interviewAPI = {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to update code for interview");
-      }
-
-      return await response.json();
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error("Error updating code for interview:", error);
+    }
+  },
+  async getInterview(userId: string, interviewId: string) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`
+      );
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching interview:", error);
     }
   },
 };
