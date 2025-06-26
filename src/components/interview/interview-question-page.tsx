@@ -3,7 +3,7 @@
 import CodePlayground from "@/components/interview/code-playground";
 import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
-import { chatAPI } from "@/utils/chatAPI";
+import { chatAPI } from "@/utils/chat-api";
 import { useCallback, useRef, useState } from "react";
 
 export default function InterviewQuestionPage({

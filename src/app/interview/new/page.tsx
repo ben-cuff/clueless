@@ -1,6 +1,6 @@
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import { Question_Extended } from "@/types/question";
-import { apiQuestions } from "@/utils/questionsAPI";
+import { apiQuestions } from "@/utils/questions-api";
 import { Suspense } from "react";
 import { v4 as uuidv4 } from "uuid";
 

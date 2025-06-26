@@ -1,7 +1,7 @@
 import { LanguageOption } from "@/constants/language-options";
 import { CodeOutput } from "@/types/code-output";
 import { Question_Extended } from "@/types/question";
-import { codeExecutionAPI } from "@/utils/codeExecutionAPI";
+import { codeExecutionAPI } from "@/utils/code-execution-api";
 import { useCallback, useState } from "react";
 
 export default function useCodeOutput(
