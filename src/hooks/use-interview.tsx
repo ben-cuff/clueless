@@ -8,20 +8,9 @@ export default function useInterview(
   interviewId: string,
   questionNumber: number
 ) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "model",
-      parts: [
-        {
-          text:
-            "Welcome to the interview! Before we begin, do you have any questions? " +
-            "When you're ready, please talk through your approach to the problem before you start coding. " +
-            "Explaining your thought process and communication skills are an important part of the interview.",
-        },
-      ],
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>();
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
@@ -124,7 +113,7 @@ export default function useInterview(
           await interviewAPI.createOrUpdateInterview(
             userId || -1,
             interviewId,
-            messages,
+            messages!,
             questionNumber,
             codeRef.current,
             "python"
@@ -144,9 +133,30 @@ export default function useInterview(
       );
       if (!interviewData.error) {
         setMessages(interviewData.messages);
+      } else {
+        setMessages([
+          {
+            role: "model",
+            parts: [
+              {
+                text:
+                  "Welcome to the interview! Before we begin, do you have any questions? " +
+                  "When you're ready, please talk through your approach to the problem before you start coding. " +
+                  "Explaining your thought process and communication skills are an important part of the interview.",
+              },
+            ],
+          },
+        ]);
       }
+      setIsLoadingMessages(false);
     })();
   }, [interviewId, userId]);
 
-  return { handleCodeSave, messages, handleMessageSubmit, codeRef };
+  return {
+    handleCodeSave,
+    messages,
+    handleMessageSubmit,
+    codeRef,
+    isLoadingMessages,
+  };
 }
