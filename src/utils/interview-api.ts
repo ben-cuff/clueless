@@ -34,7 +34,28 @@ export const interviewAPI = {
       return await response.json();
     } catch (error) {
       console.error("Error creating or updating interview:", error);
-      throw error;
+    }
+  },
+  async updateCodeForInterview(userId: string, id: string, code: string) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/code`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id, code }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update code for interview");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error updating code for interview:", error);
     }
   },
 };

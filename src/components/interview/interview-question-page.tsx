@@ -18,6 +18,8 @@ export default function InterviewQuestionPage({
   // this will be refactored into a useInterview Hook in a later PR
 
   const { data: sessionData } = useSession();
+  const userId = sessionData?.user.id;
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
@@ -34,9 +36,16 @@ export default function InterviewQuestionPage({
   const [isStreaming, setIsStreaming] = useState(false);
   const codeRef = useRef("");
 
-  const handleCodeSave = useCallback(async (code: string) => {
-    console.log(code);
-  }, []);
+  const handleCodeSave = useCallback(
+    async (code: string) => {
+      interviewAPI.updateCodeForInterview(
+        userId?.toString() || "",
+        interviewId,
+        code
+      );
+    },
+    [interviewId, userId]
+  );
 
   const addUserMessage = useCallback((message: string) => {
     const userMessage: Message = {
@@ -107,7 +116,7 @@ export default function InterviewQuestionPage({
     (async () => {
       if (!isStreaming) {
         await interviewAPI.createOrUpdateInterview(
-          sessionData?.user?.id ? sessionData.user.id.toString() : "",
+          userId?.toString() || "",
           interviewId,
           messages,
           question.questionNumber,
@@ -116,13 +125,7 @@ export default function InterviewQuestionPage({
         );
       }
     })();
-  }, [
-    interviewId,
-    isStreaming,
-    messages,
-    question.questionNumber,
-    sessionData?.user.id,
-  ]);
+  }, [interviewId, isStreaming, messages, question.questionNumber, userId]);
 
   const handleMessageSubmit = useCallback(
     async (message: string) => {

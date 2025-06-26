@@ -96,12 +96,12 @@ export async function GET(req: Request) {
 
     const session = await getServerSession(authOptions);
 
-    // if (session?.user.id !== userId) {
-    //   return new Response(JSON.stringify({ error: "Unauthorized" }), {
-    //     status: 403,
-    //     headers: { "Content-Type": "application/json" },
-    //   });
-    // }
+    if (session?.user.id !== userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     const interviews = await prismaLib.interview.findMany({
       where: { userId },
