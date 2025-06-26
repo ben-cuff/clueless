@@ -12,9 +12,9 @@ export default function InterviewQuestionPage({
 }: {
   interviewId: string;
   question: Question_Extended;
-  }) {
+}) {
   // this will be refactored into a useInterview Hook in a later PR
-  
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
@@ -37,7 +37,11 @@ export default function InterviewQuestionPage({
   const addUserMessage = useCallback((message: string) => {
     const userMessage: Message = {
       role: "user",
-      parts: [{ text: message.trim() }],
+      parts: [
+        {
+          text: message.trim(),
+        },
+      ],
     };
     setMessages((prev) => [...(prev ?? []), userMessage]);
     return userMessage;
@@ -45,9 +49,21 @@ export default function InterviewQuestionPage({
 
   const streamModelResponse = useCallback(
     async (userMessage: Message) => {
+      const userMessageWithCode = {
+        ...userMessage,
+        parts: [
+          {
+            text:
+              userMessage.parts[0].text +
+              "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n" +
+              codeRef.current,
+          },
+        ],
+      };
+
       const response = await chatAPI.getGeminiResponse(
         messages ?? [],
-        userMessage
+        userMessageWithCode
       );
 
       if (!response || !response.body) {
@@ -83,8 +99,7 @@ export default function InterviewQuestionPage({
 
   const handleMessageSubmit = useCallback(
     async (message: string) => {
-      const messageWithCode = `${message}\n\nCurrent code:\n${codeRef.current}`;
-      const userMessage = addUserMessage(messageWithCode);
+      const userMessage = addUserMessage(message);
 
       // adds a placeholder for the model's response
       setMessages((prev) => [
@@ -100,6 +115,13 @@ export default function InterviewQuestionPage({
     [addUserMessage, streamModelResponse]
   );
 
+  const handleOutputChange = useCallback(
+    async (outputMessage: string) => {
+      handleMessageSubmit(outputMessage);
+    },
+    [handleMessageSubmit]
+  );
+
   return (
     <CodePlayground
       question={question}
@@ -107,6 +129,7 @@ export default function InterviewQuestionPage({
       messages={messages}
       handleMessageSubmit={handleMessageSubmit}
       codeRef={codeRef}
+      handleOutputChange={handleOutputChange}
     />
   );
 }

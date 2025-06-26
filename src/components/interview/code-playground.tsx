@@ -18,12 +18,14 @@ export default function CodePlayground({
   handleCodeSave,
   messages,
   handleMessageSubmit,
+  handleOutputChange,
   codeRef,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
   messages: Message[];
   handleMessageSubmit: (message: string) => Promise<void>;
+  handleOutputChange: (outputMessage: string) => Promise<void>;
   codeRef: RefObject<string>;
 }) {
   const {
@@ -74,7 +76,12 @@ export default function CodePlayground({
           setCode={setCode}
         />
       </div>
-      <OutputArea question={question} language={language} code={code} />
+      <OutputArea
+        question={question}
+        language={language}
+        code={code}
+        handleOutputChange={handleOutputChange}
+      />
     </div>
   );
 }
