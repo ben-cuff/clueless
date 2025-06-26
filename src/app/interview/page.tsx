@@ -1,7 +1,7 @@
 "use client";
 
+import { UserIdContext } from "@/components/providers/user-id-provider";
 import { Button } from "@/components/ui/button";
-import { UserIdContext } from "@/components/user-id-context";
 import { interviewAPI } from "@/utils/interview-api";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";

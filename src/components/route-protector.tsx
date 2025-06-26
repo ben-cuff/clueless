@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import UserIdProvider from "./user-id-context";
+import UserIdProvider from "./providers/user-id-provider";
 
 export default async function RouteProtector({
   children,

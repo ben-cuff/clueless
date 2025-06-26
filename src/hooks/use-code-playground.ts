@@ -1,4 +1,4 @@
-import { UserIdContext } from "@/components/user-id-context";
+import { UserIdContext } from "@/components/providers/user-id-provider";
 import { LanguageOption, languageOptions } from "@/constants/language-options";
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";

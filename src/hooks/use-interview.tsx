@@ -1,4 +1,4 @@
-import { UserIdContext } from "@/components/user-id-context";
+import { UserIdContext } from "@/components/providers/user-id-provider";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
