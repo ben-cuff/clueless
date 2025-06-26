@@ -1,7 +1,7 @@
 import { LanguageOption } from "@/constants/language-options";
 
 export const codeExecutionAPI = {
-  async runCode(code: string, testcases: string[], language: LanguageOption) {
+  async runCode(code: string, testcases: string, language: LanguageOption) {
     try {
       const response = await fetch("/api/run-code", {
         method: "POST",

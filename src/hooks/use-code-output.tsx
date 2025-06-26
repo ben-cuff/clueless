@@ -21,7 +21,7 @@ export default function useCodeOutput(
     try {
       const result = await codeExecutionAPI.runCode(
         code,
-        question.testcases[language.value],
+        question.testcases[language.value as keyof typeof question.testcases],
         language
       );
 
