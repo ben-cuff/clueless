@@ -105,6 +105,12 @@ export async function GET(req: Request) {
 
     const interviews = await prismaLib.interview.findMany({
       where: { userId },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        question: {
+          select: { title: true, difficulty: true },
+        },
+      },
     });
 
     return new Response(JSON.stringify(interviews), {
