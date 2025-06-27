@@ -1,9 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import InterviewLoading from "@/components/interview/interview-loading";
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -11,23 +9,27 @@ import { v4 as uuidv4 } from "uuid";
 export default async function NewInterviewPage({
   searchParams,
 }: {
-  searchParams: { questionNumber: number };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const numberOfQuestions = 3586;
   const interviewId = uuidv4();
 
   const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;
 
-  const { questionNumber } = searchParams;
+  const resolvedSearchParams = await searchParams;
+  const questionNumberParam = resolvedSearchParams["questionNumber"];
+  const questionNumber = Array.isArray(questionNumberParam)
+    ? questionNumberParam[0]
+    : questionNumberParam;
 
-  const questionId = questionNumber ? questionNumber : randomQuestionId;
+  const questionId = questionNumber ? Number(questionNumber) : randomQuestionId;
+  
   const question: Question_Extended = await apiQuestions.getQuestionById(
     questionId
   );
 
-  const session = await getServerSession(authOptions);
-  if (!session || typeof session.user.id !== "number") {
-    redirect("/");
+  if (question == null) {
+    redirect("/interview");
   }
 
   return (

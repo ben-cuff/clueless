@@ -257,6 +257,19 @@ function getPagination(url: URL) {
 
 export async function DELETE(req: Request) {
   try {
+    const apiKey = req.headers.get("x-api-key");
+    const validApiKey = process.env.ADMIN_API_KEY;
+    
+    if (!apiKey || apiKey !== validApiKey) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid API key" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     try {
       await prismaLib.question.deleteMany();
     } catch (error) {
