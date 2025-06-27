@@ -16,6 +16,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
     confirmPassword,
     setConfirmPassword,
   } = useAuth(mode);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Card className="w-full max-w-sm">
