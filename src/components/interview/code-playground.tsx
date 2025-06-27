@@ -35,15 +35,12 @@ export default function CodePlayground({
     handleLanguageChange,
     code,
     setCode,
-    isMounted
   } = useCodePlayground(question, interviewId);
 
   const debouncedCode = useDebounce(code, 1000);
 
   useEffect(() => {
-    if (isMounted) {
-      handleCodeSave(debouncedCode as string);
-    }
+    handleCodeSave(debouncedCode as string);
   }, [debouncedCode, handleCodeSave]);
 
   codeRef.current = code;

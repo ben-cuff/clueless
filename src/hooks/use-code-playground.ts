@@ -17,11 +17,7 @@ export default function useCodePlayground(
     systemTheme === "dark" ? "vs-dark" : "light"
   );
   const [language, setLanguage] = useState<LanguageOption>(languageOptions[4]); // 4 is Python by default
-  const [code, setCode] = useState(
-    question.starterCode[language.value as keyof typeof question.starterCode] ??
-      ""
-  );
-  const [isMounted, setIsMounted] = useState(false);
+  const [code, setCode] = useState<string>("");
 
   const handleLanguageChange = useCallback((newLanguage: LanguageOption) => {
     setLanguage(newLanguage);
@@ -50,7 +46,6 @@ export default function useCodePlayground(
           ] || ""
         );
       }
-      setIsMounted(true);
     })();
   }, [language.value, question, interviewId, userId]);
 
@@ -61,6 +56,5 @@ export default function useCodePlayground(
     handleLanguageChange,
     code,
     setCode,
-    isMounted,
   };
 }
