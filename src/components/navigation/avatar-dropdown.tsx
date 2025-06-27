@@ -36,12 +36,8 @@ export default function AvatarDropdown() {
       <DropdownMenuTrigger asChild>
         <button className="rounded-4xl">
           <Avatar>
-            <AvatarImage
-              src={session.user?.image ?? "https://github.com/shadcn.png"}
-            />
-            <AvatarFallback>
-              {session.user?.name?.[0]?.toUpperCase() ?? "U"}
-            </AvatarFallback>
+            <AvatarImage src={"https://github.com/shadcn.png"} />
+            <AvatarFallback>{"U"}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>

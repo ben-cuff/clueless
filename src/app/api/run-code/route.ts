@@ -3,10 +3,16 @@ import { IMPORTS } from "@/constants/imports";
 export async function POST(req: Request) {
   const { code, language, testcases } = await req.json();
 
+  type LanguageValues = "java" | "javascript" | "cpp" | "python" | "csharp";
+
   const finalCode =
     language.value === "java"
-      ? `${IMPORTS[language.value]}${testcases}\n${code.trim()}`
-      : `${IMPORTS[language.value]}${code.trim()}\n${testcases}`;
+      ? `${
+          IMPORTS[language.value as LanguageValues]
+        }${testcases}\n${code.trim()}`
+      : `${
+          IMPORTS[language.value as LanguageValues]
+        }${code.trim()}\n${testcases}`;
 
   const encodedCode = btoa(finalCode);
 
