@@ -47,3 +47,19 @@ export const COMPANY_LIST: CompanyInfo[] = Object.entries(COMPANIES).map(
     readable: READABLE_COMPANIES[db] ?? db,
   })
 );
+
+export type UppercaseCompany =
+  | "GOOGLE"
+  | "AMAZON"
+  | "META"
+  | "MICROSOFT"
+  | "BLOOMBERG"
+  | "APPLE"
+  | "UBER"
+  | "ADOBE"
+  | "TIKTOK"
+  | "ORACLE"
+  | "LINKEDIN"
+  | "NVIDIA"
+  | "ROBLOX"
+  | "INTUIT";

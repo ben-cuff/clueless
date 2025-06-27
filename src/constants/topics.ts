@@ -75,87 +75,162 @@ export const TOPICS = {
 export type Topic = keyof typeof TOPICS;
 
 export const READABLE_TOPICS: Record<string, string> = {
-    ARRAY: "Array",
-    STRING: "String",
-    HASH_TABLE: "Hash Table",
-    DYNAMIC_PROGRAMMING: "Dynamic Programming",
-    MATH: "Math",
-    SORTING: "Sorting",
-    GREEDY: "Greedy",
-    DEPTH_FIRST_SEARCH: "Depth First Search",
-    BINARY_SEARCH: "Binary Search",
-    DATABASE: "Database",
-    MATRIX: "Matrix",
-    TREE: "Tree",
-    BREADTH_FIRST_SEARCH: "Breadth First Search",
-    BIT_MANIPULATION: "Bit Manipulation",
-    TWO_POINTERS: "Two Pointers",
-    PREFIX_SUM: "Prefix Sum",
-    HEAP_PRIORITY_QUEUE: "Heap / Priority Queue",
-    SIMULATION: "Simulation",
-    BINARY_TREE: "Binary Tree",
-    STACK: "Stack",
-    GRAPH: "Graph",
-    COUNTING: "Counting",
-    SLIDING_WINDOW: "Sliding Window",
-    DESIGN: "Design",
-    ENUMERATION: "Enumeration",
-    BACKTRACKING: "Backtracking",
-    UNION_FIND: "Union Find",
-    LINKED_LIST: "Linked List",
-    NUMBER_THEORY: "Number Theory",
-    ORDERED_SET: "Ordered Set",
-    MONOTONIC_STACK: "Monotonic Stack",
-    SEGMENT_TREE: "Segment Tree",
-    TRIE: "Trie",
-    COMBINATORICS: "Combinatorics",
-    BITMASK: "Bitmask",
-    RECURSION: "Recursion",
-    QUEUE: "Queue",
-    DIVIDE_AND_CONQUER: "Divide and Conquer",
-    BINARY_INDEXED_TREE: "Binary Indexed Tree",
-    MEMOIZATION: "Memoization",
-    BINARY_SEARCH_TREE: "Binary Search Tree",
-    GEOMETRY: "Geometry",
-    HASH_FUNCTION: "Hash Function",
-    STRING_MATCHING: "String Matching",
-    TOPOLOGICAL_SORT: "Topological Sort",
-    SHORTEST_PATH: "Shortest Path",
-    ROLLING_HASH: "Rolling Hash",
-    GAME_THEORY: "Game Theory",
-    INTERACTIVE: "Interactive",
-    DATA_STREAM: "Data Stream",
-    MONOTONIC_QUEUE: "Monotonic Queue",
-    BRAINTEASER: "Brainteaser",
-    DOUBLY_LINKED_LIST: "Doubly Linked List",
-    MERGE_SORT: "Merge Sort",
-    RANDOMIZED: "Randomized",
-    COUNTING_SORT: "Counting Sort",
-    ITERATOR: "Iterator",
-    CONCURRENCY: "Concurrency",
-    QUICKSELECT: "Quickselect",
-    LINE_SWEEP: "Line Sweep",
-    PROBABILITY_AND_STATISTICS: "Probability and Statistics",
-    SUFFIX_ARRAY: "Suffix Array",
-    BUCKET_SORT: "Bucket Sort",
-    MINIMUM_SPANNING_TREE: "Minimum Spanning Tree",
-    SHELL: "Shell",
-    RESERVOIR_SAMPLING: "Reservoir Sampling",
-    RADIX_SORT: "Radix Sort",
-    EULERIAN_CIRCUIT: "Eulerian Circuit",
-    STRONGLY_CONNECTED_COMPONENT: "Strongly Connected Component",
-    REJECTION_SAMPLING: "Rejection Sampling",
-    BICONNECTED_COMPONENT: "Biconnected Component",
+  ARRAY: "Array",
+  STRING: "String",
+  HASH_TABLE: "Hash Table",
+  DYNAMIC_PROGRAMMING: "Dynamic Programming",
+  MATH: "Math",
+  SORTING: "Sorting",
+  GREEDY: "Greedy",
+  DEPTH_FIRST_SEARCH: "Depth First Search",
+  BINARY_SEARCH: "Binary Search",
+  DATABASE: "Database",
+  MATRIX: "Matrix",
+  TREE: "Tree",
+  BREADTH_FIRST_SEARCH: "Breadth First Search",
+  BIT_MANIPULATION: "Bit Manipulation",
+  TWO_POINTERS: "Two Pointers",
+  PREFIX_SUM: "Prefix Sum",
+  HEAP_PRIORITY_QUEUE: "Heap / Priority Queue",
+  SIMULATION: "Simulation",
+  BINARY_TREE: "Binary Tree",
+  STACK: "Stack",
+  GRAPH: "Graph",
+  COUNTING: "Counting",
+  SLIDING_WINDOW: "Sliding Window",
+  DESIGN: "Design",
+  ENUMERATION: "Enumeration",
+  BACKTRACKING: "Backtracking",
+  UNION_FIND: "Union Find",
+  LINKED_LIST: "Linked List",
+  NUMBER_THEORY: "Number Theory",
+  ORDERED_SET: "Ordered Set",
+  MONOTONIC_STACK: "Monotonic Stack",
+  SEGMENT_TREE: "Segment Tree",
+  TRIE: "Trie",
+  COMBINATORICS: "Combinatorics",
+  BITMASK: "Bitmask",
+  RECURSION: "Recursion",
+  QUEUE: "Queue",
+  DIVIDE_AND_CONQUER: "Divide and Conquer",
+  BINARY_INDEXED_TREE: "Binary Indexed Tree",
+  MEMOIZATION: "Memoization",
+  BINARY_SEARCH_TREE: "Binary Search Tree",
+  GEOMETRY: "Geometry",
+  HASH_FUNCTION: "Hash Function",
+  STRING_MATCHING: "String Matching",
+  TOPOLOGICAL_SORT: "Topological Sort",
+  SHORTEST_PATH: "Shortest Path",
+  ROLLING_HASH: "Rolling Hash",
+  GAME_THEORY: "Game Theory",
+  INTERACTIVE: "Interactive",
+  DATA_STREAM: "Data Stream",
+  MONOTONIC_QUEUE: "Monotonic Queue",
+  BRAINTEASER: "Brainteaser",
+  DOUBLY_LINKED_LIST: "Doubly Linked List",
+  MERGE_SORT: "Merge Sort",
+  RANDOMIZED: "Randomized",
+  COUNTING_SORT: "Counting Sort",
+  ITERATOR: "Iterator",
+  CONCURRENCY: "Concurrency",
+  QUICKSELECT: "Quickselect",
+  LINE_SWEEP: "Line Sweep",
+  PROBABILITY_AND_STATISTICS: "Probability and Statistics",
+  SUFFIX_ARRAY: "Suffix Array",
+  BUCKET_SORT: "Bucket Sort",
+  MINIMUM_SPANNING_TREE: "Minimum Spanning Tree",
+  SHELL: "Shell",
+  RESERVOIR_SAMPLING: "Reservoir Sampling",
+  RADIX_SORT: "Radix Sort",
+  EULERIAN_CIRCUIT: "Eulerian Circuit",
+  STRONGLY_CONNECTED_COMPONENT: "Strongly Connected Component",
+  REJECTION_SAMPLING: "Rejection Sampling",
+  BICONNECTED_COMPONENT: "Biconnected Component",
 };
 
 export interface TopicInfo {
-    id: string;
-    db: string;
-    readable: string;
+  id: string;
+  db: string;
+  readable: string;
 }
 
-export const TOPIC_LIST: TopicInfo[] = Object.entries(TOPICS).map(([id, db]) => ({
+export const TOPIC_LIST: TopicInfo[] = Object.entries(TOPICS).map(
+  ([id, db]) => ({
     id,
     db,
     readable: READABLE_TOPICS[db] ?? db,
-}));
+  })
+);
+
+export type UppercaseTopic =
+  | "ARRAY"
+  | "STRING"
+  | "HASH_TABLE"
+  | "DYNAMIC_PROGRAMMING"
+  | "MATH"
+  | "SORTING"
+  | "GREEDY"
+  | "DEPTH_FIRST_SEARCH"
+  | "BINARY_SEARCH"
+  | "DATABASE"
+  | "MATRIX"
+  | "TREE"
+  | "BREADTH_FIRST_SEARCH"
+  | "BIT_MANIPULATION"
+  | "TWO_POINTERS"
+  | "PREFIX_SUM"
+  | "HEAP_PRIORITY_QUEUE"
+  | "SIMULATION"
+  | "BINARY_TREE"
+  | "STACK"
+  | "GRAPH"
+  | "COUNTING"
+  | "SLIDING_WINDOW"
+  | "DESIGN"
+  | "ENUMERATION"
+  | "BACKTRACKING"
+  | "UNION_FIND"
+  | "LINKED_LIST"
+  | "NUMBER_THEORY"
+  | "ORDERED_SET"
+  | "MONOTONIC_STACK"
+  | "SEGMENT_TREE"
+  | "TRIE"
+  | "COMBINATORICS"
+  | "BITMASK"
+  | "RECURSION"
+  | "QUEUE"
+  | "DIVIDE_AND_CONQUER"
+  | "BINARY_INDEXED_TREE"
+  | "MEMOIZATION"
+  | "BINARY_SEARCH_TREE"
+  | "GEOMETRY"
+  | "HASH_FUNCTION"
+  | "STRING_MATCHING"
+  | "TOPOLOGICAL_SORT"
+  | "SHORTEST_PATH"
+  | "ROLLING_HASH"
+  | "GAME_THEORY"
+  | "INTERACTIVE"
+  | "DATA_STREAM"
+  | "MONOTONIC_QUEUE"
+  | "BRAINTEASER"
+  | "DOUBLY_LINKED_LIST"
+  | "MERGE_SORT"
+  | "RANDOMIZED"
+  | "COUNTING_SORT"
+  | "ITERATOR"
+  | "CONCURRENCY"
+  | "QUICKSELECT"
+  | "LINE_SWIPE"
+  | "PROBABILITY_AND_STATISTICS"
+  | "SUFFIX_ARRAY"
+  | "BUCKET_SORT"
+  | "MINIMUM_SPANNING_TREE"
+  | "SHELL"
+  | "RESERVOIR_SAMPLING"
+  | "RADIX_SORT"
+  | "EULERIAN_CIRCUIT"
+  | "STRONGLY_CONNECTED_COMPONENT"
+  | "REJECTION_SAMPLING"
+  | "BICONNECTED_COMPONENT";

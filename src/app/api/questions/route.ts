@@ -2,6 +2,10 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import type {
+  Company as CompanyEnum,
+  Topic as TopicEnum,
+} from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
@@ -102,8 +106,8 @@ export async function POST(req: Request) {
           solutions,
           prompt,
           difficulty: validDifficulty,
-          topics: validTopics,
-          companies: validCompanies,
+          topics: validTopics as TopicEnum[],
+          companies: validCompanies as CompanyEnum[],
           article,
           titleSlug,
         },
@@ -259,7 +263,7 @@ export async function DELETE(req: Request) {
   try {
     const apiKey = req.headers.get("x-api-key");
     const validApiKey = process.env.ADMIN_API_KEY;
-    
+
     if (!apiKey || apiKey !== validApiKey) {
       return new Response(
         JSON.stringify({ error: "Unauthorized: Invalid API key" }),
