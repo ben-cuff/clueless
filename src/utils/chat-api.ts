@@ -1,22 +1,40 @@
+import { systemMessageText } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 
 export const chatAPI = {
-  getGeminiResponse: async (messages: Message[], userMessage: Message) => {
+  getGeminiResponse: async (
+    messages: Message[],
+    userMessage: Message,
+    questionNumber: number
+  ) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [...(messages ?? []), userMessage].map(
-            ({ role, parts }) => ({
-              role,
-              parts,
-            })
-          ),
-        }),
-      });
+      const systemMessage = {
+        role: "model",
+        parts: [
+          {
+            text: systemMessageText,
+          },
+        ],
+      };
+
+      const newMessagesWithSystemAndUser = [
+        systemMessage,
+        ...messages,
+        userMessage,
+      ];
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: newMessagesWithSystemAndUser,
+            questionNumber: questionNumber,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

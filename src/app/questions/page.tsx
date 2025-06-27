@@ -35,7 +35,7 @@ export default function QuestionsPage() {
       />
       {isLoading ? (
         <QuestionsLoading takeSize={takeSize} />
-      ) : questionsData && questionsData.length != 0 ? (
+      ) : Array.isArray(questionsData) && questionsData.length > 0 ? (
         <div className="flex flex-col w-full space-y-2">
           <QuestionsList questionsData={questionsData} />
           <QuestionsPagination

@@ -1,23 +1,22 @@
 import { LanguageOption } from "@/constants/language-options";
 
 export const codeExecutionAPI = {
-  async runCode(code: string, testcases: string[], language: LanguageOption) {
+  async runCode(code: string, testcases: string, language: LanguageOption) {
     try {
-      const response = await fetch("/api/run-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          testcases,
-          language,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/run-code`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+            testcases,
+            language,
+          }),
+        }
+      );
 
       const result = await response.json();
       return {

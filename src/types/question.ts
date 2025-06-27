@@ -2,7 +2,7 @@ export interface Question {
   accuracy: number;
   companies: string[];
   createdAt: string;
-  difficulty: number;
+  difficulty: 1 | 2 | 3;
   prompt: string;
   questionNumber: number;
   title: string;
@@ -35,3 +35,5 @@ export interface Question_Extended extends Question {
   };
   article: string;
 }
+
+export type TestcasesKey = keyof Question_Extended["testcases"];

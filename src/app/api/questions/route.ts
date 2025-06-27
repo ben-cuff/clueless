@@ -2,6 +2,10 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import type {
+  Company as CompanyEnum,
+  Topic as TopicEnum,
+} from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
@@ -102,23 +106,39 @@ export async function POST(req: Request) {
           solutions,
           prompt,
           difficulty: validDifficulty,
-          topics: validTopics,
-          companies: validCompanies,
+          topics: validTopics as TopicEnum[],
+          companies: validCompanies as CompanyEnum[],
           article,
           titleSlug,
         },
       });
     } catch (error) {
-      return new Response(
-        JSON.stringify({
-          error: "A question with that number already exists",
-          errorData: error,
-        }),
-        {
-          status: 409,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return new Response(
+          JSON.stringify({
+            error: "A question with that number already exists",
+            errorData: error,
+          }),
+          {
+            status: 409,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      } else {
+        console.error("Error during question creation:", error);
+        return new Response(
+          JSON.stringify({ error: "Internal server error" }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
     }
     return new Response(JSON.stringify(question), {
       status: 201,
@@ -257,6 +277,19 @@ function getPagination(url: URL) {
 
 export async function DELETE(req: Request) {
   try {
+    const apiKey = req.headers.get("x-api-key");
+    const validApiKey = process.env.ADMIN_API_KEY;
+
+    if (!apiKey || apiKey !== validApiKey) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid API key" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     try {
       await prismaLib.question.deleteMany();
     } catch (error) {

@@ -58,10 +58,6 @@ export const apiQuestions = {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`Error fetching question with ID ${id}`);
-      }
-
       const data = await response.json();
       return data;
     } catch (error) {

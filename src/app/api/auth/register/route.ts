@@ -38,25 +38,39 @@ export async function POST(req: Request) {
           hashedPassword,
         },
       });
-    } catch {
-      return new Response(
-        JSON.stringify({ success: false, error: "User already exists" }),
-        {
-          status: 500,
+      return new Response(JSON.stringify({ success: true, user }), {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return new Response(JSON.stringify({ error: "User already exists" }), {
+          status: 409,
           headers: { "Content-Type": "application/json" },
-        }
-      );
+        });
+      } else {
+        return new Response(
+          JSON.stringify({ error: "Internal server error" }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
     }
-
-    return new Response(JSON.stringify({ success: true, user }), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    });
   } catch (error) {
-    console.error("Error during registration:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("Error in registration:", error);
+    return new Response(
+      JSON.stringify({ success: false, error: "Internal server error" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

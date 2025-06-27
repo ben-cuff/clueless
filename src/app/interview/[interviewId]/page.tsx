@@ -4,17 +4,15 @@ import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-export default async function NewInterviewPage({
+export default async function ResumeInterviewPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ interviewId: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const numberOfQuestions = 3586;
-  const interviewId = uuidv4();
-
-  const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;
+  const { interviewId } = await params;
 
   const resolvedSearchParams = await searchParams;
   const questionNumberParam = resolvedSearchParams["questionNumber"];
@@ -22,8 +20,12 @@ export default async function NewInterviewPage({
     ? questionNumberParam[0]
     : questionNumberParam;
 
-  const questionId = questionNumber ? Number(questionNumber) : randomQuestionId;
-  
+  const questionId = questionNumber ? Number(questionNumber) : undefined;
+
+  if (questionId === undefined || isNaN(questionId)) {
+    redirect("/interview");
+  }
+
   const question: Question_Extended = await apiQuestions.getQuestionById(
     questionId
   );

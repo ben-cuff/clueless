@@ -1,3 +1,4 @@
+import { prismaLib } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";
 
 type GenAIChunk = {
@@ -48,7 +49,19 @@ class StreamingTextResponse extends Response {
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, questionNumber } = await req.json();
+
+    if (questionNumber) {
+      try {
+        const prompt = await getPromptFromQuestionNumber(questionNumber);
+        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
 
     if (!messages || !Array.isArray(messages)) {
       return new Response(
@@ -78,4 +91,32 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+async function getPromptFromQuestionNumber(questionNumber: number) {
+  const question = await prismaLib.question.findFirst({
+    where: { questionNumber: questionNumber },
+    select: { prompt: true, title: true, solutions: true },
+  });
+
+  if (!question) {
+    throw new Error(`No prompt found for question number ${questionNumber}`);
+  }
+
+  const { prompt, title, solutions } = question;
+
+  let message = "";
+  if (title) {
+    message += `Title: ${title}`;
+  }
+
+  if (prompt) {
+    message += `\n\nPrompt: ${prompt}`;
+  }
+
+  if (solutions && typeof solutions === "object" && "python" in solutions) {
+    const pythonSolution = (solutions as { python: string }).python;
+    message += `\n\nSolutions:\n${pythonSolution}`;
+  }
+  return message;
 }

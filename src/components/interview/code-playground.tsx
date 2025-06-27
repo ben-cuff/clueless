@@ -19,12 +19,14 @@ export default function CodePlayground({
   messages,
   handleMessageSubmit,
   codeRef,
+  interviewId,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
   messages: Message[];
   handleMessageSubmit: (message: string) => Promise<void>;
   codeRef: RefObject<string>;
+  interviewId: string;
 }) {
   const {
     theme,
@@ -33,7 +35,7 @@ export default function CodePlayground({
     handleLanguageChange,
     code,
     setCode,
-  } = useCodePlayground(question);
+  } = useCodePlayground(question, interviewId);
 
   const debouncedCode = useDebounce(code, 1000);
 
@@ -74,7 +76,12 @@ export default function CodePlayground({
           setCode={setCode}
         />
       </div>
-      <OutputArea question={question} language={language} code={code} />
+      <OutputArea
+        question={question}
+        language={language}
+        code={code}
+        handleOutputChange={handleMessageSubmit}
+      />
     </div>
   );
 }

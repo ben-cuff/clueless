@@ -23,7 +23,10 @@ export default function AvatarDropdown() {
 
   if (!session) {
     return (
-      <button onClick={() => signIn()} className="rounded-4xl">
+      <button
+        onClick={() => signIn()}
+        className="rounded-4xl hover:cursor-pointer"
+      >
         <Avatar>
           <AvatarFallback>?</AvatarFallback>
         </Avatar>
@@ -34,14 +37,10 @@ export default function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-4xl">
+        <button className="rounded-4xl hover:cursor-pointer">
           <Avatar>
-            <AvatarImage
-              src={session.user?.image ?? "https://github.com/shadcn.png"}
-            />
-            <AvatarFallback>
-              {session.user?.name?.[0]?.toUpperCase() ?? "U"}
-            </AvatarFallback>
+            <AvatarImage src={"https://github.com/shadcn.png"} />
+            <AvatarFallback>{"U"}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
