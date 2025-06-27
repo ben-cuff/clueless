@@ -1,5 +1,6 @@
-import { COMPANIES, Company, UppercaseCompany } from "@/constants/companies";
+import { COMPANIES, Company } from "@/constants/companies";
 import { prismaLib } from "@/lib/prisma";
+import type { Company as CompanyEnum } from "@prisma/client";
 
 export async function PATCH(req: Request) {
   try {
@@ -46,7 +47,7 @@ export async function PATCH(req: Request) {
     const updatedQuestion = await prismaLib.question.update({
       where: { questionNumber },
       data: {
-        companies: validCompanies as UppercaseCompany[],
+        companies: validCompanies as CompanyEnum[],
       },
     });
 
