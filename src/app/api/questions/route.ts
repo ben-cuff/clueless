@@ -113,16 +113,32 @@ export async function POST(req: Request) {
         },
       });
     } catch (error) {
-      return new Response(
-        JSON.stringify({
-          error: "A question with that number already exists",
-          errorData: error,
-        }),
-        {
-          status: 409,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return new Response(
+          JSON.stringify({
+            error: "A question with that number already exists",
+            errorData: error,
+          }),
+          {
+            status: 409,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      } else {
+        console.error("Error during question creation:", error);
+        return new Response(
+          JSON.stringify({ error: "Internal server error" }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
     }
     return new Response(JSON.stringify(question), {
       status: 201,
