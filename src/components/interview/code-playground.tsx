@@ -19,7 +19,7 @@ export default function CodePlayground({
   messages,
   handleMessageSubmit,
   codeRef,
-  interviewId
+  interviewId,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
@@ -35,12 +35,15 @@ export default function CodePlayground({
     handleLanguageChange,
     code,
     setCode,
+    isMounted
   } = useCodePlayground(question, interviewId);
 
   const debouncedCode = useDebounce(code, 1000);
 
   useEffect(() => {
-    handleCodeSave(debouncedCode as string);
+    if (isMounted) {
+      handleCodeSave(debouncedCode as string);
+    }
   }, [debouncedCode, handleCodeSave]);
 
   codeRef.current = code;

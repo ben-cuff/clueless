@@ -21,6 +21,7 @@ export default function useCodePlayground(
     question.starterCode[language.value as keyof typeof question.starterCode] ??
       ""
   );
+  const [isMounted, setIsMounted] = useState(false);
 
   const handleLanguageChange = useCallback((newLanguage: LanguageOption) => {
     setLanguage(newLanguage);
@@ -49,6 +50,7 @@ export default function useCodePlayground(
           ] || ""
         );
       }
+      setIsMounted(true);
     })();
   }, [language.value, question, interviewId, userId]);
 
@@ -59,5 +61,6 @@ export default function useCodePlayground(
     handleLanguageChange,
     code,
     setCode,
+    isMounted,
   };
 }
