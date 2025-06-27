@@ -2,7 +2,11 @@ import { systemMessageText } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 
 export const chatAPI = {
-  getGeminiResponse: async (messages: Message[], userMessage: Message) => {
+  getGeminiResponse: async (
+    messages: Message[],
+    userMessage: Message,
+    questionNumber: number
+  ) => {
     try {
       const systemMessage = {
         role: "model",
@@ -27,6 +31,7 @@ export const chatAPI = {
           },
           body: JSON.stringify({
             messages: newMessagesWithSystemAndUser,
+            questionNumber: questionNumber,
           }),
         }
       );

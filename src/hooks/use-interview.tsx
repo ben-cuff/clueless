@@ -51,7 +51,8 @@ export default function useInterview(
 
       const response = await chatAPI.getGeminiResponse(
         messages ?? [],
-        userMessageWithCode
+        userMessageWithCode,
+        questionNumber
       );
 
       if (!response || !response.body) {
@@ -84,7 +85,7 @@ export default function useInterview(
       }
       setIsStreaming(false);
     },
-    [messages]
+    [messages, questionNumber]
   );
 
   const handleMessageSubmit = useCallback(
