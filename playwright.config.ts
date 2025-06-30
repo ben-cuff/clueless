@@ -37,9 +37,6 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /.*\.setup\.ts/,
-      use: {
-        storageState: "./playwright/.auth/user.json",
-      },
     },
     {
       name: "chromium",
