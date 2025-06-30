@@ -36,7 +36,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL}}
+      DATABASE_URL: ${{ secrets.DATABASE_URL || ''}}
       GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY || '' }}
       JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY || '' }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'development_secret_key' }}
@@ -46,6 +46,9 @@ jobs:
       ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY || '' }}
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '' }}
       TEST_USERNAME: ${{ secrets.TEST_USERNAME || '' }}
+      REDIS_HOST: ${{secrets.REDIS_HOST || ''}}
+      REDIS_PORT: ${{secrets.REDIS_PORT || ''}}
+      REDIS_TOKEN: ${{secrets.REDIS_TOKEN || ''}}
     steps:
 
       - name: Checkout repository
