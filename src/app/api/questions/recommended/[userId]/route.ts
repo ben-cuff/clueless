@@ -53,7 +53,7 @@ export async function GET(req: Request) {
   });
 
   // prisma does not support random ordering directly, so we use a raw query
-  const questions = await prismaLib.$queryRawUnsafe(
+  const questions: Question[] = await prismaLib.$queryRawUnsafe(
     `SELECT
         "questionNumber",
         "title",
@@ -73,6 +73,15 @@ export async function GET(req: Request) {
         new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   );
 
+  // Filter out questions that have received feedback in the last 30 days
+  const filteredQuestions = questions.filter(
+    (question) =>
+      !recentFeedback.some(
+        (feedback) =>
+          feedback.interview.questionNumber === question.questionNumber
+      )
+  );
+
   const topicWeights = new Map<string, number>();
 
   // assigns a weight to each topic based on the feedback number
@@ -87,18 +96,20 @@ export async function GET(req: Request) {
   });
 
   // sum up the weights for each question based on its topics
-  const weightedQuestions = (questions as Question[]).map((question) => {
-    let totalWeight = 0;
+  const weightedQuestions = (filteredQuestions as Question[]).map(
+    (question) => {
+      let totalWeight = 0;
 
-    question.topics.forEach((topic) => {
-      totalWeight += topicWeights.get(topic) || 0;
-    });
+      question.topics.forEach((topic) => {
+        totalWeight += topicWeights.get(topic) || 0;
+      });
 
-    return {
-      ...question,
-      weight: totalWeight,
-    };
-  });
+      return {
+        ...question,
+        weight: totalWeight,
+      };
+    }
+  );
 
   weightedQuestions.sort((a, b) => b.weight - a.weight);
 
