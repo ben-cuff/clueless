@@ -1,0 +1,133 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { prismaLib } from "@/lib/prisma";
+import redisLib from "@/lib/redis";
+import { Question } from "@/types/question";
+import {
+  ForbiddenError,
+  get200Response,
+  get400Response,
+} from "@/utils/api-responses";
+import type { Topic } from "@prisma/client";
+import { getServerSession } from "next-auth";
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const segments = url.pathname.split("/");
+  const userId = Number(segments[segments.length - 1]);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const cacheKey = `recommended_questions_${userId}`;
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  const cachedData = await redisLib.get(cacheKey);
+  if (cachedData) {
+    return get200Response(JSON.parse(cachedData));
+  }
+
+  const pastFeedback: PastFeedback[] = await prismaLib.feedback.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      feedbackNumber: true,
+      interview: {
+        select: {
+          updatedAt: true,
+          questionNumber: true,
+          question: {
+            select: {
+              topics: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // prisma does not support random ordering directly, so we use a raw query
+  const questions: Question[] = await prismaLib.$queryRawUnsafe(
+    `SELECT
+        "questionNumber",
+        "title",
+        "accuracy", 
+        "difficulty",
+        "topics",
+        "companies",
+        "titleSlug" 
+       FROM "Question" ORDER BY RANDOM() LIMIT 40;`
+  );
+
+  // Filter recent feedback from the last 30 days
+  const recentFeedback = pastFeedback.filter(
+    (feedback) =>
+      feedback.feedbackNumber !== -1 &&
+      feedback.interview.updatedAt >
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  );
+
+  // Filter out questions that have received feedback in the last 30 days
+  const filteredQuestions = questions.filter(
+    (question) =>
+      !recentFeedback.some(
+        (feedback) =>
+          feedback.interview.questionNumber === question.questionNumber
+      )
+  );
+
+  const topicWeights = new Map<string, number>();
+
+  // assigns a weight to each topic based on the feedback number
+  // the higher the feedback number, the lower the weight
+  recentFeedback.forEach((feedback) => {
+    const weight = 1 / (feedback.feedbackNumber + 1);
+
+    feedback.interview.question.topics.forEach((topic) => {
+      const currentWeight = topicWeights.get(topic) || 0;
+      topicWeights.set(topic, currentWeight + weight);
+    });
+  });
+
+  // sum up the weights for each question based on its topics
+  const weightedQuestions = filteredQuestions.map((question) => {
+    let totalWeight = 0;
+
+    question.topics.forEach((topic) => {
+      totalWeight += topicWeights.get(topic) || 0;
+    });
+
+    return {
+      ...question,
+      weight: totalWeight,
+    };
+  });
+
+  weightedQuestions.sort((a, b) => b.weight - a.weight);
+
+  // get the top 5 questions based on the highest weights
+  const recommendedQuestions = weightedQuestions.slice(0, 5);
+
+  redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
+    EX: 60 * 30,
+  });
+
+  return get200Response(recommendedQuestions);
+}
+
+type PastFeedback = {
+  feedbackNumber: number;
+  interview: {
+    updatedAt: Date;
+    questionNumber: number;
+    question: {
+      topics: Topic[];
+    };
+  };
+};

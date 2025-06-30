@@ -2,6 +2,7 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import { get200Response, UnknownServerError } from "@/utils/api-responses";
 import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
@@ -48,18 +49,12 @@ export async function GET(req: Request) {
 
     sqlQuery.values = [search ?? ""];
 
-    const questions = await prismaLib.$queryRaw(sqlQuery);
+    const questions: object = await prismaLib.$queryRaw(sqlQuery);
 
-    return new Response(JSON.stringify(questions), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(questions);
   } catch (error) {
     console.error("Error during question search:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 

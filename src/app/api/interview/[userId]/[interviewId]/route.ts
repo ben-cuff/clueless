@@ -1,5 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prismaLib } from "@/lib/prisma";
+import {
+  ForbiddenError,
+  get200Response,
+  get400Response,
+  get404Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import { getServerSession } from "next-auth";
 
 export async function GET(req: Request) {
@@ -10,24 +17,15 @@ export async function GET(req: Request) {
     const interviewId = segments[segments.length - 1];
 
     if (isNaN(userId)) {
-      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid user ID");
     }
     if (!interviewId) {
-      return new Response(JSON.stringify({ error: "Invalid interview ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid interview ID");
     }
 
     const session = await getServerSession(authOptions);
     if (session?.user.id !== userId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
+      return ForbiddenError;
     }
 
     const interview = await prismaLib.interview.findUnique({
@@ -35,22 +33,13 @@ export async function GET(req: Request) {
     });
 
     if (!interview) {
-      return new Response(JSON.stringify({ error: "Interview not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get404Response("Interview not found");
     }
 
-    return new Response(JSON.stringify(interview), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(interview);
   } catch (error) {
     console.error("Error in getting a specific interview request:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 
@@ -62,46 +51,28 @@ export async function DELETE(req: Request) {
     const interviewId = segments[segments.length - 1];
 
     if (isNaN(userId)) {
-      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid user ID");
     }
 
     if (!interviewId) {
-      return new Response(JSON.stringify({ error: "Invalid interview ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid interview ID");
     }
 
     const session = await getServerSession(authOptions);
     if (session?.user.id !== userId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
+      return ForbiddenError;
     }
 
     try {
       const deletedInterview = await prismaLib.interview.delete({
         where: { id: interviewId, userId },
       });
-      return new Response(JSON.stringify(deletedInterview), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get200Response(deletedInterview);
     } catch {
-      return new Response(JSON.stringify({ error: "Interview not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get404Response("Interview not found");
     }
   } catch (error) {
     console.error("Error deleting interview:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

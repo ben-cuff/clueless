@@ -64,4 +64,19 @@ export const apiQuestions = {
       console.error("Error fetching question by ID:", error);
     }
   },
+  async getRecommendedQuestions(userId: number) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/recommended/${userId}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching recommended questions:", error);
+    }
+  },
 };

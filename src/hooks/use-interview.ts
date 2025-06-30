@@ -3,6 +3,7 @@ import { initialMessage, userCodeInclusion } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
+import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 export default function useInterview(
@@ -15,6 +16,7 @@ export default function useInterview(
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
+  const router = useRouter();
 
   const handleCodeSave = useCallback(
     async (code: string) => {
@@ -106,6 +108,12 @@ export default function useInterview(
     [addUserMessage, streamModelResponse]
   );
 
+  const handleEndInterview = useCallback(() => {
+    router.push(
+      `/interview/feedback/${interviewId}?questionNumber=${questionNumber}`
+    );
+  }, [interviewId, questionNumber, router]);
+
   useEffect(() => {
     if (hasMounted.current) {
       (async () => {
@@ -118,12 +126,22 @@ export default function useInterview(
             codeRef.current,
             "python"
           );
+          if (
+            messages &&
+            messages[messages?.length - 1].parts[0].text
+              .toLowerCase()
+              .includes("thank you for your time")
+          ) {
+            router.push(
+              `/interview/feedback/${interviewId}?questionNumber=${questionNumber}`
+            );
+          }
         }
       })();
     } else {
       hasMounted.current = true;
     }
-  }, [interviewId, isStreaming, messages, questionNumber, userId]);
+  }, [interviewId, isStreaming, messages, questionNumber, userId, router]);
 
   useEffect(() => {
     (async () => {
@@ -155,5 +173,6 @@ export default function useInterview(
     handleMessageSubmit,
     codeRef,
     isLoadingMessages,
+    handleEndInterview,
   };
 }

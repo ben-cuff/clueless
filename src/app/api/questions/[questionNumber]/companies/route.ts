@@ -1,5 +1,10 @@
 import { COMPANIES, Company } from "@/constants/companies";
 import { prismaLib } from "@/lib/prisma";
+import {
+  get200Response,
+  get400Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import type { Company as CompanyEnum } from "@prisma/client";
 
 export async function PATCH(req: Request) {
@@ -9,25 +14,13 @@ export async function PATCH(req: Request) {
     const questionNumber = Number(segments[segments.length - 2]);
 
     if (isNaN(questionNumber)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid question number" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Invalid question number");
     }
 
     const { companies } = await req.json();
 
     if (!companies || !Array.isArray(companies)) {
-      return new Response(
-        JSON.stringify({ error: "Companies must be an array" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Invalid or missing companies array");
     }
 
     const validCompanies: (string | undefined)[] = companies.map(
@@ -35,13 +28,7 @@ export async function PATCH(req: Request) {
     );
 
     if (validCompanies.includes(undefined)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid company(ies) provided" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Invalid company name provided");
     }
 
     const updatedQuestion = await prismaLib.question.update({
@@ -51,15 +38,9 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(updatedQuestion), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(updatedQuestion);
   } catch (error) {
     console.error("Error during question update:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

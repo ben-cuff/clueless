@@ -21,6 +21,7 @@ model Account {
   updatedAt      DateTime    @updatedAt
   activity       Activity[]
   interview      Interview[]
+  feedback       Feedback[]
 
   @@index([username])
 }
@@ -56,18 +57,28 @@ model Question {
 }
 
 model Interview {
-  id             String   @id
+  id             String    @id
   userId         Int
-  account        Account  @relation(fields: [userId], references: [id])
+  account        Account   @relation(fields: [userId], references: [id])
   messages       Json
   questionNumber Int
-  question       Question @relation(fields: [questionNumber], references: [questionNumber])
+  question       Question  @relation(fields: [questionNumber], references: [questionNumber])
   code           String?
   codeLanguage   Language
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  feedback       String?
-  completed      Boolean  @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  completed      Boolean   @default(false)
+  feedback       Feedback?
+}
+
+model Feedback {
+  id          String    @id @default(uuid())
+  userId      Int
+  account     Account   @relation(fields: [userId], references: [id])
+  interviewId String    @unique
+  interview   Interview @relation(fields: [interviewId], references: [id])
+  feedback    String
+  feedbackNumber Int
 }
 
 enum Company {

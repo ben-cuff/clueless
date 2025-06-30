@@ -1,4 +1,6 @@
 import { prismaLib } from "@/lib/prisma";
+import { Question_Extended } from "@/types/question";
+import { get400Response, UnknownServerError } from "@/utils/api-responses";
 import { GoogleGenAI } from "@google/genai";
 
 type GenAIChunk = {
@@ -49,27 +51,32 @@ class StreamingTextResponse extends Response {
 
 export async function POST(req: Request) {
   try {
-    const { messages, questionNumber } = await req.json();
+    const { messages, questionNumber, interviewId } = await req.json();
 
     if (questionNumber) {
       try {
         const prompt = await getPromptFromQuestionNumber(questionNumber);
         messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch (error) {
-        return new Response(JSON.stringify(error), {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        });
+      } catch {
+        return get400Response(
+          `Error fetching prompt for question number ${questionNumber}`
+        );
+      }
+    }
+
+    if (interviewId) {
+      try {
+        const prompt = await getPromptFromInterviewId(interviewId);
+        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+      } catch {
+        return get400Response(
+          `Error fetching prompt for interview ID ${interviewId}`
+        );
       }
     }
 
     if (!messages || !Array.isArray(messages)) {
-      return new Response(
-        JSON.stringify({
-          error: "Invalid or missing 'messages' field",
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return get400Response("Invalid or missing messages array");
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
@@ -83,13 +90,7 @@ export async function POST(req: Request) {
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.error(error);
-    return new Response(
-      JSON.stringify({
-        message:
-          "Failed to generate response, it is likely that messages were not formatted correctly or the API key is invalid/out of credits.",
-      }),
-      { status: 500 }
-    );
+    return UnknownServerError;
   }
 }
 
@@ -100,22 +101,49 @@ async function getPromptFromQuestionNumber(questionNumber: number) {
   });
 
   if (!question) {
-    throw new Error(`No prompt found for question number ${questionNumber}`);
+    throw new Error();
   }
 
-  const { prompt, title, solutions } = question;
+  return getMessageFromQuestion(question as Question_Extended);
+}
 
+async function getPromptFromInterviewId(interviewId: string) {
+  const interview = await prismaLib.interview.findUnique({
+    where: { id: interviewId },
+    include: {
+      question: {
+        select: {
+          prompt: true,
+          title: true,
+          solutions: true,
+        },
+      },
+    },
+  });
+
+  if (!interview || !interview.question) {
+    throw new Error();
+  }
+
+  return getMessageFromQuestion(interview.question as Question_Extended);
+}
+
+function getMessageFromQuestion(question: Question_Extended) {
   let message = "";
-  if (title) {
-    message += `Title: ${title}`;
+  if (question.title) {
+    message += `Title: ${question.title}`;
   }
 
-  if (prompt) {
-    message += `\n\nPrompt: ${prompt}`;
+  if (question.prompt) {
+    message += `\n\nPrompt: ${question.prompt}`;
   }
 
-  if (solutions && typeof solutions === "object" && "python" in solutions) {
-    const pythonSolution = (solutions as { python: string }).python;
+  if (
+    question.solutions &&
+    typeof question.solutions === "object" &&
+    "python" in question.solutions
+  ) {
+    const pythonSolution = (question.solutions as { python: string }).python;
     message += `\n\nSolutions:\n${pythonSolution}`;
   }
   return message;

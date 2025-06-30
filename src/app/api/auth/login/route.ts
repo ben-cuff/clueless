@@ -1,4 +1,10 @@
 import { prismaLib } from "@/lib/prisma";
+import {
+  get200Response,
+  get400Response,
+  get401Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
@@ -6,13 +12,7 @@ export async function POST(req: Request) {
     const { username, password } = await req.json();
 
     if (!username || !password) {
-      return new Response(
-        JSON.stringify({ error: "Username and password are required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Username and password are required");
     }
 
     const user = await prismaLib.account.findUnique({
@@ -20,39 +20,21 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      return new Response(
-        JSON.stringify({ error: "Username or password incorrect" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get401Response("Username or password incorrect");
     }
 
     const isValid = await argon2.verify(user.hashedPassword, password);
 
     if (isValid) {
-      return new Response(
-        JSON.stringify({ message: "Login successful", user }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get200Response({
+        message: "Login successful",
+        user,
+      });
     } else {
-      return new Response(
-        JSON.stringify({ error: "Username or password incorrect" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get401Response("Username or password incorrect");
     }
   } catch (error) {
     console.error("Error during login:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

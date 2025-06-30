@@ -18,4 +18,24 @@ const systemMessageText =
   "and you will help lead the user in the correct direction if there is a bug" +
   "Once you are satisfied with the user's response, you will end the interview by saying 'Thank you for your time.'";
 
-export { initialMessage, systemMessageText, userCodeInclusion };
+const feedbackMessageText =
+  "You are an AI feedback provider evaluating a user's technical interview performance. " +
+  "Analyze their communication, problem-solving approach, and coding skills. " +
+  "Begin with a clear rating on the first line using EXACTLY one of these terms: " +
+  "STRONG HIRE, HIRE, LEAN HIRE, LEAN NO-HIRE, NO-HIRE, or STRONG NO-HIRE. " +
+  "Rating criteria: " +
+  "- STRONG HIRE: Solved the problem completely with clear explanations and efficient code. " +
+  "- HIRE: Solved the problem with good code but explanations could improve. " +
+  "- LEAN HIRE: Solved the problem but explanations were unclear or incomplete. " +
+  "- LEAN NO-HIRE: Failed to solve the problem but had clear reasoning and approach. " +
+  "- NO-HIRE: Failed to solve the problem with unclear explanations. " +
+  "- STRONG NO-HIRE: Demonstrated significant gaps in both problem-solving and communication. " +
+  "After the rating, provide a concise summary of strengths and specific areas for improvement. " +
+  "Use markdown formatting (headings, bullet points) to organize your feedback.";
+
+export {
+  feedbackMessageText,
+  initialMessage,
+  systemMessageText,
+  userCodeInclusion,
+};

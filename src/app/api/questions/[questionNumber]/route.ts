@@ -1,4 +1,10 @@
 import { prismaLib } from "@/lib/prisma";
+import {
+  get200Response,
+  get400Response,
+  get404Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 
 export async function GET(req: Request) {
   try {
@@ -7,13 +13,7 @@ export async function GET(req: Request) {
     const questionNumber = Number(segments[segments.length - 1]);
 
     if (isNaN(questionNumber)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid question number" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Invalid question number");
     }
 
     const question = await prismaLib.question.findUnique({
@@ -21,22 +21,13 @@ export async function GET(req: Request) {
     });
 
     if (!question) {
-      return new Response(JSON.stringify({ error: "Question not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get404Response("Question not found");
     }
 
-    return new Response(JSON.stringify(question), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(question);
   } catch (error) {
     console.error("Error during question retrieval:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 
@@ -47,32 +38,19 @@ export async function DELETE(req: Request) {
     const questionNumber = Number(segments[segments.length - 1]);
 
     if (isNaN(questionNumber)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid question number" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Invalid question number");
     }
     try {
-      await prismaLib.question.delete({ where: { questionNumber } });
-      return new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
+      const question = await prismaLib.question.delete({
+        where: { questionNumber },
       });
+      return get200Response(question);
     } catch (error) {
       console.error("Error deleting question:", error);
-      return new Response(JSON.stringify({ error: "Question not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get404Response("Question not found");
     }
   } catch (error) {
     console.error("Error during question deletion:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

@@ -2,6 +2,13 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import {
+  get200Response,
+  get201Response,
+  get400Response,
+  get409Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import type {
   Company as CompanyEnum,
   Topic as TopicEnum,
@@ -39,10 +46,9 @@ export async function POST(req: Request) {
       typeof titleSlug === "string";
 
     if (!isValid) {
-      return new Response(JSON.stringify({ error: "Invalid input data" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response(
+        "Invalid request body. Please ensure all required fields are present and correctly formatted."
+      );
     }
 
     const validCompanies: (string | undefined)[] = companies.map(
@@ -50,12 +56,8 @@ export async function POST(req: Request) {
     );
 
     if (validCompanies.includes(undefined)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid company(ies) provided" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+      return get400Response(
+        "Invalid company name(s) provided. Please check the company names."
       );
     }
 
@@ -73,24 +75,16 @@ export async function POST(req: Request) {
     );
 
     if (validTopics.includes(undefined)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid topic(s) provided" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+      return get400Response(
+        "Invalid topic name(s) provided. Please check the topic names."
       );
     }
     const validDifficulty =
       DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
 
     if (validDifficulty === undefined) {
-      return new Response(
-        JSON.stringify({ error: "Invalid difficulty level" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+      return get400Response(
+        "Invalid difficulty level provided. Please check the difficulty level."
       );
     }
 
@@ -119,37 +113,18 @@ export async function POST(req: Request) {
         "code" in error &&
         error.code === "P2002"
       ) {
-        return new Response(
-          JSON.stringify({
-            error: "A question with that number already exists",
-            errorData: error,
-          }),
-          {
-            status: 409,
-            headers: { "Content-Type": "application/json" },
-          }
+        return get409Response(
+          `Question with questionNumber ${questionNumber} already exists. Please use a different question number.`
         );
       } else {
         console.error("Error during question creation:", error);
-        return new Response(
-          JSON.stringify({ error: "Internal server error" }),
-          {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        return UnknownServerError;
       }
     }
-    return new Response(JSON.stringify(question), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get201Response(question);
   } catch (error) {
     console.error("Error during question creation:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 
@@ -172,16 +147,10 @@ export async function GET(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(questions), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(questions);
   } catch (error) {
     console.error("Error during question retrieval:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 

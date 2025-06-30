@@ -1,4 +1,11 @@
 import { prismaLib } from "@/lib/prisma";
+import {
+  ForbiddenError,
+  get200Response,
+  get201Response,
+  get400Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -9,31 +16,21 @@ export async function POST(req: Request) {
     const userId = Number(segments[segments.length - 1]);
 
     if (isNaN(userId)) {
-      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid user ID");
     }
 
     const session = await getServerSession(authOptions);
 
     if (session?.user.id !== userId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
+      return ForbiddenError;
     }
 
     const { id, messages, questionNumber, code, codeLanguage } =
       await req.json();
 
     if (!id || !messages || !questionNumber || !code || !codeLanguage) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+      return get400Response(
+        "Missing required fields: id, messages, questionNumber, code, codeLanguage"
       );
     }
 
@@ -51,10 +48,7 @@ export async function POST(req: Request) {
           codeLanguage,
         },
       });
-      return new Response(JSON.stringify(updatedInterview), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get200Response(updatedInterview);
     }
 
     const newInterview = await prismaLib.interview.create({
@@ -68,16 +62,10 @@ export async function POST(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(newInterview), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get201Response(newInterview);
   } catch (error) {
     console.error("Error during interview creation: ", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }
 
@@ -88,19 +76,13 @@ export async function GET(req: Request) {
     const userId = Number(segments[segments.length - 1]);
 
     if (isNaN(userId)) {
-      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get400Response("Invalid user ID");
     }
 
     const session = await getServerSession(authOptions);
 
     if (session?.user.id !== userId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
+      return ForbiddenError;
     }
 
     const interviews = await prismaLib.interview.findMany({
@@ -113,15 +95,9 @@ export async function GET(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(interviews), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(interviews);
   } catch (error) {
     console.error("Error fetching interviews: ", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

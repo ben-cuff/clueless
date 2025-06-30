@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { FeedbackContext } from "../providers/feedback-provider";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -8,6 +9,7 @@ export default function ChatInput({
   handleMessageSubmit: (message: string) => Promise<void>;
 }) {
   const [isDisabled, setIsDisabled] = useState(false);
+  const isFeedback = useContext(FeedbackContext);
 
   const formSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,9 +33,13 @@ export default function ChatInput({
         className="m-2 flex-1"
         placeholder="Your message here"
         rows={2}
-        disabled={isDisabled}
+        disabled={isDisabled || isFeedback}
       />
-      <Button type="submit" className="m-2 h-10" disabled={isDisabled}>
+      <Button
+        type="submit"
+        className="m-2 h-10"
+        disabled={isDisabled || isFeedback}
+      >
         Submit
       </Button>
     </form>
