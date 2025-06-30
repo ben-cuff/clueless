@@ -6,7 +6,7 @@ const UnknownServerError = new Response(
   }
 );
 
-const UnauthorizedError = new Response(
+const ForbiddenError = new Response(
   JSON.stringify({ error: "Unauthorized" }),
   {
     status: 403,
@@ -34,6 +34,13 @@ function get400Response(error: string) {
   });
 }
 
+function get401Response(error: string) {
+  return new Response(JSON.stringify({ error }), {
+    status: 401,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 function get404Response(error: string) {
   return new Response(JSON.stringify({ error }), {
     status: 404,
@@ -52,8 +59,9 @@ export {
   get200Response,
   get201Response,
   get400Response,
+  get401Response,
   get404Response,
   get409Response,
-  UnauthorizedError,
+  ForbiddenError,
   UnknownServerError,
 };

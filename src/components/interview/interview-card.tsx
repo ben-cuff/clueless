@@ -1,8 +1,10 @@
+import { Interview } from "@/types/interview";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import DifficultyBadge from "../difficulty-badge";
-import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import InterviewCardButton from "./interview-card-button";
+import InterviewCardDeleteButton from "./interview-card-delete-button";
+import InterviewCardTooltip from "./interview-card-tooltip";
 
 export default function InterviewCard({
   interview,
@@ -14,60 +16,14 @@ export default function InterviewCard({
   router: AppRouterInstance;
 }) {
   return (
-    <Card className="relative flex flex-row items-center gap-4 px-4 py-6 rounded shadow transition">
-      <button
-        className="absolute top-0 right-2 hover:text-red-500 text-lg font-bold hover:cursor-pointer rounded-full transition-colors"
-        onClick={() => {
-          handleDeleteInterview(interview.userId, interview.id);
-        }}
-      >
-        ×
-      </button>
+    <Card className="relative flex flex-row items-center justify-around gap-4 mx-16 p-4 rounded shadow transition">
+      <InterviewCardDeleteButton
+        handleDeleteInterview={handleDeleteInterview}
+        interview={interview}
+      />
       <DifficultyBadge difficulty={interview.question.difficulty} />
-      <Tooltip key={interview.id}>
-        <TooltipTrigger>
-          <div className="flex-1">
-            <div className="font-medium">
-              Question {interview.questionNumber}: {interview.question.title}
-            </div>
-            <div className="text-xs ">
-              {new Date(interview.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          {new Date(interview.createdAt).toLocaleTimeString()}
-        </TooltipContent>
-      </Tooltip>
-      <Button
-        variant="outline"
-        className="hover:cursor-pointer"
-        onClick={() => {
-          router.push(
-            `/interview/${interview.id}?questionNumber=${interview.questionNumber}`
-          );
-        }}
-      >
-        {interview.completed ? "View" : "Resume"}
-      </Button>
+      <InterviewCardTooltip interview={interview} />
+      <InterviewCardButton interview={interview} router={router} />
     </Card>
   );
-}
-
-interface Interview {
-  code: string;
-  codeLanguage: string;
-  completed: boolean;
-  createdAt: string;
-  feedback: string | null;
-  id: string;
-  messages: Array<{
-    parts: Array<{
-      text: string;
-    }>;
-  }>;
-  questionNumber: number;
-  updatedAt: string;
-  userId: number;
-  question: { difficulty: 1 | 2 | 3; title: string };
 }
