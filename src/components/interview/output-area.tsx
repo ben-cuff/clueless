@@ -38,10 +38,10 @@ export default function OutputArea({
   }, [output]);
 
   return (
-    <div className="bg-card flex flex-col items-center p-4 rounded-lg max-w-screen overflow-scroll">
+    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[100px]">
       <div>
         <Button
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer mt-2"
           onClick={handleSubmitCode}
           disabled={isLoading || isFeedback}
         >

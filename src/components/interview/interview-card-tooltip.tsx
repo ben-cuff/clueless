@@ -9,11 +9,11 @@ export default function InterviewCardTooltip({
   return (
     <Tooltip key={interview.id}>
       <TooltipTrigger>
-        <div className="flex-1">
+        <div className="flex flex-row items-center text-center p-2">
           <div className="font-medium">
             Question {interview.questionNumber}: {interview.question.title}
           </div>
-          <div className="text-xs ">
+          <div className="text-xs ml-4">
             {new Date(interview.createdAt).toLocaleDateString()}
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function CodeEditor({
   const isFeedback = useContext(FeedbackContext);
   return (
     <Editor
-      height={"800px"}
+      height={"700px"}
       language={languageValue}
       theme={theme}
       value={code}

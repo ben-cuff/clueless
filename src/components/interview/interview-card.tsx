@@ -16,7 +16,7 @@ export default function InterviewCard({
   router: AppRouterInstance;
 }) {
   return (
-    <Card className="relative flex flex-row items-center justify-around gap-4 mx-16 p-4 rounded shadow transition">
+    <Card className="relative flex flex-row items-center justify-around gap-4 mx-16 p-4 h-20 rounded shadow transition">
       <InterviewCardDeleteButton
         handleDeleteInterview={handleDeleteInterview}
         interview={interview}

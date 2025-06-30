@@ -52,7 +52,7 @@ export default function CodePlayground({
         questionNumber={question.questionNumber}
         difficulty={question.difficulty}
       />
-      <div className="flex flex-row min-w-128 justify-around mb-1">
+      <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20">
         <LanguagesSelect handleLanguageChange={handleLanguageChange} />
         <ThemeSelect handleThemeChange={handleThemeChange} />
       </div>
@@ -69,19 +69,21 @@ export default function CodePlayground({
             handleMessageSubmit={handleMessageSubmit}
           />
         </div>
-        <CodeEditor
-          languageValue={language.value}
-          theme={theme}
-          code={code}
-          setCode={setCode}
-        />
+        <div className="flex flex-col w-full">
+          <CodeEditor
+            languageValue={language.value}
+            theme={theme}
+            code={code}
+            setCode={setCode}
+          />
+          <OutputArea
+            question={question}
+            language={language}
+            code={code}
+            handleOutputChange={handleMessageSubmit}
+          />
+        </div>
       </div>
-      <OutputArea
-        question={question}
-        language={language}
-        code={code}
-        handleOutputChange={handleMessageSubmit}
-      />
     </div>
   );
 }
