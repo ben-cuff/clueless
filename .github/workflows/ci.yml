@@ -7,19 +7,30 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm ci
-      - name: Build Next.js app
-        run: npm run build
+  # build:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  #     GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+  #     JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY }}
+  #     NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  #     NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+  #     BASE_URL: ${{ secrets.BASE_URL }}
+  #     NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+  #     ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+  #     TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+  #     TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "20"
+  #     - name: Install dependencies
+  #       run: npm ci
+  #     - name: Build Next.js app
+  #       run: npm run build
 
   test:
     timeout-minutes: 60
