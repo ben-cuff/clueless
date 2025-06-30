@@ -20,8 +20,15 @@ jobs:
         run: npm ci
       - name: Build Next.js app
         run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next/
+          retention-days: 1
 
   test:
+    needs: build
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
@@ -40,16 +47,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Download build
+        uses: actions/download-artifact@v4
         with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm ci
-      - name: Build Next.js app
-        run: npm run build
-      - name: Install dependencies
-        run: npm ci
+          name: next-build
+          path: .next/
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
