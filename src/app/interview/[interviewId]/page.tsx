@@ -1,9 +1,11 @@
+import InterviewError from "@/components/interview/interview-error";
 import InterviewLoading from "@/components/interview/interview-loading";
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 export default async function ResumeInterviewPage({
   params,
@@ -36,7 +38,9 @@ export default async function ResumeInterviewPage({
 
   return (
     <Suspense fallback={<InterviewLoading />}>
-      <InterviewQuestionPage question={question} interviewId={interviewId} />
+      <ErrorBoundary fallback={<InterviewError />}>
+        <InterviewQuestionPage question={question} interviewId={interviewId} />
+      </ErrorBoundary>
     </Suspense>
   );
 }

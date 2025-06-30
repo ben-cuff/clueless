@@ -1,9 +1,11 @@
+import InterviewError from "@/components/interview/interview-error";
 import InterviewLoading from "@/components/interview/interview-loading";
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { v4 as uuidv4 } from "uuid";
 
 export default async function NewInterviewPage({
@@ -23,7 +25,7 @@ export default async function NewInterviewPage({
     : questionNumberParam;
 
   const questionId = questionNumber ? Number(questionNumber) : randomQuestionId;
-  
+
   const question: Question_Extended = await apiQuestions.getQuestionById(
     questionId
   );
@@ -34,7 +36,9 @@ export default async function NewInterviewPage({
 
   return (
     <Suspense fallback={<InterviewLoading />}>
-      <InterviewQuestionPage question={question} interviewId={interviewId} />
+      <ErrorBoundary fallback={<InterviewError />}>
+        <InterviewQuestionPage question={question} interviewId={interviewId} />
+      </ErrorBoundary>
     </Suspense>
   );
 }
