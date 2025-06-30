@@ -26,8 +26,6 @@ export default function InterviewQuestionPage({
   } = useInterview(interviewId, question.questionNumber);
   const isFeedback = useContext(FeedbackContext);
 
-  console.log(isFeedback);
-
   return !isLoadingMessages ? (
     <>
       <CodePlayground

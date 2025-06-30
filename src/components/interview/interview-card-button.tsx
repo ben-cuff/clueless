@@ -25,7 +25,7 @@ export default function InterviewCardButton({
         }
       }}
     >
-      {interview.completed ? "View" : "Resume"}
+      {interview.completed ? "View Feedback" : "Resume"}
     </Button>
   );
 }

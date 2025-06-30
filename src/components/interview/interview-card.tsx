@@ -21,9 +21,15 @@ export default function InterviewCard({
         handleDeleteInterview={handleDeleteInterview}
         interview={interview}
       />
-      <DifficultyBadge difficulty={interview.question.difficulty} />
-      <InterviewCardTooltip interview={interview} />
-      <InterviewCardButton interview={interview} router={router} />
+      <div className="flex justify-center w-1/5">
+        <DifficultyBadge difficulty={interview.question.difficulty} />
+      </div>
+      <div className="flex justify-center w-3/5">
+        <InterviewCardTooltip interview={interview} />
+      </div>
+      <div className="flex justify-center w-1/5">
+        <InterviewCardButton interview={interview} router={router} />
+      </div>
     </Card>
   );
 }
