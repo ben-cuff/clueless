@@ -3,7 +3,6 @@ export interface Interview {
   codeLanguage: string;
   completed: boolean;
   createdAt: string;
-  feedback: string | null;
   id: string;
   messages: Array<{
     parts: Array<{
