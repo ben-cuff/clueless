@@ -10,16 +10,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
-      JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      NEXT_PUBLIC_BASE_URL: "http://localhost:3000"
-      BASE_URL: "http://localhost:3000"
+      DATABASE_URL: ${{ secrets.DATABASE_URL || ''}}
+      GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY || '' }}
+      JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY || '' }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'development_secret_key' }}
+      NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' }}
+      BASE_URL: ${{ secrets.BASE_URL || 'http://localhost:3000' }}
       NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
-      ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY || 'dev_admin_key' }}
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || 'test_password' }}
-      TEST_USERNAME: ${{ secrets.TEST_USERNAME || 'test_user' }}
+      ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY || '' }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '' }}
+      TEST_USERNAME: ${{ secrets.TEST_USERNAME || '' }}
+      REDIS_HOST: ${{secrets.REDIS_HOST || ''}}
+      REDIS_PORT: ${{secrets.REDIS_PORT || ''}}
+      REDIS_TOKEN: ${{secrets.REDIS_TOKEN || ''}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
