@@ -3,7 +3,8 @@
 import { LanguageOption } from "@/constants/language-options";
 import useCodeOutput from "@/hooks/use-code-output";
 import { Question_Extended } from "@/types/question";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { FeedbackContext } from "../providers/feedback-provider";
 import { Button } from "../ui/button";
 
 export default function OutputArea({
@@ -22,6 +23,7 @@ export default function OutputArea({
     language,
     code
   );
+  const isFeedback = useContext(FeedbackContext);
 
   useEffect(() => {
     const outputMessage = `Here is the latest code output:\n\n${
@@ -41,7 +43,7 @@ export default function OutputArea({
         <Button
           className="hover:cursor-pointer"
           onClick={handleSubmitCode}
-          disabled={isLoading}
+          disabled={isLoading || isFeedback}
         >
           {isLoading ? "Submitting..." : "Run Testcases"}
         </Button>

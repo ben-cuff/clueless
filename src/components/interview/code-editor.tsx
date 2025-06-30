@@ -1,6 +1,8 @@
 "use client";
 
 import Editor from "@monaco-editor/react";
+import { useContext } from "react";
+import { FeedbackContext } from "../providers/feedback-provider";
 
 export default function CodeEditor({
   languageValue,
@@ -12,7 +14,8 @@ export default function CodeEditor({
   theme: string;
   code: string;
   setCode: (value: string) => void;
-  }) {
+}) {
+  const isFeedback = useContext(FeedbackContext);
   return (
     <Editor
       height={"800px"}
@@ -20,7 +23,10 @@ export default function CodeEditor({
       theme={theme}
       value={code}
       onChange={(value) => setCode(value || "")}
-      options={{ minimap: { enabled: false } }}
+      options={{
+        minimap: { enabled: false },
+        readOnly: isFeedback,
+      }}
     />
   );
 }
