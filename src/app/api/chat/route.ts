@@ -1,4 +1,5 @@
 import { prismaLib } from "@/lib/prisma";
+import { Question_Extended } from "@/types/question";
 import { get400Response, UnknownServerError } from "@/utils/api-responses";
 import { GoogleGenAI } from "@google/genai";
 
@@ -50,7 +51,7 @@ class StreamingTextResponse extends Response {
 
 export async function POST(req: Request) {
   try {
-    const { messages, questionNumber } = await req.json();
+    const { messages, questionNumber, interviewId } = await req.json();
 
     if (questionNumber) {
       try {
@@ -59,6 +60,17 @@ export async function POST(req: Request) {
       } catch {
         return get400Response(
           `Error fetching prompt for question number ${questionNumber}`
+        );
+      }
+    }
+
+    if (interviewId) {
+      try {
+        const prompt = await getPromptFromInterviewId(interviewId);
+        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+      } catch {
+        return get400Response(
+          `Error fetching prompt for interview ID ${interviewId}`
         );
       }
     }
@@ -92,19 +104,46 @@ async function getPromptFromQuestionNumber(questionNumber: number) {
     throw new Error();
   }
 
-  const { prompt, title, solutions } = question;
+  return getMessageFromQuestion(question as Question_Extended);
+}
 
+async function getPromptFromInterviewId(interviewId: string) {
+  const interview = await prismaLib.interview.findUnique({
+    where: { id: interviewId },
+    include: {
+      question: {
+        select: {
+          prompt: true,
+          title: true,
+          solutions: true,
+        },
+      },
+    },
+  });
+
+  if (!interview || !interview.question) {
+    throw new Error();
+  }
+
+  return getMessageFromQuestion(interview.question as Question_Extended);
+}
+
+function getMessageFromQuestion(question: Question_Extended) {
   let message = "";
-  if (title) {
-    message += `Title: ${title}`;
+  if (question.title) {
+    message += `Title: ${question.title}`;
   }
 
-  if (prompt) {
-    message += `\n\nPrompt: ${prompt}`;
+  if (question.prompt) {
+    message += `\n\nPrompt: ${question.prompt}`;
   }
 
-  if (solutions && typeof solutions === "object" && "python" in solutions) {
-    const pythonSolution = (solutions as { python: string }).python;
+  if (
+    question.solutions &&
+    typeof question.solutions === "object" &&
+    "python" in question.solutions
+  ) {
+    const pythonSolution = (question.solutions as { python: string }).python;
     message += `\n\nSolutions:\n${pythonSolution}`;
   }
   return message;

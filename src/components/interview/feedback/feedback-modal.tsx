@@ -2,18 +2,19 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import useFeedback from "@/hooks/use-feedback";
+import Markdown from "react-markdown";
 
 export default function FeedbackModal({
   interviewId,
 }: {
   interviewId: string;
 }) {
-  const { isModalOpen, toggleModal } = useFeedback(interviewId);
+  const { isModalOpen, toggleModal, feedbackContent } =
+    useFeedback(interviewId);
 
   return (
     <>
@@ -25,9 +26,7 @@ export default function FeedbackModal({
           <DialogHeader>
             <DialogTitle>Feedback</DialogTitle>
           </DialogHeader>
-          <DialogDescription>
-            Please provide your feedback below.
-          </DialogDescription>
+          <Markdown>{feedbackContent}</Markdown>
         </DialogContent>
       </Dialog>
     </>

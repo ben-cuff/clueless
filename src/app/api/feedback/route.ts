@@ -9,7 +9,7 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
   const { userId, interviewId, feedback } = await req.json();
 
   if (!userId || !interviewId || !feedback) {
@@ -32,12 +32,22 @@ export default async function POST(req: Request) {
     return get400Response("Interview not found");
   }
 
+  const feedbackNumber = getFeedbackNumberFromFeedback(feedback);
+
   try {
     const feedbackEntry = await prismaLib.feedback.create({
       data: {
         userId,
         interviewId,
         feedback,
+        feedbackNumber,
+      },
+    });
+
+    await prismaLib.interview.update({
+      where: { id: interviewId },
+      data: {
+        completed: true,
       },
     });
 
@@ -55,3 +65,24 @@ export default async function POST(req: Request) {
     }
   }
 }
+
+const getFeedbackNumberFromFeedback = (feedback: string) => {
+  const lowerFeedback = feedback.toLowerCase();
+
+  const feedbackRatings = [
+    { pattern: "strong hire", value: 5 },
+    { pattern: "strong no-hire", value: 0 },
+    { pattern: "lean hire", value: 3 },
+    { pattern: "lean no-hire", value: 2 },
+    { pattern: "no-hire", value: 1 },
+    { pattern: "hire", value: 4 },
+  ];
+
+  for (const { pattern, value } of feedbackRatings) {
+    if (lowerFeedback.includes(pattern)) {
+      return value;
+    }
+  }
+
+  return -1;
+};

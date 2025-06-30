@@ -5,7 +5,7 @@ import useInterview from "@/hooks/use-interview";
 import { Question_Extended } from "@/types/question";
 import { useContext } from "react";
 import { FeedbackContext } from "../providers/feedback-provider";
-import FeedbackModal from "./feedback-modal";
+import FeedbackModal from "./feedback/feedback-modal";
 import InterviewLoading from "./interview-loading";
 
 export default function InterviewQuestionPage({

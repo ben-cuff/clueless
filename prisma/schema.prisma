@@ -78,6 +78,7 @@ model Feedback {
   interviewId String    @unique
   interview   Interview @relation(fields: [interviewId], references: [id])
   feedback    String
+  feedbackNumber Int
 }
 
 enum Company {
