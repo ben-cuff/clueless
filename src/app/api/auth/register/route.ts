@@ -1,4 +1,10 @@
 import { prismaLib } from "@/lib/prisma";
+import {
+  get201Response,
+  get400Response,
+  get409Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
@@ -6,42 +12,19 @@ export async function POST(req: Request) {
     const { username, password } = await req.json();
 
     if (!username || !password) {
-      return new Response(
-        JSON.stringify({ error: "Username and password are required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return get400Response("Username and password are required");
     }
 
     const hashedPassword = await argon2.hash(password);
 
-    if (!username || !password) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Missing username or password",
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    let user;
     try {
-      user = await prismaLib.account.create({
+      const user = await prismaLib.account.create({
         data: {
           username: username,
           hashedPassword,
         },
       });
-      return new Response(JSON.stringify({ success: true, user }), {
-        status: 201,
-        headers: { "Content-Type": "application/json" },
-      });
+      return get201Response({ success: true, user });
     } catch (error) {
       if (
         typeof error === "object" &&
@@ -49,28 +32,15 @@ export async function POST(req: Request) {
         "code" in error &&
         error.code === "P2002"
       ) {
-        return new Response(JSON.stringify({ error: "User already exists" }), {
-          status: 409,
-          headers: { "Content-Type": "application/json" },
-        });
-      } else {
-        return new Response(
-          JSON.stringify({ error: "Internal server error" }),
-          {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          }
+        return get409Response(
+          "Username already exists. Please choose a different username."
         );
+      } else {
+        return UnknownServerError;
       }
     }
   } catch (error) {
     console.error("Error in registration:", error);
-    return new Response(
-      JSON.stringify({ success: false, error: "Internal server error" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return UnknownServerError;
   }
 }

@@ -1,4 +1,5 @@
 import { IMPORTS } from "@/constants/imports";
+import { get200Response, UnknownServerError } from "@/utils/api-responses";
 
 export async function POST(req: Request) {
   const { code, language, testcases } = await req.json();
@@ -36,14 +37,8 @@ export async function POST(req: Request) {
       options
     );
     const result = await response.json();
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return get200Response(result);
   } catch {
-    return new Response(JSON.stringify({ error: "Failed to run code" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return UnknownServerError;
   }
 }

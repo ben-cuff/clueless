@@ -1,4 +1,5 @@
 import { prismaLib } from "@/lib/prisma";
+import { get400Response, UnknownServerError } from "@/utils/api-responses";
 import { GoogleGenAI } from "@google/genai";
 
 type GenAIChunk = {
@@ -55,21 +56,15 @@ export async function POST(req: Request) {
       try {
         const prompt = await getPromptFromQuestionNumber(questionNumber);
         messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch (error) {
-        return new Response(JSON.stringify(error), {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        });
+      } catch {
+        return get400Response(
+          `Error fetching prompt for question number ${questionNumber}`
+        );
       }
     }
 
     if (!messages || !Array.isArray(messages)) {
-      return new Response(
-        JSON.stringify({
-          error: "Invalid or missing 'messages' field",
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+      return get400Response("Invalid or missing messages array");
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
@@ -83,13 +78,7 @@ export async function POST(req: Request) {
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.error(error);
-    return new Response(
-      JSON.stringify({
-        message:
-          "Failed to generate response, it is likely that messages were not formatted correctly or the API key is invalid/out of credits.",
-      }),
-      { status: 500 }
-    );
+    return UnknownServerError;
   }
 }
 
@@ -100,7 +89,7 @@ async function getPromptFromQuestionNumber(questionNumber: number) {
   });
 
   if (!question) {
-    throw new Error(`No prompt found for question number ${questionNumber}`);
+    throw new Error();
   }
 
   const { prompt, title, solutions } = question;
