@@ -40,6 +40,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+      - name: Build next project
+        run: npm run build
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers

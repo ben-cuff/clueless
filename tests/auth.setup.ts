@@ -19,7 +19,7 @@ dotenv.config();
 
 setup("authenticate", async ({ page }) => {
   // Perform authentication steps. Replace these actions with your own.
-  await page.goto(`${process.env.BASE_URL}/login`);
+  await page.goto(`/login`);
 
   await page
     .getByRole("textbox", { name: "Username:" })
@@ -33,7 +33,7 @@ setup("authenticate", async ({ page }) => {
   //
   // Sometimes login flow sets cookies in the process of several redirects.
   // Wait for the final URL to ensure that the cookies are actually set.
-  await page.waitForURL(`${process.env.BASE_URL}/`);
+  await page.waitForURL(`/`);
   // Alternatively, you can wait until the page reaches a state where all cookies are set.
   await page
     .getByRole("banner")
