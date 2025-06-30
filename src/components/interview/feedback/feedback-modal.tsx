@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/components/loading-spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +14,7 @@ export default function FeedbackModal({
 }: {
   interviewId: string;
 }) {
-  const { isModalOpen, toggleModal, feedbackContent } =
+  const { isModalOpen, toggleModal, feedbackContent, isLoading } =
     useFeedback(interviewId);
 
   return (
@@ -26,6 +27,9 @@ export default function FeedbackModal({
           <DialogHeader>
             <DialogTitle>Feedback</DialogTitle>
           </DialogHeader>
+          <div className="flex justify-center">
+            {isLoading && <LoadingSpinner />}
+          </div>
           <Markdown>{feedbackContent}</Markdown>
         </DialogContent>
       </Dialog>
