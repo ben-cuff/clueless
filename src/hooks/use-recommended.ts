@@ -8,12 +8,14 @@ export default function useRecommended() {
     useState<Question[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
     (async () => {
       if (session && session.user && session.user.id) {
         setIsLoading(true);
+        setIsLoggedIn(true);
         const data = await apiQuestions.getRecommendedQuestions(
           session.user.id
         );
@@ -30,5 +32,11 @@ export default function useRecommended() {
     setIsHidden(!isHidden);
   }, [isHidden]);
 
-  return { recommendedQuestions, isLoading, isHidden, toggleIsHidden };
+  return {
+    recommendedQuestions,
+    isLoading,
+    isHidden,
+    toggleIsHidden,
+    isLoggedIn,
+  };
 }

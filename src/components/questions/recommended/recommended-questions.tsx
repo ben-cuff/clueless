@@ -5,8 +5,18 @@ import RecommendedHeader from "./recommended-header";
 import ToggleRecommendedButton from "./toggle-recommended-button";
 
 export default function RecommendedQuestions() {
-  const { recommendedQuestions, isLoading, isHidden, toggleIsHidden } =
-    useRecommended();
+  const {
+    recommendedQuestions,
+    isLoading,
+    isHidden,
+    toggleIsHidden,
+    isLoggedIn,
+  } = useRecommended();
+
+  if (!isLoggedIn) {
+    return <></>;
+  }
+
   return (
     <>
       <ToggleRecommendedButton
