@@ -96,20 +96,18 @@ export async function GET(req: Request) {
   });
 
   // sum up the weights for each question based on its topics
-  const weightedQuestions = (filteredQuestions as Question[]).map(
-    (question) => {
-      let totalWeight = 0;
+  const weightedQuestions = filteredQuestions.map((question) => {
+    let totalWeight = 0;
 
-      question.topics.forEach((topic) => {
-        totalWeight += topicWeights.get(topic) || 0;
-      });
+    question.topics.forEach((topic) => {
+      totalWeight += topicWeights.get(topic) || 0;
+    });
 
-      return {
-        ...question,
-        weight: totalWeight,
-      };
-    }
-  );
+    return {
+      ...question,
+      weight: totalWeight,
+    };
+  });
 
   weightedQuestions.sort((a, b) => b.weight - a.weight);
 
