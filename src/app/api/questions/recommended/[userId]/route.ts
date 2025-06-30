@@ -1,7 +1,14 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prismaLib } from "@/lib/prisma";
+import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
-import { get200Response, get400Response } from "@/utils/api-responses";
+import {
+  ForbiddenError,
+  get200Response,
+  get400Response,
+} from "@/utils/api-responses";
 import { Topic } from "@prisma/client";
+import { getServerSession } from "next-auth";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -12,14 +19,19 @@ export async function GET(req: Request) {
     return get400Response("Invalid user ID");
   }
 
-  //commented out for now, as testing is being done without authentication
-  //   const session = getServerSession(authOptions);
+  const cacheKey = `recommended_questions_${userId}`;
 
-  //   if (session?.user.id !== userId) {
-  //     return ForbiddenError;
-  //   }
+  const session = await getServerSession(authOptions);
 
-  // Get past feedback with interview data
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  const cachedData = await redisLib.get(cacheKey);
+  if (cachedData) {
+    return get200Response(JSON.parse(cachedData));
+  }
+
   const pastFeedback: PastFeedback[] = await prismaLib.feedback.findMany({
     where: {
       userId,
@@ -63,8 +75,8 @@ export async function GET(req: Request) {
 
   const topicWeights = new Map<string, number>();
 
-  console.log("topicWeights:", topicWeights);
-
+  // assigns a weight to each topic based on the feedback number
+  // the higher the feedback number, the lower the weight
   recentFeedback.forEach((feedback) => {
     const weight = 1 / (feedback.feedbackNumber + 1);
 
@@ -74,6 +86,7 @@ export async function GET(req: Request) {
     });
   });
 
+  // sum up the weights for each question based on its topics
   const weightedQuestions = (questions as Question[]).map((question) => {
     let totalWeight = 0;
 
@@ -89,9 +102,12 @@ export async function GET(req: Request) {
 
   weightedQuestions.sort((a, b) => b.weight - a.weight);
 
-  console.log("Weighted Questions:", weightedQuestions);
-
+  // get the top 5 questions based on the highest weights
   const recommendedQuestions = weightedQuestions.slice(0, 5);
+
+  redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
+    EX: 60 * 30,
+  });
 
   return get200Response(recommendedQuestions);
 }
