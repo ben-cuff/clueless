@@ -1,8 +1,19 @@
 import { expect, test as setup } from "@playwright/test";
 import dotenv from "dotenv";
+import { promises as fs } from "fs";
 import path from "path";
 
 const authFile = path.join(__dirname, "../playwright/.auth/user.json");
+
+// Ensure auth directory exists
+(async () => {
+  const authDir = path.dirname(authFile);
+  try {
+    await fs.mkdir(authDir, { recursive: true });
+  } catch (error) {
+    console.error(`Failed to create auth directory: ${error}`);
+  }
+})();
 
 dotenv.config();
 
