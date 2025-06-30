@@ -108,6 +108,12 @@ export default function useInterview(
     [addUserMessage, streamModelResponse]
   );
 
+  const handleEndInterview = useCallback(() => {
+    router.push(
+      `/interview/feedback/${interviewId}?questionNumber=${questionNumber}`
+    );
+  }, [interviewId, questionNumber, router]);
+
   useEffect(() => {
     if (hasMounted.current) {
       (async () => {
@@ -167,5 +173,6 @@ export default function useInterview(
     handleMessageSubmit,
     codeRef,
     isLoadingMessages,
+    handleEndInterview,
   };
 }

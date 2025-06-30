@@ -5,6 +5,7 @@ import useInterview from "@/hooks/use-interview";
 import { Question_Extended } from "@/types/question";
 import { useContext } from "react";
 import { FeedbackContext } from "../providers/feedback-provider";
+import EndInterviewButton from "./end-interview-button";
 import FeedbackModal from "./feedback/feedback-modal";
 import InterviewLoading from "./interview-loading";
 
@@ -21,8 +22,11 @@ export default function InterviewQuestionPage({
     handleMessageSubmit,
     codeRef,
     isLoadingMessages,
+    handleEndInterview,
   } = useInterview(interviewId, question.questionNumber);
   const isFeedback = useContext(FeedbackContext);
+
+  console.log(isFeedback);
 
   return !isLoadingMessages ? (
     <>
@@ -34,7 +38,14 @@ export default function InterviewQuestionPage({
         codeRef={codeRef}
         interviewId={interviewId}
       />
-      {isFeedback && <FeedbackModal interviewId={interviewId} />}
+      {isFeedback ? (
+        <FeedbackModal interviewId={interviewId} />
+      ) : (
+        messages &&
+        messages.length >= 5 && (
+          <EndInterviewButton handleEndInterview={handleEndInterview} />
+        )
+      )}
     </>
   ) : (
     <InterviewLoading />
