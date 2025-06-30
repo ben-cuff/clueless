@@ -7,7 +7,7 @@ import {
   get200Response,
   get400Response,
 } from "@/utils/api-responses";
-import { Topic } from "@prisma/client";
+import type { Topic } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function GET(req: Request) {
