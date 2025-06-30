@@ -47,7 +47,6 @@ jobs:
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '' }}
       TEST_USERNAME: ${{ secrets.TEST_USERNAME || '' }}
     steps:
-      - name:
 
       - name: Checkout repository
         uses: actions/checkout@v3
