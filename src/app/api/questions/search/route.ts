@@ -3,7 +3,7 @@ import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
 import { get200Response, UnknownServerError } from "@/utils/api-responses";
-import { Prisma } from "@prisma/client";
+import { Prisma, Question } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
