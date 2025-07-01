@@ -24,7 +24,7 @@ export default function useAuth(mode: "login" | "register") {
           return;
         }
 
-       await AccountAPI.createAccount(username, password);
+        await AccountAPI.createAccount(username, password);
       }
 
       const result = await signIn("credentials", {
