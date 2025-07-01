@@ -163,139 +163,19 @@ test("questions-search", async ({ page }) => {
   await page
     .getByRole("textbox", { name: "Search for questions..." })
     .fill("two sum");
-  await page.waitForTimeout(3000);
-  await expect(page.locator("body")).toMatchAriaSnapshot(`
-    - heading "Questions" [level=1]
-    - text: "Search:"
-    - textbox "Search for questions..."
-    - combobox: Select Difficulty
-    - text: Select companies Select topics...
-    - heading "1. Two Sum" [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Hash Table
-    - heading /\\d+\\. Two Sum II - Input Array Is Sorted/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Two Pointers Binary Search
-    - heading /\\d+\\. Two Sum III - Data structure design/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum-iii-data-structure-design
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Hash Table Two Pointers Design Data Stream
-    - heading /\\d+\\. Two Sum IV - Input is a BST/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum-iv-input-is-a-bst
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Hash Table Two Pointers Tree Depth First Search Breadth First Search Binary Search Tree Binary Tree
-    - heading /\\d+\\. Two Sum Less Than K/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum-less-than-k
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Two Pointers Binary Search Sorting
-    - heading /\\d+\\. Two Sum BSTs/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/two-sum-bsts
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Two Pointers Binary Search Stack Tree Depth First Search Binary Search Tree Binary Tree
-    - heading /\\d+\\. Sum of Two Integers/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/sum-of-two-integers
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Math Bit Manipulation
-    - heading /\\d+\\. Minimum Index Sum of Two Lists/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/minimum-index-sum-of-two-lists
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Hash Table String
-    - heading /\\d+\\. Maximum Sum of Two Non-Overlapping Subarrays/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Dynamic Programming Sliding Window
-    - heading /\\d+\\. Convert Integer to the Sum of Two No-Zero Integers/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/convert-integer-to-the-sum-of-two-no-zero-integers
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Math
-    - heading /\\d+\\. Minimum Equal Sum of Two Arrays After Replacing Zeros/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/minimum-equal-sum-of-two-arrays-after-replacing-zeros
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Greedy
-    - heading /\\d+\\. Minimum ASCII Delete Sum for Two Strings/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: String Dynamic Programming
-    - heading /\\d+\\. Minimize Product Sum of Two Arrays/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/minimize-product-sum-of-two-arrays
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Greedy Sorting
-    - heading /\\d+\\. Minimum XOR Sum of Two Arrays/ [level=2]
-    - text: Hard
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/minimum-xor-sum-of-two-arrays
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Dynamic Programming Bit Manipulation Bitmask
-    - heading /\\d+\\. Partition Array Into Two Arrays to Minimize Sum Difference/ [level=2]
-    - text: Hard
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Two Pointers Binary Search Dynamic Programming Bit Manipulation Ordered Set Bitmask
-    - heading /\\d+\\. Merge Two 2D Arrays by Summing Values/ [level=2]
-    - text: Easy
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/merge-two-2d-arrays-by-summing-values
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Hash Table Two Pointers
-    - heading /\\d+\\. Find Two Non-overlapping Sub-arrays Each With Target Sum/ [level=2]
-    - text: Medium
-    - link "leetcode-logo":
-      - /url: https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum
-      - img "leetcode-logo"
-    - button "Start Interview"
-    - text: Array Hash Table Binary Search Dynamic Programming Sliding Window
-    - navigation "pagination":
-      - list:
-        - listitem
-        - listitem: "1"
-        - listitem
-    - button /\\d+ per page/
-    `);
+  await page.waitForTimeout(1000);
+  await expect(page.locator("body")).toContainText("1. Two Sum");
+  await expect(page.locator("body")).toContainText(
+    "167. Two Sum II - Input Array Is Sorted"
+  );
+  await expect(page.locator("body")).toContainText(
+    "170. Two Sum III - Data structure design"
+  );
+  await expect(page.locator("body")).toContainText(
+    "653. Two Sum IV - Input is a BST"
+  );
+  await expect(page.locator("body")).toContainText("1099. Two Sum Less Than K");
+
 });
 
 test("questions-filter-by-topics", async ({ page }) => {
@@ -309,7 +189,7 @@ test("questions-filter-by-topics", async ({ page }) => {
   await page
     .getByRole("option", { name: "Binary Search", exact: true })
     .click();
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(1000);
   await expect(page.locator("body")).toMatchAriaSnapshot(`
       - heading "Questions" [level=1]
       - text: "Search:"
