@@ -37,27 +37,29 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /.*\.setup\.ts/,
+      testDir: "./tests/e2e",
     },
     {
       name: "chromium",
+      testDir: "./tests/e2e",
       use: {
         ...devices["Desktop Chrome"],
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
     },
-
     {
       name: "firefox",
+      testDir: "./tests/e2e",
       use: {
         ...devices["Desktop Firefox"],
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
     },
-
     {
       name: "webkit",
+      testDir: "./tests/e2e",
       use: {
         ...devices["Desktop Safari"],
         storageState: "playwright/.auth/user.json",
@@ -67,6 +69,7 @@ export default defineConfig({
     {
       name: "teardown",
       testMatch: /.*\.teardown\.ts/,
+      testDir: "./tests/e2e",
       dependencies: ["chromium", "firefox", "webkit"],
       use: {
         storageState: "playwright/.auth/user.json",
