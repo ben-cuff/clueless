@@ -175,7 +175,6 @@ test("questions-search", async ({ page }) => {
     "653. Two Sum IV - Input is a BST"
   );
   await expect(page.locator("body")).toContainText("1099. Two Sum Less Than K");
-
 });
 
 test("questions-filter-by-topics", async ({ page }) => {
@@ -511,6 +510,7 @@ test("questions-filter-by-difficulty", async ({ page }) => {
 
 test("questions-pagination", async ({ page }) => {
   await page.goto("http://localhost:3000/questions");
+  await page.waitForTimeout(1000);
   await page.getByRole("button", { name: "per page" }).click();
   await page.getByRole("menuitem", { name: "100" }).click();
   await expect(page.getByText("100. Same TreeEasyStart")).toBeVisible();
