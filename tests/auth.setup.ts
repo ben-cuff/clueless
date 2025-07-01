@@ -1,4 +1,4 @@
-import { expect, test as setup } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import dotenv from "dotenv";
 import { promises as fs } from "fs";
 import path from "path";
@@ -17,10 +17,30 @@ const authFile = path.join(__dirname, "../playwright/.auth/user.json");
 
 dotenv.config();
 
-setup("authenticate", async ({ page }) => {
-  // Perform authentication steps. Replace these actions with your own.
-  await page.goto(`/login`);
+async function doRegister(page: Page) {
+  await page.goto(`/register`);
+  await page
+    .getByRole("textbox", { name: "Username:" })
+    .fill(process.env.TEST_USERNAME || "");
+  await page
+    .getByRole("textbox", { name: "Password:", exact: true })
+    .fill(process.env.TEST_PASSWORD || "");
+  await page
+    .getByRole("textbox", { name: "Confirm Password:" })
+    .fill(process.env.TEST_PASSWORD || "");
+  await page.getByRole("button", { name: "Register" }).click();
+  await expect(page).toHaveURL(`/`);
+  await page
+    .getByRole("banner")
+    .getByRole("button")
+    .filter({ hasText: /^$/ })
+    .click();
+  await expect(page.getByRole("menuitem", { name: "Settings" })).toBeVisible();
+}
 
+test("register-and-authenticate", async ({ page }) => {
+  await doRegister(page);
+  await page.goto(`/login`);
   await page
     .getByRole("textbox", { name: "Username:" })
     .fill(process.env.TEST_USERNAME || "");
@@ -28,21 +48,12 @@ setup("authenticate", async ({ page }) => {
     .getByRole("textbox", { name: "Password:" })
     .fill(process.env.TEST_PASSWORD || "");
   await page.getByRole("button", { name: "Sign in" }).click();
-
-  // Wait until the page receives the cookies.
-  //
-  // Sometimes login flow sets cookies in the process of several redirects.
-  // Wait for the final URL to ensure that the cookies are actually set.
   await page.waitForURL(`/`);
-  // Alternatively, you can wait until the page reaches a state where all cookies are set.
   await page
     .getByRole("banner")
     .getByRole("button")
     .filter({ hasText: /^$/ })
     .click();
   await expect(page.getByRole("menuitem", { name: "Settings" })).toBeVisible();
-
-  // End of authentication steps.
-
   await page.context().storageState({ path: authFile });
 });
