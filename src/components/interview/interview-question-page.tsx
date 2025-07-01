@@ -4,9 +4,11 @@ import CodePlayground from "@/components/interview/code-playground";
 import useInterview from "@/hooks/use-interview";
 import { Question_Extended } from "@/types/question";
 import { useContext } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { FeedbackContext } from "../providers/feedback-provider";
 import EndInterviewButton from "./end-interview-button";
 import FeedbackModal from "./feedback/feedback-modal";
+import InterviewError from "./interview-error";
 import InterviewLoading from "./interview-loading";
 
 export default function InterviewQuestionPage({
@@ -27,7 +29,7 @@ export default function InterviewQuestionPage({
   const isFeedback = useContext(FeedbackContext);
 
   return !isLoadingMessages ? (
-    <>
+    <ErrorBoundary fallback={<InterviewError />}>
       <CodePlayground
         question={question}
         handleCodeSave={handleCodeSave}
@@ -44,7 +46,7 @@ export default function InterviewQuestionPage({
           <EndInterviewButton handleEndInterview={handleEndInterview} />
         )
       )}
-    </>
+    </ErrorBoundary>
   ) : (
     <InterviewLoading />
   );
