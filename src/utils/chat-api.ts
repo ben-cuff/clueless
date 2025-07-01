@@ -38,8 +38,7 @@ export const chatAPI = {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData.error || "Failed to fetch response");
-        console.error("Error fetching response:", errorData);
+        console.error(errorData.error);
       }
 
       if (!response.body) {
