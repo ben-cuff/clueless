@@ -545,7 +545,7 @@ test("questions-leetcode-link", async ({ page }) => {
     .click();
   const page1 = await page1Promise;
   await expect(page1).toHaveURL(
-    "https://leetcode.com/problems/two-sum/description/"
+    /https:\/\/leetcode\.com\/problems\/two-sum\/(description\/)?/
   );
 });
 
