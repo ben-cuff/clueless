@@ -29,7 +29,7 @@ model Account {
 model Activity {
   id        String   @id @default(uuid())
   userId    Int
-  account   Account  @relation(fields: [userId], references: [id])
+  account   Account  @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      DateTime
   count     Int      @default(0)
   totalTime Int      @default(0)
@@ -59,10 +59,10 @@ model Question {
 model Interview {
   id             String    @id
   userId         Int
-  account        Account   @relation(fields: [userId], references: [id])
+  account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages       Json
   questionNumber Int
-  question       Question  @relation(fields: [questionNumber], references: [questionNumber])
+  question       Question  @relation(fields: [questionNumber], references: [questionNumber], onDelete: Cascade)
   code           String?
   codeLanguage   Language
   createdAt      DateTime  @default(now())
@@ -74,9 +74,9 @@ model Interview {
 model Feedback {
   id          String    @id @default(uuid())
   userId      Int
-  account     Account   @relation(fields: [userId], references: [id])
+  account     Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
   interviewId String    @unique
-  interview   Interview @relation(fields: [interviewId], references: [id])
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
   feedback    String
   feedbackNumber Int
 }
