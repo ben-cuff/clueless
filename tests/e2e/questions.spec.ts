@@ -119,26 +119,33 @@ test("questions-pagination-next-previous", async ({ page }) => {
   );
 });
 
-// test("questions-leetcode-link", async ({ page }) => {
-//   await page.goto("http://localhost:3000/questions");
-//   const page1Promise = page.waitForEvent("popup");
-//   await page
-//     .getByRole("row")
-//     .filter({ hasText: "1. Two Sum" })
-//     .getByRole("link")
-//     .click();
-//   const page1 = await page1Promise;
-//   await expect(page1).toHaveURL(
-//     /https:\/\/leetcode\.com\/problems\/two-sum\/(description\/)?/
-//   );
-// });
+test("questions-leetcode-link", async ({ page }) => {
+  await page.goto("http://localhost:3000/questions");
+  const page1Promise = page.waitForEvent("popup");
+  await page;
+  await page
+    .locator("div")
+    .filter({
+      hasText:
+        /^1\. Two SumEasyGoogle, Amazon, Microsoft, BloombergStart InterviewArrayHash Table$/,
+    })
+    .getByRole("link")
+    .click();
+  const page1 = await page1Promise;
+  await expect(page1).toHaveURL(
+    /https:\/\/leetcode\.com\/problems\/two-sum\/(description\/)?/
+  );
+});
 
-// test("questions-start-interview", async ({ page }) => {
-//   await page.goto("http://localhost:3000/questions");
-//   await page
-//     .getByRole("row")
-//     .filter({ hasText: "1. Two Sum" })
-//     .getByRole("button", { name: "Start" })
-//     .click();
-//   await expect(page).toHaveURL("/interview/new?questionNumber=1");
-// });
+test("questions-start-interview", async ({ page }) => {
+  await page.goto("http://localhost:3000/questions");
+  await page
+    .locator("div")
+    .filter({
+      hasText:
+        /^1\. Two SumEasyGoogle, Amazon, Microsoft, BloombergStart InterviewArrayHash Table$/,
+    })
+    .getByRole("button", { name: "Start" })
+    .click();
+  await expect(page).toHaveURL("/interview/new?questionNumber=1");
+});
