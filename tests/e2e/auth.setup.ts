@@ -3,7 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { doLogin, doRegister } from "./utils/auth";
 
-const authFile = path.join(__dirname, "../playwright/.auth/user.json");
+const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
 
 // Ensure auth directory exists
 (async () => {
