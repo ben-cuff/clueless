@@ -49,7 +49,15 @@ export async function GET(req: Request) {
 
     sqlQuery.values = [search ?? ""];
 
-    const questions: object = await prismaLib.$queryRaw(sqlQuery);
+    const questions: Array<Question> = await prismaLib.$queryRaw(sqlQuery);
+
+    if (
+      questions &&
+      questions.length > 1 &&
+      questions[0].questionNumber > questions[1].questionNumber
+    ) {
+      return get200Response(questions.reverse());
+    }
 
     return get200Response(questions);
   } catch (error) {
@@ -137,7 +145,18 @@ function getPaginationSQL(url: URL) {
   if (skip > 0) {
     orderLimitOffset += ` OFFSET ${skip}`;
   }
-  orderLimitOffset += ` LIMIT ${take}`;
+  if (take < 0) {
+    orderLimitOffset += ` LIMIT ${-take}`;
+    if (cursor !== 0) {
+      cursorClause = ` AND "questionNumber" < ${cursor}`;
+    }
+    orderLimitOffset = orderLimitOffset.replace(
+      'ORDER BY "questionNumber" ASC',
+      'ORDER BY "questionNumber" DESC'
+    );
+  } else {
+    orderLimitOffset += ` LIMIT ${take}`;
+  }
 
   return cursorClause + orderLimitOffset;
 }
