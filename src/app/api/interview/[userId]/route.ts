@@ -25,8 +25,12 @@ export async function POST(req: Request) {
       return ForbiddenError;
     }
 
-    const { id, messages, questionNumber, code, codeLanguage } =
-      await req.json();
+    let id, messages, questionNumber, code, codeLanguage;
+    try {
+      ({ id, messages, questionNumber, code, codeLanguage } = await req.json());
+    } catch {
+      return get400Response("Invalid JSON body");
+    }
 
     if (!id || !messages || !questionNumber || !code || !codeLanguage) {
       return get400Response(
