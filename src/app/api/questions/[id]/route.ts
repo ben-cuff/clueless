@@ -6,18 +6,21 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const id = Number(segments[segments.length - 1]);
+    const { id } = await params;
+    const numId = Number(id);
 
-    if (isNaN(id)) {
+    console.log(numId);
+    if (isNaN(numId)) {
       return get400Response("Invalid question number");
     }
 
     const question = await prismaLib.question.findUnique({
-      where: { id },
+      where: { id: numId },
     });
 
     if (!question) {
@@ -31,18 +34,20 @@ export async function GET(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const id = Number(segments[segments.length - 1]);
+    const { id } = await params;
+    const numId = Number(id);
 
-    if (isNaN(id)) {
+    if (isNaN(numId)) {
       return get400Response("Invalid question ID");
     }
     try {
       const question = await prismaLib.question.delete({
-        where: { id },
+        where: { id: numId },
       });
       return get200Response(question);
     } catch (error) {

@@ -7,13 +7,15 @@ import {
 } from "@/utils/api-responses";
 import type { Company as CompanyEnum } from "@prisma/client";
 
-export async function PATCH(req: Request) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const id = Number(segments[segments.length - 2]);
+    const { id } = await params;
+    const numId = Number(id);
 
-    if (isNaN(id)) {
+    if (isNaN(numId)) {
       return get400Response("Invalid question number");
     }
 
@@ -32,7 +34,7 @@ export async function PATCH(req: Request) {
     }
 
     const updatedQuestion = await prismaLib.question.update({
-      where: { id },
+      where: { id: numId },
       data: {
         companies: validCompanies as CompanyEnum[],
       },
