@@ -39,10 +39,10 @@ model Activity {
 }
 
 model Question {
-  questionNumber Int         @id
+  id Int         @id
   title          String
   accuracy       Float
-  testcases      Json
+  testCases      Json
   starterCode    Json
   solutions      Json
   article        String
@@ -62,7 +62,7 @@ model Interview {
   account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages       Json
   questionNumber Int
-  question       Question  @relation(fields: [questionNumber], references: [questionNumber], onDelete: Cascade)
+  question       Question  @relation(fields: [questionNumber], references: [id], onDelete: Cascade)
   code           String?
   codeLanguage   Language
   createdAt      DateTime  @default(now())
@@ -72,12 +72,12 @@ model Interview {
 }
 
 model Feedback {
-  id          String    @id @default(uuid())
-  userId      Int
-  account     Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  interviewId String    @unique
-  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
-  feedback    String
+  id             String    @id @default(uuid())
+  userId         Int
+  account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviewId    String    @unique
+  interview      Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  feedback       String
   feedbackNumber Int
 }
 
