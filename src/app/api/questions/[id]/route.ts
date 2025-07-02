@@ -15,7 +15,6 @@ export async function GET(
     const { id } = await params;
     const numId = Number(id);
 
-    console.log(numId);
     if (isNaN(numId)) {
       return get400Response("Invalid question number");
     }

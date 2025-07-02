@@ -1,3 +1,4 @@
+import { Clueless_API_Routes } from "@/constants/api-urls";
 import { Message } from "@/types/message";
 
 export const interviewAPI = {
@@ -11,7 +12,7 @@ export const interviewAPI = {
   ) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}`,
+        Clueless_API_Routes.interviewWithUserId(userId),
         {
           method: "POST",
           headers: {
@@ -36,7 +37,7 @@ export const interviewAPI = {
   async updateCodeForInterview(userId: number, id: string, code: string) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/code`,
+        Clueless_API_Routes.interviewWithUserIdForCode(userId),
         {
           method: "POST",
           headers: {
@@ -55,7 +56,10 @@ export const interviewAPI = {
   async getInterview(userId: number, interviewId: string) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`
+        Clueless_API_Routes.interviewWithUserIdAndInterviewId(
+          userId,
+          interviewId
+        )
       );
 
       const data = await response.json();
@@ -67,7 +71,7 @@ export const interviewAPI = {
   async getInterviewsByUserId(userId: number) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}`
+        Clueless_API_Routes.interviewWithUserId(userId)
       );
 
       const data = await response.json();
@@ -79,7 +83,10 @@ export const interviewAPI = {
   async deleteInterview(userId: number, interviewId: string) {
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`,
+        Clueless_API_Routes.interviewWithUserIdAndInterviewId(
+          userId,
+          interviewId
+        ),
         {
           method: "DELETE",
         }

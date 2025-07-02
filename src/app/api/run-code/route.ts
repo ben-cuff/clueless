@@ -1,3 +1,4 @@
+import { judge0_api_url } from "@/constants/api-urls";
 import { IMPORTS } from "@/constants/imports";
 import { LanguageValues } from "@/constants/language-options";
 import {
@@ -42,10 +43,7 @@ export async function POST(req: Request) {
   };
 
   try {
-    const response = await fetch(
-      "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true",
-      options
-    );
+    const response = await fetch(judge0_api_url, options);
     const result = await response.json();
     return get200Response(result);
   } catch {
