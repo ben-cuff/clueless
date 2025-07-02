@@ -12,6 +12,7 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
           {messages.map((message, idx) => (
             <div
               key={idx}
+              data-testid={`chat-message-${message.role}-${idx}`}
               className={`flex gap-3 ${
                 message.role === "model" ? "" : "flex-row-reverse"
               }`}
