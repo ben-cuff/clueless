@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import useFeedback from "@/hooks/use-feedback";
-import Markdown from "react-markdown";
+import FeedbackContent from "./feedback-content";
 
 export default function FeedbackModal({
   interviewId,
@@ -30,7 +30,9 @@ export default function FeedbackModal({
           <div className="flex justify-center">
             {isLoading && <LoadingSpinner />}
           </div>
-          <Markdown>{feedbackContent}</Markdown>
+          {!isLoading && feedbackContent && (
+            <FeedbackContent feedback={feedbackContent} />
+          )}
         </DialogContent>
       </Dialog>
     </>

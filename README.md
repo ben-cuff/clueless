@@ -1,6 +1,6 @@
 ## Deployed site URL
 
-[Link](https://clueless-nu.vercel.app/)
+[Deployed Link](https://clueless-nu.vercel.app/)
 
 ## Getting Started
 

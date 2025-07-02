@@ -81,12 +81,26 @@ export async function POST(req: Request) {
 
     const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
 
-    const response = await ai.models.generateContentStream({
-      model: "gemini-2.0-flash",
-      contents: messages,
-    });
+    let response;
+    try {
+      response = await ai.models.generateContentStream({
+        model: "gemini-2.0-flash",
+        contents: messages,
+      });
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        error.status === 429
+      ) {
+        return get400Response("Rate limit exceeded. Please try again later.");
+      }
+      return get400Response("Error generating content from AI model.");
+    }
 
     const stream = await GoogleGenAIStream(response);
+
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.error(error);

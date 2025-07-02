@@ -57,6 +57,23 @@ export default function useInterview(
         questionNumber
       );
 
+      if (!response?.ok) {
+        setMessages((prev) => {
+          const updated = [...(prev || [])];
+          updated[updated.length - 1] = {
+            role: "model",
+            parts: [
+              {
+                text: "An error occurred while generating the response. Please try again later.",
+              },
+            ],
+          };
+          return updated;
+        });
+        setIsStreaming(false);
+        return;
+      }
+
       if (!response || !response.body) {
         alert("An unexpected error occurred");
         return;

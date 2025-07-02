@@ -19,10 +19,7 @@ export async function POST(req: Request) {
 
     try {
       const user = await prismaLib.account.create({
-        data: {
-          username: username,
-          hashedPassword,
-        },
+        data: { hashedPassword, username: username },
       });
       return get201Response({ success: true, user });
     } catch (error) {

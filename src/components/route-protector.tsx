@@ -11,7 +11,7 @@ export default async function RouteProtector({
   const session = await getServerSession(authOptions);
 
   if (!session?.user.id) {
-    redirect("/");
+    redirect("/?error=unauthenticated");
   }
 
   return <UserIdProvider value={session.user.id}>{children}</UserIdProvider>;

@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     const feedback = await prismaLib.feedback.findUnique({
       where: { interviewId },
     });
-      
+
     if (!feedback) {
       return get400Response("Feedback not found");
     }

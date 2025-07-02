@@ -1,3 +1,4 @@
+import { AccountAPI } from "@/utils/account-api";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -23,22 +24,7 @@ export default function useAuth(mode: "login" | "register") {
           return;
         }
 
-        const response = await fetch(`/api/auth/register`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: username,
-            password: password,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.error}`);
-          return;
-        }
+       await AccountAPI.createAccount(username, password);
       }
 
       const result = await signIn("credentials", {

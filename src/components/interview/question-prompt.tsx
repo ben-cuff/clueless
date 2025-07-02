@@ -13,15 +13,17 @@ export default function QuestionPrompt({
   prompt: string;
 }) {
   // adds new lines after certain parts to make more readable
-  const formattedPrompt = prompt
-    .replace(/(Example \d+:|Explanation:|Constraints:)/g, "\n$1")
-    .split(/\n+/)
-    .map((line, idx, arr) => (
-      <React.Fragment key={idx}>
-        {line}
-        {idx < arr.length - 1 && <br />}
-      </React.Fragment>
-    ));
+  const formattedPrompt =
+    prompt ||
+    "No prompt found"
+      .replace(/(Example \d+:|Explanation:|Constraints:)/g, "\n$1")
+      .split(/\n+/)
+      .map((line, idx, arr) => (
+        <React.Fragment key={idx}>
+          {line}
+          {idx < arr.length - 1 && <br />}
+        </React.Fragment>
+      ));
 
   return (
     <div className="rounded-lg shadow p-6 max-w-128 bg-card mx-2 overflow-auto max-h-200 min-w-82">
