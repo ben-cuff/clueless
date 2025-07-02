@@ -191,5 +191,6 @@ export default function useInterview(
     codeRef,
     isLoadingMessages,
     handleEndInterview,
+    userId,
   };
 }
