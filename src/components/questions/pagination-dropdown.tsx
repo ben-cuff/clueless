@@ -1,3 +1,4 @@
+import { TAKE_SIZES } from "@/constants/take-sizes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,7 @@ export default function PaginationDropdown({
     <DropdownMenu>
       <DropdownMenuTrigger>{takeSize} per page</DropdownMenuTrigger>
       <DropdownMenuContent>
-        {[20, 50, 100].map((size) => (
+        {TAKE_SIZES.map((size) => (
           <DropdownMenuItem
             key={size}
             onSelect={() => handleTakeSizeChange(size)}

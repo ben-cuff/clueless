@@ -1,0 +1,4 @@
+const TAKE_SIZES = [20, 50, 100];
+const DEFAULT_TAKE_SIZE = 20;
+
+export { DEFAULT_TAKE_SIZE, TAKE_SIZES };
