@@ -11,9 +11,9 @@ export async function PATCH(req: Request) {
   try {
     const url = new URL(req.url);
     const segments = url.pathname.split("/");
-    const questionNumber = Number(segments[segments.length - 2]);
+    const id = Number(segments[segments.length - 2]);
 
-    if (isNaN(questionNumber)) {
+    if (isNaN(id)) {
       return get400Response("Invalid question number");
     }
 
@@ -27,12 +27,12 @@ export async function PATCH(req: Request) {
       (company: Company) => COMPANIES[company]
     );
 
-    if (validCompanies.includes(undefined)) {
+    if (validCompanies.some((company) => company === undefined)) {
       return get400Response("Invalid company name provided");
     }
 
     const updatedQuestion = await prismaLib.question.update({
-      where: { questionNumber },
+      where: { id },
       data: {
         companies: validCompanies as CompanyEnum[],
       },

@@ -55,7 +55,7 @@ export async function GET(req: Request) {
   // prisma does not support random ordering directly, so we use a raw query
   const questions: Question[] = await prismaLib.$queryRawUnsafe(
     `SELECT
-        "questionNumber",
+        "id",
         "title",
         "accuracy", 
         "difficulty",
@@ -77,8 +77,7 @@ export async function GET(req: Request) {
   const filteredQuestions = questions.filter(
     (question) =>
       !recentFeedback.some(
-        (feedback) =>
-          feedback.interview.questionNumber === question.questionNumber
+        (feedback) => feedback.interview.questionNumber === question.id
       )
   );
 

@@ -10,14 +10,14 @@ export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
     const segments = url.pathname.split("/");
-    const questionNumber = Number(segments[segments.length - 1]);
+    const id = Number(segments[segments.length - 1]);
 
-    if (isNaN(questionNumber)) {
+    if (isNaN(id)) {
       return get400Response("Invalid question number");
     }
 
     const question = await prismaLib.question.findUnique({
-      where: { questionNumber },
+      where: { id },
     });
 
     if (!question) {
@@ -35,14 +35,14 @@ export async function DELETE(req: Request) {
   try {
     const url = new URL(req.url);
     const segments = url.pathname.split("/");
-    const questionNumber = Number(segments[segments.length - 1]);
+    const id = Number(segments[segments.length - 1]);
 
-    if (isNaN(questionNumber)) {
-      return get400Response("Invalid question number");
+    if (isNaN(id)) {
+      return get400Response("Invalid question ID");
     }
     try {
       const question = await prismaLib.question.delete({
-        where: { questionNumber },
+        where: { id },
       });
       return get200Response(question);
     } catch (error) {

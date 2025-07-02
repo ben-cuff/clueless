@@ -27,7 +27,7 @@ export default function InterviewQuestionPage({
     isLoadingMessages,
     handleEndInterview,
     userId,
-  } = useInterview(interviewId, question.questionNumber);
+  } = useInterview(interviewId, question.id);
   const isFeedback = useContext(FeedbackContext);
 
   return !isLoadingMessages ? (

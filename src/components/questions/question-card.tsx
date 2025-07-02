@@ -10,14 +10,11 @@ export default function QuestionCard({ question }: { question: Question }) {
   const leetcodeLink = `https://leetcode.com/problems/${question.titleSlug}`;
 
   return (
-    <QuestionCardHeader
-      title={question.title}
-      questionNumber={question.questionNumber}
-    >
+    <QuestionCardHeader title={question.title} questionNumber={question.id}>
       <DifficultyBadge difficulty={question.difficulty} />
       <CompaniesList companies={question.companies} />
       <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
-      <StartInterviewButton questionNumber={question.questionNumber} />
+      <StartInterviewButton questionNumber={question.id} />
       <TopicsBadges topics={question.topics} />
     </QuestionCardHeader>
   );

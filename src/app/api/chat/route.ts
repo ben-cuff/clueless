@@ -108,9 +108,9 @@ export async function POST(req: Request) {
   }
 }
 
-async function getPromptFromQuestionNumber(questionNumber: number) {
+async function getPromptFromQuestionNumber(id: number) {
   const question = await prismaLib.question.findFirst({
-    where: { questionNumber: questionNumber },
+    where: { id },
     select: { prompt: true, title: true, solutions: true },
   });
 

@@ -17,10 +17,10 @@ import type {
 export async function POST(req: Request) {
   try {
     const {
-      questionNumber,
+      id,
       title,
       accuracy,
-      testcases,
+      testCases,
       starterCode,
       solutions,
       topics,
@@ -32,14 +32,14 @@ export async function POST(req: Request) {
     } = await req.json();
 
     const isValid =
-      typeof questionNumber === "number" &&
+      typeof id === "number" &&
       typeof title === "string" &&
       typeof accuracy === "number" &&
       typeof prompt === "string" &&
       typeof difficulty === "string" &&
       Array.isArray(topics) &&
       Array.isArray(companies) &&
-      typeof testcases === "object" &&
+      typeof testCases === "object" &&
       typeof starterCode === "object" &&
       typeof solutions === "object" &&
       typeof article === "string" &&
@@ -61,17 +61,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // validate topics by converting them to the format defined in TOPICS
-    // replace spaces and dashed with underscores, and remove parentheses
-    const validTopics: (string | undefined)[] = topics.map(
-      (topic: Topic) =>
-        TOPICS[
-          topic
-            .toLowerCase()
-            .replace(/ +/g, "_")
-            .replace(/-/g, "_")
-            .replace(/[()]/g, "") as Topic
-        ]
+    const validTopics: (string | undefined)[] = topics.map((topic: Topic) =>
+      normalizeTopic(topic)
     );
 
     if (validTopics.includes(undefined)) {
@@ -92,18 +83,18 @@ export async function POST(req: Request) {
     try {
       question = await prismaLib.question.create({
         data: {
-          questionNumber,
+          id,
           title,
           accuracy,
-          testcases,
+          testCases,
           starterCode,
           solutions,
           prompt,
+          article,
+          titleSlug,
           difficulty: validDifficulty,
           topics: validTopics as TopicEnum[],
           companies: validCompanies as CompanyEnum[],
-          article,
-          titleSlug,
         },
       });
     } catch (error) {
@@ -114,7 +105,7 @@ export async function POST(req: Request) {
         error.code === "P2002"
       ) {
         return get409Response(
-          `Question with questionNumber ${questionNumber} already exists. Please use a different question number.`
+          `Question with questionNumber ${id} already exists. Please use a different question number.`
         );
       } else {
         console.error("Error during question creation:", error);
@@ -128,6 +119,16 @@ export async function POST(req: Request) {
   }
 }
 
+function normalizeTopic(topic: Topic): string | undefined {
+  return TOPICS[
+    topic
+      .toLowerCase()
+      .replace(/ +/g, "_")
+      .replace(/-/g, "_")
+      .replace(/[()]/g, "") as Topic
+  ];
+}
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -137,10 +138,10 @@ export async function GET(req: Request) {
 
     const questions = await prismaLib.question.findMany({
       ...pagination,
-      orderBy: { questionNumber: "asc" },
+      orderBy: { id: "asc" },
       where: whereClause,
       omit: {
-        testcases: true,
+        testCases: true,
         starterCode: true,
         solutions: true,
         article: true,
@@ -231,7 +232,7 @@ function getPagination(url: URL) {
       take,
       skip: 1 + skip, // skip the cursor question
       cursor: {
-        questionNumber: cursor,
+        id: cursor,
       },
     };
   }
@@ -240,7 +241,7 @@ function getPagination(url: URL) {
   return {
     take,
     skip,
-    cursor: { questionNumber: 1 },
+    cursor: { id: 1 },
   };
 }
 

@@ -49,7 +49,7 @@ export default function CodePlayground({
     <div className="flex flex-col">
       <QuestionHeader
         title={question.title ?? "Error"}
-        questionNumber={question.questionNumber}
+        questionNumber={question.id}
         difficulty={question.difficulty}
       />
       <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20">
@@ -61,7 +61,7 @@ export default function CodePlayground({
           title={question.title}
           prompt={question.prompt}
           difficulty={question.difficulty}
-          questionNumber={question.questionNumber}
+          questionNumber={question.id}
         />
         <div className="min-w-1/3">
           <ChatArea

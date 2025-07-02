@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
     let baseQuery = `
       SELECT 
-        "questionNumber", 
+        "id", 
         "title",
         "accuracy", 
         "difficulty",
@@ -42,7 +42,7 @@ export async function GET(req: Request) {
 
     baseQuery += paginationSQL;
 
-    // use of any here is straight fronm Prisma documentation
+    // use of any here is straight fronm Prisma documentation, Also this should be safe
     // https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries#safely-using-queryraw-and-executeraw-in-more-complex-scenarios
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlQuery: any = Prisma.sql([baseQuery]);
@@ -54,7 +54,7 @@ export async function GET(req: Request) {
     if (
       questions &&
       questions.length > 1 &&
-      questions[0].questionNumber > questions[1].questionNumber
+      questions[0].id > questions[1].id
     ) {
       return get200Response(questions.reverse());
     }
@@ -128,18 +128,18 @@ function getPaginationSQL(url: URL) {
   const cursor = parseInt(url.searchParams.get("cursor") || "0");
   const take = parseInt(url.searchParams.get("take") || "20");
   const skip = parseInt(url.searchParams.get("skip") || "0");
-  const sortBy = url.searchParams.get("sortBy") || "questionNumber";
+  const sortBy = url.searchParams.get("sortBy") || "id";
 
   let cursorClause = "";
   if (cursor !== 0) {
-    cursorClause = ` AND "questionNumber" > ${cursor}`;
+    cursorClause = ` AND "id" > ${cursor}`;
   }
 
   let orderLimitOffset = "";
   if (sortBy === "rank") {
     orderLimitOffset += ` ORDER BY "rank" DESC`;
   } else {
-    orderLimitOffset += ` ORDER BY "questionNumber" ASC`;
+    orderLimitOffset += ` ORDER BY "id" ASC`;
   }
 
   if (skip > 0) {
@@ -148,11 +148,11 @@ function getPaginationSQL(url: URL) {
   if (take < 0) {
     orderLimitOffset += ` LIMIT ${-take}`;
     if (cursor !== 0) {
-      cursorClause = ` AND "questionNumber" < ${cursor}`;
+      cursorClause = ` AND "id" < ${cursor}`;
     }
     orderLimitOffset = orderLimitOffset.replace(
-      'ORDER BY "questionNumber" ASC',
-      'ORDER BY "questionNumber" DESC'
+      'ORDER BY "id" ASC',
+      'ORDER BY "id" DESC'
     );
   } else {
     orderLimitOffset += ` LIMIT ${take}`;

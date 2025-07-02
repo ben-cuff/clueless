@@ -39,21 +39,21 @@ model Activity {
 }
 
 model Question {
-  id Int         @id
-  title          String
-  accuracy       Float
-  testCases      Json
-  starterCode    Json
-  solutions      Json
-  article        String
-  topics         Topic[]
-  prompt         String
-  companies      Company[]
-  difficulty     Int
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  titleSlug      String?
-  interviews     Interview[]
+  id          Int         @id
+  title       String
+  accuracy    Float
+  testCases   Json
+  starterCode Json
+  solutions   Json
+  article     String
+  topics      Topic[]
+  prompt      String
+  companies   Company[]
+  difficulty  Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  titleSlug   String?
+  interviews  Interview[]
 }
 
 model Interview {

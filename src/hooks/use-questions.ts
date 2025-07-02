@@ -63,7 +63,7 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length < takeSize) {
       return;
     }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.questionNumber;
+    const lastQuestionNumber = questionsData[takeSize - 1]?.id;
     fetchQuestions("next", lastQuestionNumber);
     setCurrentPage((prev) => prev + 1);
   }
@@ -72,7 +72,7 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length === 0) {
       return;
     }
-    const firstQuestionNumber = questionsData[0]?.questionNumber;
+    const firstQuestionNumber = questionsData[0]?.id;
     fetchQuestions("prev", firstQuestionNumber);
     setCurrentPage((prev) => prev - 1);
   }, [fetchQuestions, questionsData]);

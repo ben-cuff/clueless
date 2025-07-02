@@ -4,7 +4,7 @@ export interface Question {
   createdAt: string;
   difficulty: 1 | 2 | 3;
   prompt: string;
-  questionNumber: number;
+  id: number;
   title: string;
   topics: string[];
   updatedAt: string;
