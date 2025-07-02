@@ -84,39 +84,45 @@ test("questions-pagination-next-previous", async ({ page }) => {
   await page.goto("http://localhost:3000/questions");
 
   const bodyLocator = page.locator("body");
-  await expect(bodyLocator).toContainText("1. Two Sum");
-  await expect(bodyLocator).toContainText("2. Add Two Numbers");
-  await expect(bodyLocator).toContainText(
-    "3. Longest Substring Without Repeating Characters"
-  );
-  await expect(bodyLocator).toContainText(
-    "4. Median of Two Sorted Arrays"
-  );
-  await expect(bodyLocator).toContainText(
-    "5. Longest Palindromic Substring"
-  );
-  await page.getByLabel("Go to next page").click();
-  await expect(bodyLocator).toContainText(
-    "21. Merge Two Sorted Lists"
-  );
-  await expect(bodyLocator).toContainText("22. Generate Parentheses");
-  await expect(bodyLocator).toContainText("23. Merge k Sorted Lists");
-  await expect(bodyLocator).toContainText("24. Swap Nodes in Pairs");
-  await expect(bodyLocator).toContainText(
-    "25. Reverse Nodes in k-Group"
-  );
-  await page.getByLabel("Go to previous page").click();
-  await expect(bodyLocator).toContainText("1. Two Sum");
-  await expect(bodyLocator).toContainText("2. Add Two Numbers");
-  await expect(bodyLocator).toContainText(
-    "3. Longest Substring Without Repeating Characters"
-  );
-  await expect(bodyLocator).toContainText(
-    "4. Median of Two Sorted Arrays"
-  );
-  await expect(bodyLocator).toContainText(
-    "5. Longest Palindromic Substring"
-  );
+
+  const firstTestStep = await test.step("initial page load", async () => {
+    await expect(bodyLocator).toContainText("1. Two Sum");
+    await expect(bodyLocator).toContainText("2. Add Two Numbers");
+    await expect(bodyLocator).toContainText(
+      "3. Longest Substring Without Repeating Characters"
+    );
+    await expect(bodyLocator).toContainText("4. Median of Two Sorted Arrays");
+    await expect(bodyLocator).toContainText("5. Longest Palindromic Substring");
+    return true;
+  });
+
+  const secondTestStep = await test.step("go to next page", async () => {
+    await page.getByLabel("Go to next page").click();
+    await expect(bodyLocator).toContainText("21. Merge Two Sorted Lists");
+    await expect(bodyLocator).toContainText("22. Generate Parentheses");
+    await expect(bodyLocator).toContainText("23. Merge k Sorted Lists");
+    await expect(bodyLocator).toContainText("24. Swap Nodes in Pairs");
+    await expect(bodyLocator).toContainText("25. Reverse Nodes in k-Group");
+
+    return true;
+  });
+
+  const thirdTestStep = await test.step("go to previous page", async () => {
+    await page.getByLabel("Go to previous page").click();
+    await expect(bodyLocator).toContainText("1. Two Sum");
+    await expect(bodyLocator).toContainText("2. Add Two Numbers");
+    await expect(bodyLocator).toContainText(
+      "3. Longest Substring Without Repeating Characters"
+    );
+    await expect(bodyLocator).toContainText("4. Median of Two Sorted Arrays");
+    await expect(bodyLocator).toContainText("5. Longest Palindromic Substring");
+
+    return true;
+  });
+
+  expect(firstTestStep).toBeTruthy();
+  expect(secondTestStep).toBeTruthy();
+  expect(thirdTestStep).toBeTruthy();
 });
 
 test("questions-leetcode-link", async ({ page }) => {
