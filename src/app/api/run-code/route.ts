@@ -1,11 +1,21 @@
 import { IMPORTS } from "@/constants/imports";
-import { get200Response, UnknownServerError } from "@/utils/api-responses";
+import { LanguageValues } from "@/constants/language-options";
+import {
+  get200Response,
+  get400Response,
+  UnknownServerError,
+} from "@/utils/api-responses";
 
 export async function POST(req: Request) {
-  const { code, language, testcases } = await req.json();
+  const { code, language, testcases } = await req.json().catch(() => {
+    return get400Response("Invalid JSON body");
+  });
 
-  type LanguageValues = "java" | "javascript" | "cpp" | "python" | "csharp";
+  if (!code || !language || !testcases) {
+    return get400Response("Missing required fields: code, language, testcases");
+  }
 
+  // java needs testcases to be at the top of the code
   const finalCode =
     language.value === "java"
       ? `${

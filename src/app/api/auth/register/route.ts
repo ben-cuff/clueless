@@ -5,39 +5,36 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { Prisma } from "@prisma/client";
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
+  const { username, password } = await req.json().catch(() => {
+    return get400Response("Invalid JSON body");
+  });
+
+  if (!username || !password) {
+    return get400Response("Username and password are required");
+  }
+
+  const hashedPassword = await argon2.hash(password);
+
   try {
-    const { username, password } = await req.json();
-
-    if (!username || !password) {
-      return get400Response("Username and password are required");
-    }
-
-    const hashedPassword = await argon2.hash(password);
-
-    try {
-      const user = await prismaLib.account.create({
-        data: { hashedPassword, username },
-      });
-      return get201Response({ success: true, user });
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        error.code === "P2002"
-      ) {
-        return get409Response(
-          "Username already exists. Please choose a different username."
-        );
-      } else {
-        return UnknownServerError;
-      }
-    }
+    const user = await prismaLib.account.create({
+      data: { hashedPassword, username },
+    });
+    return get201Response({ success: true, user });
   } catch (error) {
-    console.error("Error in registration:", error);
-    return UnknownServerError;
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002" // Unique constraint failed on the username field
+    ) {
+      return get409Response(
+        "Username already exists. Please choose a different username."
+      );
+    } else {
+      console.error("Error during user registration:", error);
+      return UnknownServerError;
+    }
   }
 }

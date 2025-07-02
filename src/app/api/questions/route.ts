@@ -10,111 +10,104 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { getPagination, getWhereClause } from "@/utils/search-helpers";
-import type {
-  Company as CompanyEnum,
-  Topic as TopicEnum,
+import {
+  Prisma,
+  type Company as CompanyEnum,
+  type Topic as TopicEnum,
 } from "@prisma/client";
 
 export async function POST(req: Request) {
+  const {
+    id,
+    title,
+    accuracy,
+    testCases,
+    starterCode,
+    solutions,
+    topics,
+    prompt,
+    companies,
+    difficulty,
+    article,
+    titleSlug,
+  } = await req.json().catch(() => {
+    return get400Response("Invalid JSON body");
+  });
+
+  const isValid =
+    typeof id === "number" &&
+    typeof title === "string" &&
+    typeof accuracy === "number" &&
+    typeof prompt === "string" &&
+    typeof difficulty === "string" &&
+    Array.isArray(topics) &&
+    Array.isArray(companies) &&
+    typeof testCases === "object" &&
+    typeof starterCode === "object" &&
+    typeof solutions === "object" &&
+    typeof article === "string" &&
+    typeof titleSlug === "string";
+
+  if (!isValid) {
+    return get400Response(
+      "Invalid request body. Please ensure all required fields are present and correctly formatted."
+    );
+  }
+
+  const validCompanies: (string | undefined)[] = companies.map(
+    (company: Company) => COMPANIES[company]
+  );
+
+  if (validCompanies.includes(undefined)) {
+    return get400Response(
+      "Invalid company name(s) provided. Please check the company names."
+    );
+  }
+
+  const validTopics: (string | undefined)[] = topics.map((topic: Topic) =>
+    normalizeTopic(topic)
+  );
+
+  if (validTopics.includes(undefined)) {
+    return get400Response(
+      "Invalid topic name(s) provided. Please check the topic names."
+    );
+  }
+  const validDifficulty = DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
+
+  if (validDifficulty === undefined) {
+    return get400Response(
+      "Invalid difficulty level provided. Please check the difficulty level."
+    );
+  }
+
   try {
-    const {
-      id,
-      title,
-      accuracy,
-      testCases,
-      starterCode,
-      solutions,
-      topics,
-      prompt,
-      companies,
-      difficulty,
-      article,
-      titleSlug,
-    } = await req.json();
-
-    const isValid =
-      typeof id === "number" &&
-      typeof title === "string" &&
-      typeof accuracy === "number" &&
-      typeof prompt === "string" &&
-      typeof difficulty === "string" &&
-      Array.isArray(topics) &&
-      Array.isArray(companies) &&
-      typeof testCases === "object" &&
-      typeof starterCode === "object" &&
-      typeof solutions === "object" &&
-      typeof article === "string" &&
-      typeof titleSlug === "string";
-
-    if (!isValid) {
-      return get400Response(
-        "Invalid request body. Please ensure all required fields are present and correctly formatted."
-      );
-    }
-
-    const validCompanies: (string | undefined)[] = companies.map(
-      (company: Company) => COMPANIES[company]
-    );
-
-    if (validCompanies.includes(undefined)) {
-      return get400Response(
-        "Invalid company name(s) provided. Please check the company names."
-      );
-    }
-
-    const validTopics: (string | undefined)[] = topics.map((topic: Topic) =>
-      normalizeTopic(topic)
-    );
-
-    if (validTopics.includes(undefined)) {
-      return get400Response(
-        "Invalid topic name(s) provided. Please check the topic names."
-      );
-    }
-    const validDifficulty =
-      DIFFICULTIES[difficulty.toLowerCase() as Difficulty];
-
-    if (validDifficulty === undefined) {
-      return get400Response(
-        "Invalid difficulty level provided. Please check the difficulty level."
-      );
-    }
-
-    let question;
-    try {
-      question = await prismaLib.question.create({
-        data: {
-          id,
-          title,
-          accuracy,
-          testCases,
-          starterCode,
-          solutions,
-          prompt,
-          article,
-          titleSlug,
-          difficulty: validDifficulty,
-          topics: validTopics as TopicEnum[],
-          companies: validCompanies as CompanyEnum[],
-        },
-      });
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        error.code === "P2002" // Unique constraint failed
-      ) {
-        return get409Response(
-          `Question with id ${id} already exists. Please use a different question number.`
-        );
-      } else {
-        console.error("Error during question creation:", error);
-        return UnknownServerError;
-      }
-    }
+    const question = await prismaLib.question.create({
+      data: {
+        id,
+        title,
+        accuracy,
+        testCases,
+        starterCode,
+        solutions,
+        prompt,
+        article,
+        titleSlug,
+        difficulty: validDifficulty,
+        topics: validTopics as TopicEnum[],
+        companies: validCompanies as CompanyEnum[],
+      },
+    });
     return get201Response(question);
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002" // Unique constraint failed
+    ) {
+      return get409Response(
+        `Question with id ${id} already exists. Please use a different question number.`
+      );
+    }
     console.error("Error during question creation:", error);
     return UnknownServerError;
   }

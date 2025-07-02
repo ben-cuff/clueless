@@ -8,13 +8,15 @@ import {
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
+  const { username, password } = await req.json().catch(() => {
+    return get400Response("Invalid JSON body");
+  });
+
+  if (!username || !password) {
+    return get400Response("Username and password are required");
+  }
+
   try {
-    const { username, password } = await req.json();
-
-    if (!username || !password) {
-      return get400Response("Username and password are required");
-    }
-
     const user = await prismaLib.account.findUnique({
       where: { username },
     });
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
       return get401Response("Username or password incorrect");
     }
   } catch (error) {
-    console.error("Error during login:", error);
+    console.error("Error during user login:", error);
     return UnknownServerError;
   }
 }

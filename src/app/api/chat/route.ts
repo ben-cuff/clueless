@@ -50,60 +50,63 @@ class StreamingTextResponse extends Response {
 }
 
 export async function POST(req: Request) {
-  try {
-    const { messages, questionNumber, interviewId } = await req.json();
+  const { messages, questionNumber, interviewId } = await req
+    .json()
+    .catch(() => {
+      return get400Response("Invalid JSON body");
+    });
 
-    if (questionNumber) {
-      try {
-        const prompt = await getPromptFromQuestionNumber(questionNumber);
-        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch {
-        return get400Response(
-          `Error fetching prompt for question number ${questionNumber}`
-        );
-      }
-    }
-
-    if (interviewId) {
-      try {
-        const prompt = await getPromptFromInterviewId(interviewId);
-        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch {
-        return get400Response(
-          `Error fetching prompt for interview ID ${interviewId}`
-        );
-      }
-    }
-
-    if (!messages || !Array.isArray(messages)) {
-      return get400Response("Invalid or missing messages array");
-    }
-
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
-
-    let response;
+  if (questionNumber) {
     try {
-      response = await ai.models.generateContentStream({
-        model: "gemini-2.0-flash",
-        contents: messages,
-      });
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        error.status === 429
-      ) {
-        return get400Response("Rate limit exceeded. Please try again later.");
-      }
-      return get400Response("Error generating content from AI model.");
+      const prompt = await getPromptFromQuestionNumber(questionNumber);
+      messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+    } catch {
+      return get400Response(
+        `Error fetching prompt for question number ${questionNumber}`
+      );
     }
+  }
 
+  if (interviewId) {
+    try {
+      const prompt = await getPromptFromInterviewId(interviewId);
+      messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+    } catch {
+      return get400Response(
+        `Error fetching prompt for interview ID ${interviewId}`
+      );
+    }
+  }
+
+  if (!messages || !Array.isArray(messages)) {
+    return get400Response("Invalid or missing messages array");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+
+  let response;
+  try {
+    response = await ai.models.generateContentStream({
+      model: "gemini-2.0-flash",
+      contents: messages,
+    });
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      error.status === 429 // Rate limit exceeded
+    ) {
+      return get400Response("Rate limit exceeded. Please try again later.");
+    }
+    return get400Response("Error generating content from AI model.");
+  }
+
+  try {
     const stream = await GoogleGenAIStream(response);
-
     return new StreamingTextResponse(stream);
   } catch (error) {
-    console.error(error);
+    console.error("Error processing AI response stream:", error);
     return UnknownServerError;
   }
 }

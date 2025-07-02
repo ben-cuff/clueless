@@ -9,35 +9,36 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
-export async function POST(req: Request) {
-  try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const userId = Number(segments[segments.length - 1]);
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
 
-    if (isNaN(userId)) {
-      return get400Response("Invalid user ID");
-    }
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
 
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-    if (session?.user.id !== userId) {
-      return ForbiddenError;
-    }
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
 
-    let id, messages, questionNumber, code, codeLanguage;
-    try {
-      ({ id, messages, questionNumber, code, codeLanguage } = await req.json());
-    } catch {
+  const { id, messages, questionNumber, code, codeLanguage } = await req
+    .json()
+    .catch(() => {
       return get400Response("Invalid JSON body");
-    }
+    });
 
-    if (!id || !messages || !questionNumber || !code || !codeLanguage) {
-      return get400Response(
-        "Missing required fields: id, messages, questionNumber, code, codeLanguage"
-      );
-    }
+  if (!id || !messages || !questionNumber || !code || !codeLanguage) {
+    return get400Response(
+      "Missing required fields: id, messages, questionNumber, code, codeLanguage"
+    );
+  }
 
+  try {
     const interview = await prismaLib.interview.findUnique({
       where: { id },
     });
@@ -54,7 +55,12 @@ export async function POST(req: Request) {
       });
       return get200Response(updatedInterview);
     }
-
+  } catch (error) {
+    console.error("Error during interview creation: ", error);
+    return UnknownServerError;
+  }
+  
+  try {
     const newInterview = await prismaLib.interview.create({
       data: {
         id,
@@ -68,27 +74,29 @@ export async function POST(req: Request) {
 
     return get201Response(newInterview);
   } catch (error) {
-    console.error("Error during interview creation: ", error);
+    console.error("Error creating new interview: ", error);
     return UnknownServerError;
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const userId = Number(segments[segments.length - 1]);
-
-    if (isNaN(userId)) {
-      return get400Response("Invalid user ID");
-    }
-
-    const session = await getServerSession(authOptions);
-
-    if (session?.user.id !== userId) {
-      return ForbiddenError;
-    }
-
     const interviews = await prismaLib.interview.findMany({
       where: { userId },
       orderBy: { updatedAt: "desc" },

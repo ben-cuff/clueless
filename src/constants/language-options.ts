@@ -5,6 +5,13 @@ export interface LanguageOption {
   value: string;
 }
 
+export type LanguageValues =
+  | "java"
+  | "javascript"
+  | "cpp"
+  | "python"
+  | "csharp";
+
 export const languageOptions: LanguageOption[] = [
   {
     id: 63,

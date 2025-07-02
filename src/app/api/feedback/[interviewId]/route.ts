@@ -5,10 +5,12 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 
-export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const segments = url.pathname.split("/");
-  const interviewId = segments[segments.length - 1];
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ interviewId: string }> }
+) {
+  const resolvedParams = await params;
+  const interviewId = resolvedParams.interviewId;
 
   if (!interviewId) {
     return get400Response("Invalid interview ID");

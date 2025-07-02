@@ -10,10 +10,12 @@ import {
 import type { Topic } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
-export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const segments = url.pathname.split("/");
-  const userId = Number(segments[segments.length - 1]);
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
     return get400Response("Invalid user ID");
