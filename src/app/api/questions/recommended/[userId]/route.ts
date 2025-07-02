@@ -104,10 +104,12 @@ function getRecommendedQuestions(
 function getRecentValidInterviews(
   interviews: InterviewWithFeedback[]
 ): InterviewWithFeedback[] {
+  const SEC_IN_30_DAYS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+
   return interviews.filter(
     (interview) =>
       interview.feedback?.feedbackNumber !== -1 &&
-      interview.updatedAt > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      interview.updatedAt > new Date(Date.now() - SEC_IN_30_DAYS)
   );
 }
 

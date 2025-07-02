@@ -161,6 +161,8 @@ function getMessageFromQuestion(question: Question_Extended) {
     typeof question.solutions === "object" &&
     "python" in question.solutions
   ) {
+    // Hardcoded to Python solution as other language should be similar enough
+    // to not require a different message format.
     const pythonSolution = (question.solutions as { python: string }).python;
     message += `\n\nSolutions:\n${pythonSolution}`;
   }
