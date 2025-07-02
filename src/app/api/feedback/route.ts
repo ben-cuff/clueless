@@ -15,10 +15,8 @@ export async function POST(req: Request) {
     return get400Response("Invalid JSON body");
   });
 
-  if (!userId || !interviewId || !feedback) {
-    return get400Response(
-      "Missing required fields: userId, interviewId, feedback"
-    );
+  if (!interviewId || !feedback) {
+    return get400Response("Missing required fields:  interviewId, feedback");
   }
 
   const session = await getServerSession(authOptions);
@@ -40,7 +38,6 @@ export async function POST(req: Request) {
   try {
     const feedbackEntry = await prismaLib.feedback.create({
       data: {
-        userId,
         interviewId,
         feedback,
         feedbackNumber,

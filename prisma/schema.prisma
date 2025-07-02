@@ -21,7 +21,6 @@ model Account {
   updatedAt      DateTime    @updatedAt
   activity       Activity[]
   interview      Interview[]
-  feedback       Feedback[]
 
   @@index([username])
 }
@@ -73,8 +72,6 @@ model Interview {
 
 model Feedback {
   id             String    @id @default(uuid())
-  userId         Int
-  account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
   interviewId    String    @unique
   interview      Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
   feedback       String
