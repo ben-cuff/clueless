@@ -36,15 +36,14 @@ test("questions-search", async ({ page }) => {
 
 test("questions-filter-by-topics", async ({ page }) => {
   await page.goto("http://localhost:3000/questions");
-  await page
-    .locator("div")
-    .filter({ hasText: "Select topics..." })
-    .nth(4)
-    .click();
+  
+  const topicsDropdown = page.getByText("Select topics...", { exact: true });
+  await topicsDropdown.click();
+  
+  await page.waitForSelector('[role="option"]');
   await page.getByRole("option", { name: "Array", exact: true }).click();
-  await page
-    .getByRole("option", { name: "Binary Search", exact: true })
-    .click();
+  await page.getByRole("option", { name: "Binary Search", exact: true }).click();
+  
   await page.waitForTimeout(1000);
   await expect(page.locator("body")).toContainText("1. Two Sum");
   await expect(page.locator("body")).toContainText(

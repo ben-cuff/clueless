@@ -21,7 +21,11 @@ export default function useInterview(
   const handleCodeSave = useCallback(
     async (code: string) => {
       if (code)
-        interviewAPI.updateCodeForInterview(userId || -1, interviewId, code);
+        await interviewAPI.updateCodeForInterview(
+          userId || -1,
+          interviewId,
+          code
+        );
     },
     [interviewId, userId]
   );
@@ -134,7 +138,7 @@ export default function useInterview(
   useEffect(() => {
     if (hasMounted.current) {
       (async () => {
-        if (!isStreaming) {
+        if (!isStreaming && messages && messages?.length > 1) {
           await interviewAPI.createOrUpdateInterview(
             userId || -1,
             interviewId,
