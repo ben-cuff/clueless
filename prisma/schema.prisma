@@ -75,7 +75,7 @@ model Feedback {
   interviewId    String    @unique
   interview      Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
   feedback       String
-  feedbackNumber Int
+  feedbackNumber Int // Rating or score for the interview feedback (0-5, -1 being no feedbackNumber)
 }
 
 enum Company {
