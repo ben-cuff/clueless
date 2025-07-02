@@ -9,6 +9,7 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { getPagination, getWhereClause } from "@/utils/search-helpers";
 import type {
   Company as CompanyEnum,
   Topic as TopicEnum,
@@ -102,10 +103,10 @@ export async function POST(req: Request) {
         typeof error === "object" &&
         error !== null &&
         "code" in error &&
-        error.code === "P2002"
+        error.code === "P2002" // Unique constraint failed
       ) {
         return get409Response(
-          `Question with questionNumber ${id} already exists. Please use a different question number.`
+          `Question with id ${id} already exists. Please use a different question number.`
         );
       } else {
         console.error("Error during question creation:", error);
@@ -133,8 +134,18 @@ export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
 
-    const whereClause = getWhereClause(url);
-    const pagination = getPagination(url);
+    const topics = url.searchParams.get("topics") || undefined;
+    const difficulty = url.searchParams.get("difficulty") || undefined;
+    const companies = url.searchParams.get("companies") || undefined;
+
+    const whereClause = getWhereClause(topics, difficulty, companies, false);
+
+    const cursor = parseInt(url.searchParams.get("cursor") || "0");
+    const take = parseInt(url.searchParams.get("take") || "20");
+    const skip = parseInt(url.searchParams.get("skip") || "0");
+    const sortBy = url.searchParams.get("sortBy") || "id";
+
+    const pagination = getPagination(cursor, take, skip, sortBy, false) || {};
 
     const questions = await prismaLib.question.findMany({
       ...pagination,
@@ -152,137 +163,5 @@ export async function GET(req: Request) {
   } catch (error) {
     console.error("Error during question retrieval:", error);
     return UnknownServerError;
-  }
-}
-
-function getWhereClause(url: URL) {
-  const topics = url.searchParams.get("topics");
-  const difficulty = url.searchParams.get("difficulty");
-  const companies = url.searchParams.get("companies");
-
-  let whereClause = {};
-
-  // topics should be formatted as a space-separated string of topic names
-  // e.g. "array string hash_table"
-  if (topics) {
-    let topicArray: (string | undefined)[] = topics
-      .split(" ")
-      .map((t) => TOPICS[t as Topic]);
-    if (topicArray.includes(undefined)) {
-      topicArray = topicArray.filter((t) => t !== undefined);
-    }
-    if (topicArray.length !== 0) {
-      whereClause = {
-        topics: {
-          hasSome: topicArray,
-        },
-      };
-    }
-  }
-
-  // difficulty should be formatted as a space-separated string of difficulty levels
-  // e.g. "easy medium hard"
-  if (difficulty) {
-    let difficultyArray: (number | undefined)[] = difficulty
-      .split(" ")
-      .map((d) => DIFFICULTIES[d as Difficulty]);
-
-    if (difficultyArray.includes(undefined)) {
-      difficultyArray = difficultyArray.filter((d) => d !== undefined);
-    }
-
-    if (difficultyArray.length !== 0) {
-      whereClause = {
-        ...whereClause,
-        difficulty: { in: difficultyArray },
-      };
-    }
-  }
-
-  // companies should be formatted as a space-separated string of company names
-  // e.g. "google microsoft amazon"
-  if (companies) {
-    let companyArray: (string | undefined)[] = companies
-      .split(" ")
-      .map((c) => COMPANIES[c as Company]);
-
-    if (companyArray.includes(undefined)) {
-      companyArray = companyArray.filter((c) => c !== undefined);
-    }
-
-    if (companyArray.length !== 0) {
-      whereClause = {
-        ...whereClause,
-        companies: { hasSome: companyArray },
-      };
-    }
-  }
-
-  return whereClause;
-}
-
-function getPagination(url: URL) {
-  const cursor = parseInt(url.searchParams.get("cursor") || "0");
-  const take = parseInt(url.searchParams.get("take") || "20");
-  const skip = parseInt(url.searchParams.get("skip") || "0");
-
-  // If cursor is provided, we use it to set the cursor for pagination
-  if (cursor !== 0) {
-    return {
-      take,
-      skip: 1 + skip, // skip the cursor question
-      cursor: {
-        id: cursor,
-      },
-    };
-  }
-
-  // If cursor is not provided, we use skip and take for pagination
-  return {
-    take,
-    skip,
-    cursor: { id: 1 },
-  };
-}
-
-export async function DELETE(req: Request) {
-  try {
-    const apiKey = req.headers.get("x-api-key");
-    const validApiKey = process.env.ADMIN_API_KEY;
-
-    if (!apiKey || apiKey !== validApiKey) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized: Invalid API key" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    try {
-      await prismaLib.question.deleteMany();
-    } catch (error) {
-      return new Response(
-        JSON.stringify({
-          error: "Failed to delete questions",
-          errorData: error,
-        }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error during question deletion:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
   }
 }
