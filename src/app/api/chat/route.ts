@@ -56,24 +56,25 @@ export async function POST(req: Request) {
       return get400Response("Invalid JSON body");
     });
 
-  if (questionNumber) {
-    try {
-      const prompt = await getPromptFromQuestionNumber(questionNumber);
-      messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-    } catch {
-      return get400Response(
-        `Error fetching prompt for question number ${questionNumber}`
-      );
-    }
+  if (questionNumber && interviewId) {
+    return get400Response(
+      "Please provide either questionNumber or interviewId, not both."
+    );
   }
 
-  if (interviewId) {
+  if (questionNumber || interviewId) {
     try {
-      const prompt = await getPromptFromInterviewId(interviewId);
+      let prompt;
+      if (questionNumber) {
+        prompt = await getPromptFromQuestionNumber(questionNumber);
+      } else {
+        prompt = await getPromptFromInterviewId(interviewId);
+      }
+
       messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-    } catch {
+    } catch (error) {
       return get400Response(
-        `Error fetching prompt for interview ID ${interviewId}`
+        error instanceof Error ? error.message : "Could not retrieve prompt"
       );
     }
   }
@@ -118,7 +119,7 @@ async function getPromptFromQuestionNumber(id: number) {
   });
 
   if (!question) {
-    throw new Error();
+    throw new Error("Question not found");
   }
 
   return getMessageFromQuestion(question as Question_Extended);
@@ -139,7 +140,7 @@ async function getPromptFromInterviewId(interviewId: string) {
   });
 
   if (!interview || !interview.question) {
-    throw new Error();
+    throw new Error("Interview not found");
   }
 
   return getMessageFromQuestion(interview.question as Question_Extended);
