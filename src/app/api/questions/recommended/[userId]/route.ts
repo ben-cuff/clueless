@@ -113,25 +113,41 @@ function getRecentValidInterviews(
   );
 }
 
+//   ["Arrays", "Trees"] feedbackNumber: 2
+//   ["Dynamic Programming", "Arrays"] feedbackNumber: 3
+// 
+// - Arrays: (1/3 + 1/4)/2 = 0.292
+// - Trees: (1/3)/1 = 0.333
+// - Dynamic Programming: (1/4)/1 = 0.25
 function getTopicWeights(
   interviews: InterviewWithFeedback[]
 ): Map<string, number> {
   const topicWeights = new Map<string, number>();
+  const topicCounts = new Map<string, number>();
 
-  // assigns a weight to each topic based on the feedback number
-  // the higher the feedback number, the lower the weight
   interviews.forEach((interview) => {
-    const weight = 1 / (interview?.feedback?.feedbackNumber ?? 0 + 1);
+    const weight = 1 / ((interview?.feedback?.feedbackNumber ?? 0) + 1);
 
     interview.question.topics.forEach((topic) => {
+      const currentCount = topicCounts.get(topic) ?? 0;
+      topicCounts.set(topic, currentCount + 1);
+
       const currentWeight = topicWeights.get(topic) ?? 0;
       topicWeights.set(topic, currentWeight + weight);
     });
   });
 
+  for (const [topic, weight] of topicWeights.entries()) {
+    const count = topicCounts.get(topic) ?? 1;
+    topicWeights.set(topic, weight / count);
+  }
+
   return topicWeights;
 }
 
+// If we have topicWeights with: {'Arrays': 0.5, 'Dynamic Programming': 0.7, 'Trees': 0.3}
+// And a question with topics ['Arrays', 'Trees'], its weight would be 0.5 + 0.3 = 0.8
+// Then we sort all questions by their weights in descending order
 function getSortedWeightedQuestions(
   questions: Question[],
   topicWeights: Map<string, number>
