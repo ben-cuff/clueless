@@ -19,7 +19,8 @@ export default function LanguagesSelect({
       defaultValue={initialLanguage.id.toString()}
       onValueChange={(value) => {
         handleLanguageChange(
-          languageOptions.find((lang) => lang.id.toString() === value)!
+          languageOptions.find((lang) => lang.id.toString() === value) ??
+            languageOptions[4]
         );
       }}
     >
