@@ -11,26 +11,23 @@ export default function ChatInput({
   const [isDisabled, setIsDisabled] = useState(false);
   const isFeedback = useContext(FeedbackContext);
 
-  const formSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const textarea = form.querySelector("textarea");
-    if (textarea?.value.trim() === "") {
+  const submitMessage = async (formData: FormData) => {
+    const message = formData.get("message");
+    if (!message || (typeof message === "string" && message.trim() === "")) {
       return;
     }
 
-    if (textarea) {
-      setIsDisabled(true);
-      await handleMessageSubmit(textarea.value);
-      setIsDisabled(false);
-      textarea.value = "";
-    }
+    setIsDisabled(true);
+    await handleMessageSubmit(message.toString());
+    setIsDisabled(false);
+    formData.set("message", "");
   };
 
   return (
-    <form className="flex flex-row items-end p-2" onSubmit={formSubmit}>
+    <form className="flex flex-row items-end p-2" action={submitMessage}>
       <Textarea
         className="m-2 flex-1"
+        name="message"
         placeholder="Your message here"
         rows={2}
         disabled={isDisabled || isFeedback}

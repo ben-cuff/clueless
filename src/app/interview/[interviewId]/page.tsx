@@ -20,7 +20,7 @@ export default async function ResumeInterviewPage({
     ? questionNumberParam[0]
     : questionNumberParam;
 
-  const questionId = questionNumber ? Number(questionNumber) : undefined;
+  const questionId = Number(questionNumber) ?? undefined;
 
   if (questionId === undefined || isNaN(questionId)) {
     redirect("/interview");

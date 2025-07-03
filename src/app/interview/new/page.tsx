@@ -22,7 +22,7 @@ export default async function NewInterviewPage({
     ? questionNumberParam[0]
     : questionNumberParam;
 
-  const questionId = questionNumber ? Number(questionNumber) : randomQuestionId;
+  const questionId = Number(questionNumber) ?? randomQuestionId;
 
   const question: Question_Extended = await apiQuestions.getQuestionById(
     questionId
