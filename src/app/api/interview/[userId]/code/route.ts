@@ -7,6 +7,7 @@ import {
   get404Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { Language } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function POST(
@@ -26,12 +27,12 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { id, code } = await req.json().catch(() => {
+  const { id, code, language } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
-  if (!id || !code) {
-    return get400Response("Missing required fields: id, code");
+  if (!id || !code || !language) {
+    return get400Response("Missing required fields: id, code, language");
   }
 
   try {
@@ -47,6 +48,7 @@ export async function POST(
       where: { id },
       data: {
         code,
+        codeLanguage: language.toUpperCase() as Language,
       },
     });
 

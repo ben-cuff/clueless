@@ -16,6 +16,7 @@ export default function useInterview(
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
+  const languageRef = useRef("python");
   const router = useRouter();
 
   const handleCodeSave = useCallback(
@@ -24,7 +25,8 @@ export default function useInterview(
         await interviewAPI.updateCodeForInterview(
           userId || -1,
           interviewId,
-          code
+          code,
+          languageRef.current
         );
     },
     [interviewId, userId]
@@ -146,7 +148,7 @@ export default function useInterview(
             messages!,
             questionNumber,
             codeRef.current,
-            "python" // hardcoded for now, can be extended later with a ref to the user's selected language
+            languageRef.current
           );
           if (
             messages &&
@@ -198,5 +200,6 @@ export default function useInterview(
     isLoadingMessages,
     handleEndInterview,
     userId,
+    languageRef,
   };
 }

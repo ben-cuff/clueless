@@ -9,12 +9,14 @@ import {
 
 export default function LanguagesSelect({
   handleLanguageChange,
+  initialLanguage,
 }: {
   handleLanguageChange: (language: LanguageOption) => void;
+  initialLanguage: LanguageOption;
 }) {
   return (
     <Select
-      defaultValue="71" // python
+      defaultValue={initialLanguage.id.toString()}
       onValueChange={(value) => {
         handleLanguageChange(
           languageOptions.find((lang) => lang.id.toString() === value)!

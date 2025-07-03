@@ -16,12 +16,8 @@ export default function useCodePlayground(
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
   );
-  const [language, setLanguage] = useState<LanguageOption>(languageOptions[4]); // 4 is Python by default
+  const [language, setLanguage] = useState<LanguageOption | undefined>(); // 4 is Python by default
   const [code, setCode] = useState<string>("");
-
-  const handleLanguageChange = useCallback((newLanguage: LanguageOption) => {
-    setLanguage(newLanguage);
-  }, []);
 
   const handleThemeChange = useCallback((newTheme: Theme) => {
     if (["light", "vs-dark"].includes(newTheme)) {
@@ -31,6 +27,29 @@ export default function useCodePlayground(
     }
   }, []);
 
+  const handleStarterCodeChange = useCallback(
+    (language: string) => {
+      setLanguage(
+        languageOptions.find((lang) => lang.value === language) ??
+          languageOptions[4] // Default to Python if not found
+      );
+      setCode(
+        question.starterCode[language as keyof typeof question.starterCode] ||
+          ""
+      );
+    },
+    [question]
+  );
+
+  const handleLanguageChange = useCallback(
+    (newLanguage: LanguageOption) => {
+      setLanguage(newLanguage);
+      handleStarterCodeChange(newLanguage.value);
+    },
+    [handleStarterCodeChange]
+  );
+
+  // Fetch the initial code for the interview if it exists, otherwise use the starter code from the question
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(
@@ -39,15 +58,14 @@ export default function useCodePlayground(
       );
       if (!interview.error) {
         setCode(interview.code || "");
-      } else if (question?.starterCode) {
-        setCode(
-          question.starterCode[
-            language.value as keyof typeof question.starterCode
-          ] || ""
+        setLanguage(
+          languageOptions.find(
+            (lang) => lang.value === interview.codeLanguage?.toLowerCase()
+          ) ?? languageOptions[4]
         );
       }
     })();
-  }, [language.value, question, interviewId, userId]);
+  }, [question, interviewId, userId, handleStarterCodeChange]);
 
   return {
     theme,

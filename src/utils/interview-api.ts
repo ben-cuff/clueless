@@ -34,7 +34,12 @@ export const interviewAPI = {
       console.error("Error creating or updating interview:", error);
     }
   },
-  async updateCodeForInterview(userId: number, id: string, code: string) {
+  async updateCodeForInterview(
+    userId: number,
+    id: string,
+    code: string,
+    language: string
+  ) {
     try {
       const response = await fetch(
         Clueless_API_Routes.interviewWithUserIdForCode(userId),
@@ -43,7 +48,7 @@ export const interviewAPI = {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id, code }),
+          body: JSON.stringify({ id, code, language }),
         }
       );
 
