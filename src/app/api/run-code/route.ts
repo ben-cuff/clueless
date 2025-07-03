@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const options = {
     method: "POST",
     headers: {
-      "x-rapidapi-key": process.env.JUDGE0_API_KEY || "",
+      "x-rapidapi-key": process.env.JUDGE0_API_KEY ?? "",
       "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
       "Content-Type": "application/json",
     },

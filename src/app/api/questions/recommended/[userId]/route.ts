@@ -124,7 +124,7 @@ function getTopicWeights(
     const weight = 1 / (interview?.feedback?.feedbackNumber ?? 0 + 1);
 
     interview.question.topics.forEach((topic) => {
-      const currentWeight = topicWeights.get(topic) || 0;
+      const currentWeight = topicWeights.get(topic) ?? 0;
       topicWeights.set(topic, currentWeight + weight);
     });
   });
@@ -141,7 +141,7 @@ function getSortedWeightedQuestions(
     let totalWeight = 0;
 
     question.topics.forEach((topic) => {
-      totalWeight += topicWeights.get(topic) || 0;
+      totalWeight += topicWeights.get(topic) ?? 0;
     });
 
     return {

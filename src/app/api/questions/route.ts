@@ -127,16 +127,16 @@ export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
 
-    const topics = url.searchParams.get("topics") || undefined;
-    const difficulty = url.searchParams.get("difficulty") || undefined;
-    const companies = url.searchParams.get("companies") || undefined;
+    const topics = url.searchParams.get("topics") ?? undefined;
+    const difficulty = url.searchParams.get("difficulty") ?? undefined;
+    const companies = url.searchParams.get("companies") ?? undefined;
 
     const whereClause = getWhereClause(topics, difficulty, companies, false);
 
-    const cursor = parseInt(url.searchParams.get("cursor") || "0");
-    const take = parseInt(url.searchParams.get("take") || "20");
-    const skip = parseInt(url.searchParams.get("skip") || "0");
-    const sortBy = url.searchParams.get("sortBy") || "id";
+    const cursor = parseInt(url.searchParams.get("cursor") ?? "0");
+    const take = parseInt(url.searchParams.get("take") ?? "20");
+    const skip = parseInt(url.searchParams.get("skip") ?? "0");
+    const sortBy = url.searchParams.get("sortBy") ?? "id";
 
     const pagination = getPagination(cursor, take, skip, sortBy, false) || {};
 

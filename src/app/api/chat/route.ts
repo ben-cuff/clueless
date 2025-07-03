@@ -20,7 +20,7 @@ async function GoogleGenAIStream(
         for await (const chunk of response) {
           const candidateChunk = chunk as GenAIChunk;
           const text =
-            candidateChunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            candidateChunk.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
           if (text) {
             controller.enqueue(text);
           }
