@@ -63,9 +63,17 @@ export default function useCodePlayground(
             (lang) => lang.value === interview.codeLanguage?.toLowerCase()
           ) ?? languageOptions[4]
         );
+      } else {
+        handleLanguageChange(languageOptions[4]); // Default to Python if interview not found or error
       }
     })();
-  }, [question, interviewId, userId, handleStarterCodeChange]);
+  }, [
+    question,
+    interviewId,
+    userId,
+    handleStarterCodeChange,
+    handleLanguageChange,
+  ]);
 
   return {
     theme,
