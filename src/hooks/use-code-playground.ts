@@ -1,5 +1,9 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { LanguageOption, languageOptions } from "@/constants/language-options";
+import {
+  LanguageOption,
+  languageOptions,
+  PYTHON_INDEX,
+} from "@/constants/language-options";
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";
 import { Theme } from "@/types/theme";
@@ -31,7 +35,7 @@ export default function useCodePlayground(
     (language: string) => {
       setLanguage(
         languageOptions.find((lang) => lang.value === language) ??
-          languageOptions[4] // Default to Python if not found
+          languageOptions[PYTHON_INDEX] // Default to Python if not found
       );
       setCode(
         question.starterCode[language as keyof typeof question.starterCode] ||
@@ -53,7 +57,7 @@ export default function useCodePlayground(
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(
-        userId || -1,
+        userId || -1, // 
         interviewId
       );
       if (!interview.error) {
@@ -61,10 +65,10 @@ export default function useCodePlayground(
         setLanguage(
           languageOptions.find(
             (lang) => lang.value === interview.codeLanguage?.toLowerCase()
-          ) ?? languageOptions[4]
+          ) ?? languageOptions[PYTHON_INDEX]
         );
       } else {
-        handleLanguageChange(languageOptions[4]); // Default to Python if interview not found or error
+        handleLanguageChange(languageOptions[PYTHON_INDEX]); // Default to Python if interview not found or error
       }
     })();
   }, [

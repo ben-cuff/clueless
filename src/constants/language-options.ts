@@ -44,3 +44,7 @@ export const languageOptions: LanguageOption[] = [
     value: "python",
   },
 ];
+
+export const PYTHON_INDEX = languageOptions.findIndex(
+  (option) => option.value === "python"
+); // should be 4
