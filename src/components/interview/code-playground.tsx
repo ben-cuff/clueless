@@ -47,6 +47,7 @@ export default function CodePlayground({
   }, [debouncedCode, handleCodeSave]);
 
   codeRef.current = code;
+
   useEffect(() => {
     if (language?.value) {
       languageRef.current = language.value;

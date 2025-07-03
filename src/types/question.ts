@@ -12,7 +12,7 @@ export interface Question {
 }
 
 export interface Question_Extended extends Question {
-  testcases: {
+  testCases: {
     cpp: string;
     java: string;
     csharp: string;
@@ -36,4 +36,4 @@ export interface Question_Extended extends Question {
   article: string;
 }
 
-export type TestcasesKey = keyof Question_Extended["testcases"];
+export type TestcasesKey = keyof Question_Extended["testCases"];

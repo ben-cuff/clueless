@@ -16,7 +16,7 @@ export default function useCodePlayground(
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
   );
-  const [language, setLanguage] = useState<LanguageOption | undefined>(); // 4 is Python by default
+  const [language, setLanguage] = useState<LanguageOption | undefined>();
   const [code, setCode] = useState<string>("");
 
   const handleThemeChange = useCallback((newTheme: Theme) => {
@@ -49,7 +49,7 @@ export default function useCodePlayground(
     [handleStarterCodeChange]
   );
 
-  // Fetch the initial code for the interview if it exists, otherwise use the starter code from the question
+  // Fetch the initial code and language for the interview if it exists
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(

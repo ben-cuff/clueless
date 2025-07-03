@@ -18,15 +18,10 @@ export default function useCodeOutput(
 
   const handleSubmitCode = useCallback(async () => {
     setIsLoading(true);
-    console.log("Running code with parameters:", {
-      code,
-      testcases: question.testcases[language.value as TestcasesKey],
-      language,
-    });
     try {
       const result = await codeExecutionAPI.runCode(
         code,
-        question.testcases[language.value as TestcasesKey],
+        question.testCases[language.value as TestcasesKey] ?? "",
         language
       );
 
@@ -46,7 +41,7 @@ export default function useCodeOutput(
     } finally {
       setIsLoading(false);
     }
-  }, [code, language, question.testcases]);
+  }, [code, language, question.testCases]);
 
   return {
     handleSubmitCode,
