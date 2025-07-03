@@ -63,7 +63,7 @@ export default function useInterview(
 
       if (!response?.ok) {
         setMessages((prev) => {
-          const updated = [...(prev || [])];
+          const updated = [...(prev ?? [])];
           updated[updated.length - 1] = {
             role: "model",
             parts: [
@@ -135,6 +135,7 @@ export default function useInterview(
     );
   }, [interviewId, questionNumber, router]);
 
+  // updates the interview in the backend
   useEffect(() => {
     if (hasMounted.current) {
       (async () => {
@@ -145,7 +146,7 @@ export default function useInterview(
             messages!,
             questionNumber,
             codeRef.current,
-            "python"
+            "python" // hardcoded for now, can be extended later with a ref to the user's selected language
           );
           if (
             messages &&
@@ -164,6 +165,7 @@ export default function useInterview(
     }
   }, [interviewId, isStreaming, messages, questionNumber, userId, router]);
 
+  // runs on mount to fetch the interview messages if they exist
   useEffect(() => {
     (async () => {
       const interviewData = await interviewAPI.getInterview(
