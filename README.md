@@ -5,7 +5,7 @@
 ## Getting Started
 
 ### Quick Start
-For a quick start, I've included throwaway keys and databases in `.env.example`. You can simply rename this file to `.env` and get started immediately without setting up your own keys.
+For a quick start, I've included throwaway keys and databases in `.env.example`. You can simply rename this file to `.env` and uncomment out the part at the bottom, so that you can get started without setting up your own keys.
 
 ### Setting Up Your Own Environment
 If you prefer to use your own keys and databases:
