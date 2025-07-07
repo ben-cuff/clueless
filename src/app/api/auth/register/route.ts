@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const hashedPassword = await argon2.hash(password);
 
   try {
-    const user = await prismaLib.account.create({
+    const user = await prismaLib.user.create({
       data: { hashedPassword, username },
     });
     return get201Response({ success: true, user });
