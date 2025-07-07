@@ -39,30 +39,15 @@ export async function POST(
   }
 
   try {
-    const interview = await prismaLib.interview.findUnique({
+    const interview = await prismaLib.interview.upsert({
       where: { id },
-    });
-
-    if (interview) {
-      const updatedInterview = await prismaLib.interview.update({
-        where: { id },
-        data: {
-          messages,
-          questionNumber,
-          code,
-          codeLanguage,
-        },
-      });
-      return get200Response(updatedInterview);
-    }
-  } catch (error) {
-    console.error("Error during interview creation: ", error);
-    return UnknownServerError;
-  }
-  
-  try {
-    const newInterview = await prismaLib.interview.create({
-      data: {
+      update: {
+        messages,
+        questionNumber,
+        code,
+        codeLanguage,
+      },
+      create: {
         id,
         userId,
         messages,
@@ -72,9 +57,15 @@ export async function POST(
       },
     });
 
-    return get201Response(newInterview);
+    const isNewRecord =
+      interview.createdAt.getTime() ===
+      interview.updatedAt.getTime();
+
+    return isNewRecord
+      ? get201Response(interview)
+      : get200Response(interview);
   } catch (error) {
-    console.error("Error creating new interview: ", error);
+    console.error("Error upserting interview: ", error);
     return UnknownServerError;
   }
 }
