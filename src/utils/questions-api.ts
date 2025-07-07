@@ -1,3 +1,5 @@
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+
 export const apiQuestions = {
   async getQuestions(
     topics?: string[],
@@ -34,14 +36,7 @@ export const apiQuestions = {
         params.append("sortBy", "rank");
       }
 
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_BASE_URL
-        }/api/questions/search?${params.toString()}`,
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch(CLUELESS_API_ROUTES.questionsSearch(params));
 
       const data = await response.json();
       return data;
@@ -51,12 +46,9 @@ export const apiQuestions = {
   },
   async getQuestionById(id: number) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/${id}`,
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch(CLUELESS_API_ROUTES.questionsById(id), {
+        method: "GET",
+      });
 
       const data = await response.json();
       return data;
@@ -67,7 +59,7 @@ export const apiQuestions = {
   async getRecommendedQuestions(userId: number) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/recommended/${userId}`,
+        CLUELESS_API_ROUTES.recommendedQuestions(userId),
         {
           method: "GET",
         }

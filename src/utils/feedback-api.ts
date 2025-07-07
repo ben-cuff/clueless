@@ -1,11 +1,12 @@
-import { feedbackMessageText } from "@/constants/prompt-fillers";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { FEEDBACK_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { interviewAPI } from "./interview-api";
 
 export const feedbackAPI = {
   async getFeedback(interviewId: string) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/feedback/${interviewId}`
+        CLUELESS_API_ROUTES.feedbackWithInterviewId(interviewId)
       );
 
       const data = await response.json();
@@ -17,16 +18,13 @@ export const feedbackAPI = {
   },
   async createFeedback(userId: number, interviewId: string, feedback: string) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId, feedback, interviewId }),
-        }
-      );
+      const response = await fetch(CLUELESS_API_ROUTES.feedback, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, feedback, interviewId }),
+      });
 
       const data = await response.json();
       return data;
@@ -41,7 +39,7 @@ export const feedbackAPI = {
         role: "model",
         parts: [
           {
-            text: feedbackMessageText,
+            text: FEEDBACK_MESSAGE_TEXT,
           },
         ],
       };
@@ -65,19 +63,16 @@ export const feedbackAPI = {
         codeMessage,
       ];
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messages: newMessagesWithSystemAndUser,
-            interviewId,
-          }),
-        }
-      );
+      const response = await fetch(CLUELESS_API_ROUTES.chat, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: newMessagesWithSystemAndUser,
+          interviewId,
+        }),
+      });
 
       return response;
     } catch {

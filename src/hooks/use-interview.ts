@@ -1,5 +1,8 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { initialMessage, userCodeInclusion } from "@/constants/prompt-fillers";
+import {
+  INITIAL_MESSAGE,
+  USER_CODE_INCLUSION_MESSAGE,
+} from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
@@ -16,12 +19,18 @@ export default function useInterview(
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
+  const languageRef = useRef("python");
   const router = useRouter();
 
   const handleCodeSave = useCallback(
     async (code: string) => {
       if (code)
-        interviewAPI.updateCodeForInterview(userId || -1, interviewId, code);
+        await interviewAPI.updateCodeForInterview(
+          userId || -1,
+          interviewId,
+          code,
+          languageRef.current
+        );
     },
     [interviewId, userId]
   );
@@ -46,7 +55,9 @@ export default function useInterview(
         parts: [
           {
             text:
-              userMessage.parts[0].text + userCodeInclusion + codeRef.current,
+              userMessage.parts[0].text +
+              USER_CODE_INCLUSION_MESSAGE +
+              codeRef.current,
           },
         ],
       };
@@ -59,7 +70,7 @@ export default function useInterview(
 
       if (!response?.ok) {
         setMessages((prev) => {
-          const updated = [...(prev || [])];
+          const updated = [...(prev ?? [])];
           updated[updated.length - 1] = {
             role: "model",
             parts: [
@@ -131,17 +142,18 @@ export default function useInterview(
     );
   }, [interviewId, questionNumber, router]);
 
+  // updates the interview in the backend
   useEffect(() => {
     if (hasMounted.current) {
       (async () => {
-        if (!isStreaming) {
+        if (!isStreaming && messages && messages?.length > 1) {
           await interviewAPI.createOrUpdateInterview(
             userId || -1,
             interviewId,
             messages!,
             questionNumber,
             codeRef.current,
-            "python"
+            languageRef.current
           );
           if (
             messages &&
@@ -160,6 +172,7 @@ export default function useInterview(
     }
   }, [interviewId, isStreaming, messages, questionNumber, userId, router]);
 
+  // runs on mount to fetch the interview messages if they exist
   useEffect(() => {
     (async () => {
       const interviewData = await interviewAPI.getInterview(
@@ -174,7 +187,7 @@ export default function useInterview(
             role: "model",
             parts: [
               {
-                text: initialMessage,
+                text: INITIAL_MESSAGE,
               },
             ],
           },
@@ -191,5 +204,7 @@ export default function useInterview(
     codeRef,
     isLoadingMessages,
     handleEndInterview,
+    userId,
+    languageRef,
   };
 }

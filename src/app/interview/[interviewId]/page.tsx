@@ -20,14 +20,14 @@ export default async function ResumeInterviewPage({
     ? questionNumberParam[0]
     : questionNumberParam;
 
-  const questionId = questionNumber ? Number(questionNumber) : undefined;
+  const questionId = questionNumber ?? undefined;
 
-  if (questionId === undefined || isNaN(questionId)) {
+  if (questionId === undefined || isNaN(Number(questionId))) {
     redirect("/interview");
   }
 
   const question: Question_Extended = await apiQuestions.getQuestionById(
-    questionId
+    Number(questionId)
   );
 
   if (question == null) {

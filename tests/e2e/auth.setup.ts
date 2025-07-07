@@ -16,7 +16,12 @@ const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
 })();
 
 test("register-and-authenticate", async ({ page }) => {
-  await doRegister(page);
-  await doLogin(page);
+  await test.step("register user", async () => {
+    await doRegister(page);
+  });
+
+  await test.step("login user", async () => {
+    await doLogin(page);
+  });
   await page.context().storageState({ path: authFile });
 });

@@ -1,4 +1,4 @@
-import { LanguageOption, languageOptions } from "@/constants/language-options";
+import { LanguageOption, languageOptions, PYTHON_INDEX } from "@/constants/language-options";
 import {
   Select,
   SelectContent,
@@ -9,15 +9,18 @@ import {
 
 export default function LanguagesSelect({
   handleLanguageChange,
+  initialLanguage,
 }: {
   handleLanguageChange: (language: LanguageOption) => void;
+  initialLanguage: LanguageOption;
 }) {
   return (
     <Select
-      defaultValue="71" // python
+      defaultValue={initialLanguage.id.toString()}
       onValueChange={(value) => {
         handleLanguageChange(
-          languageOptions.find((lang) => lang.id.toString() === value)!
+          languageOptions.find((lang) => lang.id.toString() === value) ??
+            languageOptions[PYTHON_INDEX]
         );
       }}
     >

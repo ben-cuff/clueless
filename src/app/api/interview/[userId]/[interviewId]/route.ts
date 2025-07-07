@@ -7,27 +7,30 @@ import {
   get404Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string; interviewId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+  const interviewId = resolvedParams.interviewId;
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+  if (!interviewId) {
+    return get400Response("Invalid interview ID");
+  }
+
+  const session = await getServerSession(authOptions);
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const userId = Number(segments[segments.length - 2]);
-    const interviewId = segments[segments.length - 1];
-
-    if (isNaN(userId)) {
-      return get400Response("Invalid user ID");
-    }
-    if (!interviewId) {
-      return get400Response("Invalid interview ID");
-    }
-
-    const session = await getServerSession(authOptions);
-    if (session?.user.id !== userId) {
-      return ForbiddenError;
-    }
-
     const interview = await prismaLib.interview.findUnique({
       where: { id: interviewId, userId },
     });
@@ -43,36 +46,40 @@ export async function GET(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ userId: string; interviewId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+  const interviewId = resolvedParams.interviewId;
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  if (!interviewId) {
+    return get400Response("Invalid interview ID");
+  }
+
+  const session = await getServerSession(authOptions);
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
   try {
-    const url = new URL(req.url);
-    const segments = url.pathname.split("/");
-    const userId = Number(segments[segments.length - 2]);
-    const interviewId = segments[segments.length - 1];
-
-    if (isNaN(userId)) {
-      return get400Response("Invalid user ID");
-    }
-
-    if (!interviewId) {
-      return get400Response("Invalid interview ID");
-    }
-
-    const session = await getServerSession(authOptions);
-    if (session?.user.id !== userId) {
-      return ForbiddenError;
-    }
-
-    try {
-      const deletedInterview = await prismaLib.interview.delete({
-        where: { id: interviewId, userId },
-      });
-      return get200Response(deletedInterview);
-    } catch {
-      return get404Response("Interview not found");
-    }
+    const deletedInterview = await prismaLib.interview.delete({
+      where: { id: interviewId, userId },
+    });
+    return get200Response(deletedInterview);
   } catch (error) {
-    console.error("Error deleting interview:", error);
-    return UnknownServerError;
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025" // Record to delete does not exist
+    ) {
+      return get404Response("Interview not found");
+    } else {
+      console.error("Error deleting interview:", error);
+      return UnknownServerError;
+    }
   }
 }

@@ -7,6 +7,7 @@ import { Question_Extended } from "@/types/question";
 import { RefObject, useEffect } from "react";
 import ChatArea from "./chat-area";
 import CodeEditor from "./code-editor";
+import InterviewLoading from "./interview-loading";
 import LanguagesSelect from "./language-select";
 import OutputArea from "./output-area";
 import QuestionHeader from "./question-header";
@@ -20,6 +21,7 @@ export default function CodePlayground({
   handleMessageSubmit,
   codeRef,
   interviewId,
+  languageRef,
 }: {
   question: Question_Extended;
   handleCodeSave(code: string): Promise<void>;
@@ -27,6 +29,7 @@ export default function CodePlayground({
   handleMessageSubmit: (message: string) => Promise<void>;
   codeRef: RefObject<string>;
   interviewId: string;
+  languageRef: RefObject<string>;
 }) {
   const {
     theme,
@@ -45,15 +48,29 @@ export default function CodePlayground({
 
   codeRef.current = code;
 
+  useEffect(() => {
+    if (language?.value) {
+      languageRef.current = language.value;
+    }
+  }, [language?.value, languageRef]);
+
+  if (!language) {
+    return <InterviewLoading />;
+  }
+
   return (
     <div className="flex flex-col">
       <QuestionHeader
         title={question.title ?? "Error"}
-        questionNumber={question.questionNumber}
+        questionNumber={question.id}
         difficulty={question.difficulty}
       />
       <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20">
-        <LanguagesSelect handleLanguageChange={handleLanguageChange} />
+        <LanguagesSelect
+          handleLanguageChange={handleLanguageChange}
+          initialLanguage={language}
+        />
+        )
         <ThemeSelect handleThemeChange={handleThemeChange} />
       </div>
       <div className="flex flex-row">
@@ -61,7 +78,7 @@ export default function CodePlayground({
           title={question.title}
           prompt={question.prompt}
           difficulty={question.difficulty}
-          questionNumber={question.questionNumber}
+          questionNumber={question.id}
         />
         <div className="min-w-1/3">
           <ChatArea

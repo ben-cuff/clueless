@@ -22,7 +22,7 @@ export default function CodeEditor({
       language={languageValue}
       theme={theme}
       value={code}
-      onChange={(value) => setCode(value || "")}
+      onChange={(value) => setCode(value ?? "")}
       options={{
         minimap: { enabled: false },
         readOnly: isFeedback,

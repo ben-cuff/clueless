@@ -5,13 +5,17 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
-export async function DELETE(req: Request) {
-  const url = new URL(req.url);
-  const segments = url.pathname.split("/");
-  const userId = Number(segments[segments.length - 1]);
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+
+  const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
     return get400Response("Invalid user ID");
@@ -31,10 +35,8 @@ export async function DELETE(req: Request) {
     return get200Response(deletedAccount);
   } catch (error) {
     if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2025"
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025" // User not found
     ) {
       return get400Response("User with that userId not found");
     }

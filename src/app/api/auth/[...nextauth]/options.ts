@@ -1,3 +1,4 @@
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -25,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch(`${process.env.BASE_URL}/api/auth/login`, {
+        const res = await fetch(CLUELESS_API_ROUTES.login, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

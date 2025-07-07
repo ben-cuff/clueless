@@ -21,7 +21,6 @@ model Account {
   updatedAt      DateTime    @updatedAt
   activity       Activity[]
   interview      Interview[]
-  feedback       Feedback[]
 
   @@index([username])
 }
@@ -39,21 +38,21 @@ model Activity {
 }
 
 model Question {
-  questionNumber Int         @id
-  title          String
-  accuracy       Float
-  testcases      Json
-  starterCode    Json
-  solutions      Json
-  article        String
-  topics         Topic[]
-  prompt         String
-  companies      Company[]
-  difficulty     Int
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  titleSlug      String?
-  interviews     Interview[]
+  id          Int         @id
+  title       String
+  accuracy    Float
+  testCases   Json
+  starterCode Json
+  solutions   Json
+  article     String
+  topics      Topic[]
+  prompt      String
+  companies   Company[]
+  difficulty  Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  titleSlug   String?
+  interviews  Interview[]
 }
 
 model Interview {
@@ -62,7 +61,7 @@ model Interview {
   account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages       Json
   questionNumber Int
-  question       Question  @relation(fields: [questionNumber], references: [questionNumber], onDelete: Cascade)
+  question       Question  @relation(fields: [questionNumber], references: [id], onDelete: Cascade)
   code           String?
   codeLanguage   Language
   createdAt      DateTime  @default(now())
@@ -72,13 +71,11 @@ model Interview {
 }
 
 model Feedback {
-  id          String    @id @default(uuid())
-  userId      Int
-  account     Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  interviewId String    @unique
-  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
-  feedback    String
-  feedbackNumber Int
+  id             String    @id @default(uuid())
+  interviewId    String    @unique
+  interview      Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  feedback       String
+  feedbackNumber Int // Rating or score for the interview feedback (0-5, -1 being no feedbackNumber)
 }
 
 enum Company {

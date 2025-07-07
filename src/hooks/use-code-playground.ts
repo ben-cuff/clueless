@@ -1,5 +1,9 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { LanguageOption, languageOptions } from "@/constants/language-options";
+import {
+  LanguageOption,
+  languageOptions,
+  PYTHON_INDEX,
+} from "@/constants/language-options";
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";
 import { Theme } from "@/types/theme";
@@ -16,12 +20,8 @@ export default function useCodePlayground(
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
   );
-  const [language, setLanguage] = useState<LanguageOption>(languageOptions[4]); // 4 is Python by default
+  const [language, setLanguage] = useState<LanguageOption | undefined>();
   const [code, setCode] = useState<string>("");
-
-  const handleLanguageChange = useCallback((newLanguage: LanguageOption) => {
-    setLanguage(newLanguage);
-  }, []);
 
   const handleThemeChange = useCallback((newTheme: Theme) => {
     if (["light", "vs-dark"].includes(newTheme)) {
@@ -31,23 +31,53 @@ export default function useCodePlayground(
     }
   }, []);
 
+  const handleStarterCodeChange = useCallback(
+    (language: string) => {
+      setLanguage(
+        languageOptions.find((lang) => lang.value === language) ??
+          languageOptions[PYTHON_INDEX] // Default to Python if not found
+      );
+      setCode(
+        question.starterCode[language as keyof typeof question.starterCode] ||
+          ""
+      );
+    },
+    [question]
+  );
+
+  const handleLanguageChange = useCallback(
+    (newLanguage: LanguageOption) => {
+      setLanguage(newLanguage);
+      handleStarterCodeChange(newLanguage.value);
+    },
+    [handleStarterCodeChange]
+  );
+
+  // Fetch the initial code and language for the interview if it exists
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(
-        userId || -1,
+        userId || -1, // 
         interviewId
       );
       if (!interview.error) {
         setCode(interview.code || "");
-      } else if (question?.starterCode) {
-        setCode(
-          question.starterCode[
-            language.value as keyof typeof question.starterCode
-          ] || ""
+        setLanguage(
+          languageOptions.find(
+            (lang) => lang.value === interview.codeLanguage?.toLowerCase()
+          ) ?? languageOptions[PYTHON_INDEX]
         );
+      } else {
+        handleLanguageChange(languageOptions[PYTHON_INDEX]); // Default to Python if interview not found or error
       }
     })();
-  }, [language.value, question, interviewId, userId]);
+  }, [
+    question,
+    interviewId,
+    userId,
+    handleStarterCodeChange,
+    handleLanguageChange,
+  ]);
 
   return {
     theme,

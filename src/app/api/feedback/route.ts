@@ -6,16 +6,17 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 
 export async function POST(req: Request) {
-  const { userId, interviewId, feedback } = await req.json();
+  const { userId, interviewId, feedback } = await req.json().catch(() => {
+    return get400Response("Invalid JSON body");
+  });
 
-  if (!userId || !interviewId || !feedback) {
-    return get400Response(
-      "Missing required fields: userId, interviewId, feedback"
-    );
+  if (!interviewId || !feedback) {
+    return get400Response("Missing required fields:  interviewId, feedback");
   }
 
   const session = await getServerSession(authOptions);
@@ -37,7 +38,6 @@ export async function POST(req: Request) {
   try {
     const feedbackEntry = await prismaLib.feedback.create({
       data: {
-        userId,
         interviewId,
         feedback,
         feedbackNumber,
@@ -54,10 +54,8 @@ export async function POST(req: Request) {
     return get201Response(feedbackEntry);
   } catch (error) {
     if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2002"
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002" // Unique constraint failed on the feedback entry
     ) {
       return get409Response("Feedback for this interview already exists.");
     } else {

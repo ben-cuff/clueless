@@ -25,7 +25,8 @@ export default function InterviewQuestionPage({
     codeRef,
     isLoadingMessages,
     handleEndInterview,
-  } = useInterview(interviewId, question.questionNumber);
+    languageRef,
+  } = useInterview(interviewId, question.id);
   const isFeedback = useContext(FeedbackContext);
 
   return !isLoadingMessages ? (
@@ -37,6 +38,7 @@ export default function InterviewQuestionPage({
         handleMessageSubmit={handleMessageSubmit}
         codeRef={codeRef}
         interviewId={interviewId}
+        languageRef={languageRef}
       />
       {isFeedback ? (
         <FeedbackModal interviewId={interviewId} />

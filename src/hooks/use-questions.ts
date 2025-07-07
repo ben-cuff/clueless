@@ -1,4 +1,5 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
+import { DEFAULT_TAKE_SIZE } from "@/constants/take-sizes";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
 import { Question } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
@@ -8,7 +9,7 @@ import useDebounce from "./use-debouncer";
 export default function useQuestions() {
   const [questionsData, setQuestionsData] = useState<Question[]>();
   const [isLoading, setIsLoading] = useState(true);
-  const [takeSize, setTakeSize] = useState(20);
+  const [takeSize, setTakeSize] = useState(DEFAULT_TAKE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
   const [topics, setTopics] = useState<TopicInfo[]>();
   const [searchInput, setSearchInput] = useState("");
@@ -63,7 +64,7 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length < takeSize) {
       return;
     }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.questionNumber;
+    const lastQuestionNumber = questionsData[takeSize - 1]?.id;
     fetchQuestions("next", lastQuestionNumber);
     setCurrentPage((prev) => prev + 1);
   }
@@ -72,7 +73,7 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length === 0) {
       return;
     }
-    const firstQuestionNumber = questionsData[0]?.questionNumber;
+    const firstQuestionNumber = questionsData[0]?.id;
     fetchQuestions("prev", firstQuestionNumber);
     setCurrentPage((prev) => prev - 1);
   }, [fetchQuestions, questionsData]);

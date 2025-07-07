@@ -1,4 +1,5 @@
-import { systemMessageText } from "@/constants/prompt-fillers";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { SYSTEM_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 
 export const chatAPI = {
@@ -12,7 +13,7 @@ export const chatAPI = {
         role: "model",
         parts: [
           {
-            text: systemMessageText,
+            text: SYSTEM_MESSAGE_TEXT,
           },
         ],
       };
@@ -22,19 +23,17 @@ export const chatAPI = {
         ...messages,
         userMessage,
       ];
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messages: newMessagesWithSystemAndUser,
-            questionNumber: questionNumber,
-          }),
-        }
-      );
+
+      const response = await fetch(CLUELESS_API_ROUTES.chat, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: newMessagesWithSystemAndUser,
+          questionNumber: questionNumber,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

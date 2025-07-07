@@ -8,13 +8,16 @@ export default function QuestionsLoading({ takeSize }: { takeSize: number }) {
           key={idx}
           className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
         >
-          <Skeleton className="h-7 w-10 rounded" />
-          <Skeleton className="h-7 w-48 rounded" />
-          <Skeleton className="h-7 w-20 rounded ml-5" />
+          <Skeleton className="h-12 w-5 rounded" />
+          <Skeleton className="h-12 w-48 rounded" />
+          <Skeleton className="h-6 w-12 rounded ml-2" />
+          <Skeleton className="h-8 w-8 rounded-4xl ml-5" />
+          <Skeleton className="h-8 w-20 rounded ml-5" />
+
           <div className="flex flex-wrap gap-2 ml-auto">
-            <Skeleton className="h-7 w-16 rounded-full" />
-            <Skeleton className="h-7 w-16 rounded-full" />
-            <Skeleton className="h-7 w-16 rounded-full" />
+            <Skeleton className="h-8 w-16 rounded-full" />
+            <Skeleton className="h-8 w-16 rounded-full" />
+            <Skeleton className="h-8 w-16 rounded-full" />
           </div>
         </div>
       ))}

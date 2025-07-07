@@ -20,7 +20,7 @@ async function GoogleGenAIStream(
         for await (const chunk of response) {
           const candidateChunk = chunk as GenAIChunk;
           const text =
-            candidateChunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            candidateChunk.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
           if (text) {
             controller.enqueue(text);
           }
@@ -50,72 +50,76 @@ class StreamingTextResponse extends Response {
 }
 
 export async function POST(req: Request) {
-  try {
-    const { messages, questionNumber, interviewId } = await req.json();
+  const { messages, questionNumber, interviewId } = await req
+    .json()
+    .catch(() => {
+      return get400Response("Invalid JSON body");
+    });
 
-    if (questionNumber) {
-      try {
-        const prompt = await getPromptFromQuestionNumber(questionNumber);
-        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch {
-        return get400Response(
-          `Error fetching prompt for question number ${questionNumber}`
-        );
-      }
-    }
+  if (questionNumber && interviewId) {
+    return get400Response(
+      "Please provide either questionNumber or interviewId, not both."
+    );
+  }
 
-    if (interviewId) {
-      try {
-        const prompt = await getPromptFromInterviewId(interviewId);
-        messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
-      } catch {
-        return get400Response(
-          `Error fetching prompt for interview ID ${interviewId}`
-        );
-      }
-    }
-
-    if (!messages || !Array.isArray(messages)) {
-      return get400Response("Invalid or missing messages array");
-    }
-
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
-
-    let response;
+  if (questionNumber || interviewId) {
     try {
-      response = await ai.models.generateContentStream({
-        model: "gemini-2.0-flash",
-        contents: messages,
-      });
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        error.status === 429
-      ) {
-        return get400Response("Rate limit exceeded. Please try again later.");
+      let prompt;
+      if (questionNumber) {
+        prompt = await getPromptFromQuestionNumber(questionNumber);
+      } else {
+        prompt = await getPromptFromInterviewId(interviewId);
       }
-      return get400Response("Error generating content from AI model.");
+
+      messages.splice(1, 0, { role: "user", parts: [{ text: prompt }] });
+    } catch (error) {
+      return get400Response(
+        error instanceof Error ? error.message : "Could not retrieve prompt"
+      );
     }
+  }
 
+  if (!messages || !Array.isArray(messages)) {
+    return get400Response("Invalid or missing messages array");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+
+  let response;
+  try {
+    response = await ai.models.generateContentStream({
+      model: "gemini-2.0-flash",
+      contents: messages,
+    });
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      error.status === 429 // Rate limit exceeded
+    ) {
+      return get400Response("Rate limit exceeded. Please try again later.");
+    }
+    return get400Response("Error generating content from AI model.");
+  }
+
+  try {
     const stream = await GoogleGenAIStream(response);
-
     return new StreamingTextResponse(stream);
   } catch (error) {
-    console.error(error);
+    console.error("Error processing AI response stream:", error);
     return UnknownServerError;
   }
 }
 
-async function getPromptFromQuestionNumber(questionNumber: number) {
+async function getPromptFromQuestionNumber(id: number) {
   const question = await prismaLib.question.findFirst({
-    where: { questionNumber: questionNumber },
+    where: { id },
     select: { prompt: true, title: true, solutions: true },
   });
 
   if (!question) {
-    throw new Error();
+    throw new Error("Question not found");
   }
 
   return getMessageFromQuestion(question as Question_Extended);
@@ -136,7 +140,7 @@ async function getPromptFromInterviewId(interviewId: string) {
   });
 
   if (!interview || !interview.question) {
-    throw new Error();
+    throw new Error("Interview not found");
   }
 
   return getMessageFromQuestion(interview.question as Question_Extended);
@@ -157,8 +161,13 @@ function getMessageFromQuestion(question: Question_Extended) {
     typeof question.solutions === "object" &&
     "python" in question.solutions
   ) {
+    // Hardcoded to Python solution as other language should be similar enough
+    // to not require a different message format.
     const pythonSolution = (question.solutions as { python: string }).python;
-    message += `\n\nSolutions:\n${pythonSolution}`;
+    message +=
+      `\n\nThis is a sample solution to the problem provided as context to the question to the AI interviewer alone` +
+      `Use it as a way to evaluate the candidate's response. but do not share it with the candidate.\n` +
+      `Solutions:\n${pythonSolution}`;
   }
   return message;
 }

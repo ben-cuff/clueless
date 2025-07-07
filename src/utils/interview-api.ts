@@ -1,3 +1,4 @@
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { Message } from "@/types/message";
 
 export const interviewAPI = {
@@ -11,7 +12,7 @@ export const interviewAPI = {
   ) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}`,
+        CLUELESS_API_ROUTES.interviewWithUserId(userId),
         {
           method: "POST",
           headers: {
@@ -33,16 +34,21 @@ export const interviewAPI = {
       console.error("Error creating or updating interview:", error);
     }
   },
-  async updateCodeForInterview(userId: number, id: string, code: string) {
+  async updateCodeForInterview(
+    userId: number,
+    id: string,
+    code: string,
+    language: string
+  ) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/code`,
+        CLUELESS_API_ROUTES.interviewWithUserIdForCode(userId),
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id, code }),
+          body: JSON.stringify({ id, code, language }),
         }
       );
 
@@ -55,7 +61,10 @@ export const interviewAPI = {
   async getInterview(userId: number, interviewId: string) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`
+        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
+          userId,
+          interviewId
+        )
       );
 
       const data = await response.json();
@@ -67,7 +76,7 @@ export const interviewAPI = {
   async getInterviewsByUserId(userId: number) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}`
+        CLUELESS_API_ROUTES.interviewWithUserId(userId)
       );
 
       const data = await response.json();
@@ -79,7 +88,10 @@ export const interviewAPI = {
   async deleteInterview(userId: number, interviewId: string) {
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/interview/${userId}/${interviewId}`,
+        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
+          userId,
+          interviewId
+        ),
         {
           method: "DELETE",
         }
