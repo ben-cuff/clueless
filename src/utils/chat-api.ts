@@ -1,5 +1,5 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
-import { systemMessageText } from "@/constants/prompt-fillers";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { SYSTEM_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 
 export const chatAPI = {
@@ -13,7 +13,7 @@ export const chatAPI = {
         role: "model",
         parts: [
           {
-            text: systemMessageText,
+            text: SYSTEM_MESSAGE_TEXT,
           },
         ],
       };
@@ -24,7 +24,7 @@ export const chatAPI = {
         userMessage,
       ];
 
-      const response = await fetch(Clueless_API_Routes.chat, {
+      const response = await fetch(CLUELESS_API_ROUTES.chat, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

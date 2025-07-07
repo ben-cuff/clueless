@@ -1,4 +1,4 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 
 export const apiQuestions = {
   async getQuestions(
@@ -36,7 +36,7 @@ export const apiQuestions = {
         params.append("sortBy", "rank");
       }
 
-      const response = await fetch(Clueless_API_Routes.questionsSearch(params));
+      const response = await fetch(CLUELESS_API_ROUTES.questionsSearch(params));
 
       const data = await response.json();
       return data;
@@ -46,7 +46,7 @@ export const apiQuestions = {
   },
   async getQuestionById(id: number) {
     try {
-      const response = await fetch(Clueless_API_Routes.questionsById(id), {
+      const response = await fetch(CLUELESS_API_ROUTES.questionsById(id), {
         method: "GET",
       });
 
@@ -59,7 +59,7 @@ export const apiQuestions = {
   async getRecommendedQuestions(userId: number) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.recommendedQuestions(userId),
+        CLUELESS_API_ROUTES.recommendedQuestions(userId),
         {
           method: "GET",
         }

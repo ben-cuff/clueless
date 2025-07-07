@@ -1,12 +1,12 @@
-const userCodeInclusion =
+const USER_CODE_INCLUSION_MESSAGE =
   "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n";
 
-const initialMessage =
+const INITIAL_MESSAGE =
   "Welcome to the interview! Before we begin, do you have any questions? " +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
   "Explaining your thought process and communication skills are an important part of the interview.";
 
-const systemMessageText =
+const SYSTEM_MESSAGE_TEXT =
   "You are an AI interviewer who is conducting a technical interview. " +
   "You will ask the user a question and wait for their response. " +
   "You will not provide any explanations or additional information. " +
@@ -18,7 +18,7 @@ const systemMessageText =
   "and you will help lead the user in the correct direction if there is a bug" +
   "Once you are satisfied with the user's response, you will end the interview by saying 'Thank you for your time.'";
 
-const feedbackMessageText =
+const FEEDBACK_MESSAGE_TEXT =
   "You are an AI feedback provider evaluating a user's technical interview performance. " +
   "Analyze their communication, problem-solving approach, and coding skills. " +
   "Begin with a clear rating on the first line using EXACTLY one of these terms: " +
@@ -34,8 +34,8 @@ const feedbackMessageText =
   "Use markdown formatting (headings, bullet points) to organize your feedback.";
 
 export {
-  feedbackMessageText,
-  initialMessage,
-  systemMessageText,
-  userCodeInclusion,
+  FEEDBACK_MESSAGE_TEXT,
+  INITIAL_MESSAGE,
+  SYSTEM_MESSAGE_TEXT,
+  USER_CODE_INCLUSION_MESSAGE,
 };

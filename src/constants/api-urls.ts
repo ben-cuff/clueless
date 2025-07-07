@@ -1,7 +1,7 @@
 const judge0_api_url =
   "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true";
 
-const Clueless_API_Routes = {
+const CLUELESS_API_ROUTES = {
   createAccount: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`,
   login: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
   accountWithUserId: (userId: number) =>
@@ -27,4 +27,4 @@ const Clueless_API_Routes = {
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/recommended/${userId}`,
 };
 
-export { Clueless_API_Routes, judge0_api_url };
+export { CLUELESS_API_ROUTES, judge0_api_url };

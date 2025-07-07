@@ -1,8 +1,8 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 
 export const AccountAPI = {
   createAccount: async (username: string, password: string) => {
-    const response = await fetch(Clueless_API_Routes.createAccount, {
+    const response = await fetch(CLUELESS_API_ROUTES.createAccount, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export const AccountAPI = {
   },
   deleteAccount: async (userId: number) => {
     const response = await fetch(
-      Clueless_API_Routes.accountWithUserId(userId),
+      CLUELESS_API_ROUTES.accountWithUserId(userId),
       {
         method: "DELETE",
         headers: {

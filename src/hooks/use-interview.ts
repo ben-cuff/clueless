@@ -1,5 +1,8 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { initialMessage, userCodeInclusion } from "@/constants/prompt-fillers";
+import {
+  INITIAL_MESSAGE,
+  USER_CODE_INCLUSION_MESSAGE,
+} from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
@@ -52,7 +55,9 @@ export default function useInterview(
         parts: [
           {
             text:
-              userMessage.parts[0].text + userCodeInclusion + codeRef.current,
+              userMessage.parts[0].text +
+              USER_CODE_INCLUSION_MESSAGE +
+              codeRef.current,
           },
         ],
       };
@@ -182,7 +187,7 @@ export default function useInterview(
             role: "model",
             parts: [
               {
-                text: initialMessage,
+                text: INITIAL_MESSAGE,
               },
             ],
           },

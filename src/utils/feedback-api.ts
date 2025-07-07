@@ -1,12 +1,12 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
-import { feedbackMessageText } from "@/constants/prompt-fillers";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { FEEDBACK_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { interviewAPI } from "./interview-api";
 
 export const feedbackAPI = {
   async getFeedback(interviewId: string) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.feedbackWithInterviewId(interviewId)
+        CLUELESS_API_ROUTES.feedbackWithInterviewId(interviewId)
       );
 
       const data = await response.json();
@@ -18,7 +18,7 @@ export const feedbackAPI = {
   },
   async createFeedback(userId: number, interviewId: string, feedback: string) {
     try {
-      const response = await fetch(Clueless_API_Routes.feedback, {
+      const response = await fetch(CLUELESS_API_ROUTES.feedback, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const feedbackAPI = {
         role: "model",
         parts: [
           {
-            text: feedbackMessageText,
+            text: FEEDBACK_MESSAGE_TEXT,
           },
         ],
       };
@@ -63,7 +63,7 @@ export const feedbackAPI = {
         codeMessage,
       ];
 
-      const response = await fetch(Clueless_API_Routes.chat, {
+      const response = await fetch(CLUELESS_API_ROUTES.chat, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

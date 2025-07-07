@@ -1,4 +1,4 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { Message } from "@/types/message";
 
 export const interviewAPI = {
@@ -12,7 +12,7 @@ export const interviewAPI = {
   ) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.interviewWithUserId(userId),
+        CLUELESS_API_ROUTES.interviewWithUserId(userId),
         {
           method: "POST",
           headers: {
@@ -42,7 +42,7 @@ export const interviewAPI = {
   ) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.interviewWithUserIdForCode(userId),
+        CLUELESS_API_ROUTES.interviewWithUserIdForCode(userId),
         {
           method: "POST",
           headers: {
@@ -61,7 +61,7 @@ export const interviewAPI = {
   async getInterview(userId: number, interviewId: string) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.interviewWithUserIdAndInterviewId(
+        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
           userId,
           interviewId
         )
@@ -76,7 +76,7 @@ export const interviewAPI = {
   async getInterviewsByUserId(userId: number) {
     try {
       const response = await fetch(
-        Clueless_API_Routes.interviewWithUserId(userId)
+        CLUELESS_API_ROUTES.interviewWithUserId(userId)
       );
 
       const data = await response.json();
@@ -88,7 +88,7 @@ export const interviewAPI = {
   async deleteInterview(userId: number, interviewId: string) {
     try {
       await fetch(
-        Clueless_API_Routes.interviewWithUserIdAndInterviewId(
+        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
           userId,
           interviewId
         ),

@@ -1,10 +1,10 @@
-import { Clueless_API_Routes } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { LanguageOption } from "@/constants/language-options";
 
 export const codeExecutionAPI = {
   async runCode(code: string, testcases: string, language: LanguageOption) {
     try {
-      const response = await fetch(Clueless_API_Routes.codeExecution, {
+      const response = await fetch(CLUELESS_API_ROUTES.codeExecution, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
