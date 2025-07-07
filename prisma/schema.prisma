@@ -30,7 +30,7 @@ model Goal {
   id        String   @id @default(uuid())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  minutes   Int?
+  seconds   Int?
   questions Int?
   endDate   DateTime
 
@@ -42,8 +42,10 @@ model Activity {
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      DateTime
-  count     Int      @default(0)
-  totalTime Int      @default(0)
+  questions Int      @default(0)
+  seconds   Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 
   @@unique([userId, date])
   @@index([userId])

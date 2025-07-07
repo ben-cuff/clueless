@@ -1,5 +1,6 @@
 import { prismaLib } from "@/lib/prisma";
 import {
+  ForbiddenError,
   get200Response,
   get201Response,
   get400Response,
@@ -7,6 +8,8 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export default async function POST(
   req: Request,
@@ -15,11 +18,21 @@ export default async function POST(
   const resolvedParams = await params;
   const userId = Number(resolvedParams.userId);
 
-  const { minutes, questions, endDate } = await req.json().catch(() => {
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  const { hours, questions, endDate } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
-  if ((!minutes && !questions) || !endDate) {
+  if ((!hours && !questions) || !endDate) {
     return get400Response(
       "You must provide either minutes or questions, and an end date"
     );
@@ -35,7 +48,7 @@ export default async function POST(
     const goal = await prismaLib.goal.create({
       data: {
         userId,
-        minutes,
+        seconds: hours * 60 * 60,
         questions,
         endDate: parsedEndDate,
       },
@@ -85,11 +98,21 @@ export async function PUT(
   const resolvedParams = await params;
   const userId = Number(resolvedParams.userId);
 
-  const { minutes, questions, endDate } = await req.json().catch(() => {
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  const { hours, questions, endDate } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
-  if ((!minutes && !questions) || !endDate) {
+  if ((!hours && !questions) || !endDate) {
     return get400Response(
       "You must provide either minutes or questions, and an end date"
     );
@@ -105,7 +128,7 @@ export async function PUT(
     const goal = await prismaLib.goal.update({
       where: { userId },
       data: {
-        minutes,
+        seconds: hours * 60 * 60,
         questions,
         endDate: parsedEndDate,
       },
