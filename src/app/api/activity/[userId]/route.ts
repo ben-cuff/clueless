@@ -1,16 +1,42 @@
 import { prismaLib } from "@/lib/prisma";
 import {
-  ForbiddenError,
   get200Response,
   get201Response,
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
-import { Prisma } from "@prisma/client";
+import { Activity } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
-export default async function POST(
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  try {
+    const activities = await prismaLib.activity.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+    return get200Response(activities);
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return UnknownServerError;
+  }
+}
+
+export async function POST(
   req: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
@@ -23,22 +49,25 @@ export default async function POST(
 
   const session = await getServerSession(authOptions);
 
-  if (session?.user.id !== userId) {
-    return ForbiddenError;
-  }
+  // if (session?.user.id !== userId) {
+  //   return ForbiddenError;
+  // }
 
   const { questions, seconds } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
-  const data = new Date();
-  const activityDate = new Date(data.toISOString().split("T")[0]);
+  const date = new Date();
+  // Get the date without the time part
+  const activityDate = new Date(date.toISOString().split("T")[0]);
 
   if (isNaN(activityDate.getTime())) {
     return get400Response("Invalid date format");
   }
+
+  let existingActivity;
   try {
-    const existingActivity = await prismaLib.activity.findUnique({
+    existingActivity = await prismaLib.activity.findUnique({
       where: {
         userId_date: {
           userId,
@@ -46,24 +75,19 @@ export default async function POST(
         },
       },
     });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return UnknownServerError;
+  }
 
-    let updatedSeconds: number | undefined = undefined;
+  const updatedSeconds = calculateUpdatedSeconds(seconds, existingActivity);
 
-    if (seconds !== undefined && existingActivity) {
-      const now = new Date();
-      const lastUpdate = new Date(existingActivity.updatedAt);
-      const diffInSeconds = 
-        (now.getTime() - lastUpdate.getTime()) / 1000;
+  const updatedQuestions =
+    questions === true ? (existingActivity?.questions ?? 0) + 1 : undefined;
 
-      const secondsToAdd = Math.min(diffInSeconds, 120);
-      updatedSeconds = existingActivity.seconds + secondsToAdd;
-    } else if (seconds !== undefined) {
-      updatedSeconds = 0;
-    }
+  const updateData = constructUpdateData(updatedSeconds, updatedQuestions);
 
-    const updatedQuestions =
-      questions === true ? (existingActivity?.questions ?? 0) + 1 : undefined;
-
+  try {
     const activity = await prismaLib.activity.upsert({
       where: {
         userId_date: {
@@ -71,10 +95,7 @@ export default async function POST(
           date: activityDate,
         },
       },
-      update: {
-        ...(updatedSeconds !== undefined && { seconds: updatedSeconds }),
-        ...(updatedQuestions !== undefined && { questions: updatedQuestions }),
-      },
+      update: updateData,
       create: {
         userId,
         date: activityDate,
@@ -88,14 +109,55 @@ export default async function POST(
 
     return isNewRecord ? get201Response(activity) : get200Response(activity);
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
-      return get400Response("Activity for this date and userId already exists");
-    } else {
-      console.error("Unexpected error:", error);
-      return UnknownServerError;
+    console.error("Unexpected error:", error);
+    return UnknownServerError;
+  }
+}
+
+function calculateUpdatedSeconds(
+  seconds: number,
+  existingActivity: Activity | null
+): number | undefined {
+  const DEFAULT_SECONDS = 0;
+
+  if (seconds === undefined) {
+    return undefined;
+  }
+
+  // if there is an existing activity, calculate the new seconds
+  // by adding the time since the last update to the existing seconds
+  // but limit the addition to a maximum of 120 seconds
+  // if there is no existing activity, return the provided seconds
+  if (existingActivity) {
+    const now = new Date();
+    const lastUpdate = new Date(existingActivity.updatedAt);
+
+    // rounds up so that if the last update was less than a second ago, it still counts as 1 second
+    // this is to prevent the case where the user updates their activity multiple times in a short
+    // period of time and the seconds don't increase because the last update was too recent
+    const diffInSeconds = Math.ceil(
+      (now.getTime() - lastUpdate.getTime()) / 1000
+    );
+
+    const secondsToAdd = Math.min(diffInSeconds, 120);
+    return existingActivity.seconds + secondsToAdd;
+  } else {
+    if (isNaN(seconds) || seconds < 0) {
+      return DEFAULT_SECONDS;
     }
   }
+}
+
+function constructUpdateData(
+  updatedSeconds: number | undefined,
+  updatedQuestions: number | undefined
+): Partial<Activity> {
+  const updateData: Partial<Activity> = {};
+  if (updatedSeconds !== undefined) {
+    updateData.seconds = updatedSeconds;
+  }
+  if (updatedQuestions !== undefined) {
+    updateData.questions = updatedQuestions;
+  }
+  return updateData;
 }

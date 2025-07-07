@@ -33,6 +33,7 @@ model Goal {
   seconds   Int?
   questions Int?
   endDate   DateTime
+  beginAt   DateTime @default(now())
 
   @@unique([userId])
 }

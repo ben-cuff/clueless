@@ -11,7 +11,7 @@ import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
-export default async function POST(
+export async function POST(
   req: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
