@@ -12,8 +12,8 @@ export async function POST(req: Request) {
     return get400Response("Invalid JSON body");
   });
 
-  if (!code || !language || !testcases) {
-    return get400Response("Missing required fields: code, language, testcases");
+  if (!code || !language) {
+    return get400Response("Missing required fields: code, language");
   }
 
   // java needs testcases to be at the top of the code
