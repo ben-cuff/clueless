@@ -1,27 +1,11 @@
-import { GoalProgress as GoalProgressType } from "@/types/goal-progress";
-import { GoalsAPI } from "@/utils/goals-api";
-import { Goal } from "@prisma/client";
-import { useEffect, useState } from "react";
+import useGoalProgress from "@/hooks/use-goal-progress";
 import InterviewLoading from "../interview/interview-loading";
 import { Card, CardHeader } from "../ui/card";
 import GoalProgressContent from "./goal-progress-content";
 import GoalProgressHeader from "./goal-progress-header";
 
-export default function GoalProgress({ userId }: { userId: number }) {
-  const [goalProgress, setGoalProgress] = useState<GoalProgressType | null>(
-    null
-  );
-  const [goal, setGoal] = useState<Goal | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const data = await GoalsAPI.getGoalProgress(userId);
-      setIsLoading(false);
-      setGoalProgress(data.progress);
-      setGoal(data.goal);
-    })();
-  }, [userId]);
+export default function GoalProgress() {
+  const { isLoading, goalProgress, goal } = useGoalProgress();
 
   if (isLoading) {
     return <InterviewLoading />;

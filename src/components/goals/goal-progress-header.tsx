@@ -11,10 +11,7 @@ export default function GoalProgressHeader({
     <CardHeader>
       <CardTitle className="text-2xl">Goal Progress</CardTitle>
       <CardDescription className="flex flex-col gap-1 mt-2">
-        <span>
-          Goal starts:
-          {new Date(beginAt).toLocaleDateString()}
-        </span>
+        <span>Goal starts: {new Date(beginAt).toLocaleDateString()}</span>
         <span>Goal ends: {new Date(endDate).toLocaleDateString()}</span>
       </CardDescription>
     </CardHeader>

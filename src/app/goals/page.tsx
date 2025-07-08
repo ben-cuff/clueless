@@ -3,30 +3,17 @@
 import CreateGoalPage from "@/components/goals/create-goal-page";
 import GoalViewPage from "@/components/goals/goal-view-page";
 import InterviewLoading from "@/components/interview/interview-loading";
-import { UserIdContext } from "@/components/providers/user-id-provider";
-import { GoalsAPI } from "@/utils/goals-api";
-import { Goal } from "@prisma/client";
-import { useContext, useEffect, useState } from "react";
+import useGoalPage from "@/hooks/use-goal-page";
 
 export default function GoalPage() {
-  const userId = useContext(UserIdContext);
-  const [goal, setGoal] = useState<Goal | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      const data = await GoalsAPI.getGoal(userId);
-      setIsLoading(false);
-      setGoal(data);
-    })();
-  }, [userId]);
+  const { isLoading, goal } = useGoalPage();
 
   if (isLoading) {
     return <InterviewLoading />;
   }
 
   if (goal) {
-    return <GoalViewPage userId={userId} />;
+    return <GoalViewPage />;
   }
 
   return <CreateGoalPage />;
