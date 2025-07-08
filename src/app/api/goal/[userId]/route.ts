@@ -5,6 +5,7 @@ import {
   get200Response,
   get201Response,
   get400Response,
+  get404Response,
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
@@ -86,7 +87,7 @@ export async function GET(
     });
 
     if (!goal) {
-      return get400Response("No goal found for this user");
+      return get404Response("No goal found for this user");
     }
 
     return get200Response(goal);
