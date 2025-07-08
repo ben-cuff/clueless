@@ -1,3 +1,4 @@
+import { SECONDS_IN_HOUR } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
   ForbiddenError,
@@ -34,11 +35,16 @@ export async function POST(
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
-      "You must provide either minutes or questions, and an end date"
+      "You must provide either hours or questions, and an end date"
     );
   }
 
+  if (hours && questions) {
+    return get400Response("You cannot provide both hours and questions");
+  }
+
   const parsedEndDate = new Date(endDate);
+  console.log("Parsed end date:", parsedEndDate);
 
   if (parsedEndDate <= new Date()) {
     return get400Response("End date must be in the future");
@@ -48,7 +54,7 @@ export async function POST(
     const goal = await prismaLib.goal.create({
       data: {
         userId,
-        seconds: hours * 60 * 60,
+        seconds: hours * SECONDS_IN_HOUR,
         questions,
         endDate: parsedEndDate,
       },
@@ -118,6 +124,10 @@ export async function PUT(
     );
   }
 
+  if (hours && questions) {
+    return get400Response("You cannot provide both hours and questions");
+  }
+
   const parsedEndDate = new Date(endDate);
 
   if (parsedEndDate <= new Date()) {
@@ -128,8 +138,8 @@ export async function PUT(
     const goal = await prismaLib.goal.update({
       where: { userId },
       data: {
-        seconds: hours * 60 * 60,
-        questions,
+        seconds: hours ? hours * SECONDS_IN_HOUR : null,
+        questions: questions ?? null,
         endDate: parsedEndDate,
       },
     });
@@ -143,6 +153,42 @@ export async function PUT(
       return get400Response("No goal found for this user");
     } else {
       console.error("Unexpected error:", error);
+      return UnknownServerError;
+    }
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  try {
+    const goal = await prismaLib.goal.delete({
+      where: { userId },
+    });
+
+    return get200Response(goal);
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025" // Record to delete not found
+    ) {
+      return get400Response("No goal found for this user");
+    } else {
+      console.error("Unexpected error while deleting goal:", error);
       return UnknownServerError;
     }
   }
