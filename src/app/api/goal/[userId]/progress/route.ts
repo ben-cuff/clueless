@@ -20,6 +20,7 @@ export async function GET(
   if (isNaN(userId)) {
     return get400Response("Invalid user ID");
   }
+
   let goal;
   try {
     goal = await prismaLib.goal.findUnique({
