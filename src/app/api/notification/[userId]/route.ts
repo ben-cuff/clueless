@@ -1,5 +1,9 @@
 import { prismaLib } from "@/lib/prisma";
 import {
+  filterActivitiesBeforeBeginAt,
+  getTimeProgressPercentage,
+} from "@/utils/activities-progress";
+import {
   ForbiddenError,
   get200Response,
   get400Response,
@@ -79,29 +83,6 @@ export async function GET(
   } else {
     return get200Response({ notify: false });
   }
-}
-
-function filterActivitiesBeforeBeginAt(
-  activities: Activity[],
-  beginAt: Date
-): Activity[] {
-  return activities.filter((activity) => {
-    const activityDate = new Date(activity.date);
-    const goalBeginDate = new Date(beginAt);
-
-    // checks if the activity date is on or after the goal's begin date (activity on same day is included)
-    return (
-      activityDate.getDay() >= goalBeginDate.getDay() &&
-      activityDate.getMonth() >= goalBeginDate.getMonth() &&
-      activityDate.getFullYear() >= goalBeginDate.getFullYear()
-    );
-  });
-}
-
-function getTimeProgressPercentage(beginAt: Date, endDate: Date): number {
-  const totalDuration = endDate.getTime() - beginAt.getTime();
-  const elapsedDuration = new Date().getTime() - beginAt.getTime();
-  return Math.max(0, Math.min(100, (elapsedDuration / totalDuration) * 100));
 }
 
 function getNotification(
