@@ -1,3 +1,4 @@
+import { GoalProgress as GoalProgressType } from "@/types/goal-progress";
 import { GoalsAPI } from "@/utils/goals-api";
 import { Goal } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -7,7 +8,9 @@ import GoalProgressContent from "./goal-progress-content";
 import GoalProgressHeader from "./goal-progress-header";
 
 export default function GoalProgress({ userId }: { userId: number }) {
-  const [goalProgress, setGoalProgress] = useState<GoalProgress | null>(null);
+  const [goalProgress, setGoalProgress] = useState<GoalProgressType | null>(
+    null
+  );
   const [goal, setGoal] = useState<Goal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
