@@ -1,10 +1,13 @@
 import { prismaLib } from "@/lib/prisma";
 import {
+  ForbiddenError,
   get200Response,
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
 import { Activity, Goal } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(
   req: Request,
@@ -16,6 +19,13 @@ export async function GET(
   if (isNaN(userId)) {
     return get400Response("Invalid user ID");
   }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
   let goal;
   try {
     goal = await prismaLib.goal.findUnique({
@@ -29,8 +39,6 @@ export async function GET(
   if (!goal) {
     return get200Response({ notify: false });
   }
-
-  const now = new Date();
 
   const endDate = new Date(goal.endDate);
 
@@ -86,7 +94,7 @@ function getNotification(
 ): Response | undefined {
   if (goal.questions && goal.questions > 0) {
     const totalQuestions = filteredActivities.reduce(
-      (acc, activity) => acc + (activity.questions || 0),
+      (acc, activity) => acc + (activity.questions ?? 0),
       0
     );
 
@@ -100,7 +108,7 @@ function getNotification(
 
   if (goal.seconds && goal.seconds > 0) {
     const totalSeconds = filteredActivities.reduce(
-      (acc, activity) => acc + (activity.seconds || 0),
+      (acc, activity) => acc + (activity.seconds ?? 0),
       0
     );
 

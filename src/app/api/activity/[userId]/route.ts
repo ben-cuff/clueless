@@ -1,5 +1,6 @@
 import { prismaLib } from "@/lib/prisma";
 import {
+  ForbiddenError,
   get200Response,
   get201Response,
   get400Response,
@@ -49,17 +50,16 @@ export async function POST(
 
   const session = await getServerSession(authOptions);
 
-  // if (session?.user.id !== userId) {
-  //   return ForbiddenError;
-  // }
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
 
   const { questions, seconds } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
   const date = new Date();
-  // Get the date without the time part
-  const activityDate = new Date(date.toISOString().split("T")[0]);
+  const activityDate = new Date(date.toISOString().split("T")[0]); // Get the date without the time part
 
   if (isNaN(activityDate.getTime())) {
     return get400Response("Invalid date format");
@@ -76,7 +76,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    console.error("Error fetching existing activity:", error);
     return UnknownServerError;
   }
 
@@ -109,7 +109,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(activity) : get200Response(activity);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    console.error("Error adding activity:", error);
     return UnknownServerError;
   }
 }
