@@ -44,7 +44,6 @@ export async function POST(
   }
 
   const parsedEndDate = new Date(endDate);
-  console.log("Parsed end date:", parsedEndDate);
 
   if (parsedEndDate <= new Date()) {
     return get400Response("End date must be in the future");

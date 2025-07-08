@@ -58,9 +58,9 @@ export async function GET(
     return UnknownServerError;
   }
 
-  // Filters out activities that are before the goal's start date
-  const filteredActivities = activityArray.filter(
-    (activity) => new Date(activity.date) >= new Date(goal.beginAt)
+  const filteredActivities = filterActivitiesBeforeBeginAt(
+    activityArray,
+    new Date(goal.beginAt)
   );
 
   const timeProgressPercentage = getTimeProgressPercentage(
@@ -79,6 +79,23 @@ export async function GET(
   } else {
     return get200Response({ notify: false });
   }
+}
+
+function filterActivitiesBeforeBeginAt(
+  activities: Activity[],
+  beginAt: Date
+): Activity[] {
+  return activities.filter((activity) => {
+    const activityDate = new Date(activity.date);
+    const goalBeginDate = new Date(beginAt);
+
+    // checks if the activity date is on or after the goal's begin date (activity on same day is included)
+    return (
+      activityDate.getDay() >= goalBeginDate.getDay() &&
+      activityDate.getMonth() >= goalBeginDate.getMonth() &&
+      activityDate.getFullYear() >= goalBeginDate.getFullYear()
+    );
+  });
 }
 
 function getTimeProgressPercentage(beginAt: Date, endDate: Date): number {
@@ -134,6 +151,12 @@ function getNotificationForGoalType(
   }
 
   const progressPercentage = (totalProgress / targetValue) * 100;
+
+  console.log(
+    `Progress for ${type}: ${totalProgress}, Target: ${targetValue}, Percentage: ${progressPercentage.toFixed(
+      2
+    )}%, Time Progress Percentage: ${timeProgressPercentage.toFixed(2)}%`
+  );
 
   if (totalProgress >= targetValue) {
     return get200Response({ notify: true, message: "Goal completed!" });

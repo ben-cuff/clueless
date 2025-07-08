@@ -1,3 +1,4 @@
+import { MILLISECONDS_IN_SECOND } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
   ForbiddenError,
@@ -119,6 +120,7 @@ function calculateUpdatedSeconds(
   existingActivity: Activity | null
 ): number | undefined {
   const DEFAULT_SECONDS = 0;
+  const MAX_SECONDS = 120;
 
   if (seconds === undefined) {
     return undefined;
@@ -136,10 +138,10 @@ function calculateUpdatedSeconds(
     // this is to prevent the case where the user updates their activity multiple times in a short
     // period of time and the seconds don't increase because the last update was too recent
     const diffInSeconds = Math.ceil(
-      (now.getTime() - lastUpdate.getTime()) / 1000
+      (now.getTime() - lastUpdate.getTime()) / MILLISECONDS_IN_SECOND
     );
 
-    const secondsToAdd = Math.min(diffInSeconds, 120);
+    const secondsToAdd = Math.min(diffInSeconds, MAX_SECONDS);
     return existingActivity.seconds + secondsToAdd;
   } else {
     if (isNaN(seconds) || seconds < 0) {
