@@ -1,35 +1,34 @@
 "use client";
 
-import GoalCalendar from "@/components/goals/goal-calendar";
-import GoalsTabs from "@/components/goals/goal-tabs";
-import useCreateUpdateGoal from "@/hooks/use-create-update-goal";
+import CreateGoalPage from "@/components/goals/create-goal-page";
+import GoalViewPage from "@/components/goals/goal-view-page";
+import InterviewLoading from "@/components/interview/interview-loading";
+import { UserIdContext } from "@/components/providers/user-id-provider";
+import { GoalsAPI } from "@/utils/goals-api";
+import { Goal } from "@prisma/client";
+import { useContext, useEffect, useState } from "react";
 
 export default function GoalPage() {
-  const {
-    dateRange,
-    setDateRange,
-    goalValue,
-    setGoalValue,
-    handleSubmitGoal,
-    setGoalType,
-    isSubmitting,
-  } = useCreateUpdateGoal("create");
+  const userId = useContext(UserIdContext);
+  const [goal, setGoal] = useState<Goal | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <div className="flex flex-row gap-8 p-4 w-full justify-center">
-      <div className="w-full">
-        <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
-        <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
-      </div>
-      <div className="w-full">
-        <GoalsTabs
-          goalValue={goalValue}
-          setGoalValue={setGoalValue}
-          handleSubmitGoal={handleSubmitGoal}
-          setGoalType={setGoalType}
-          isDisabled={isSubmitting}
-        />
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    (async () => {
+      const data = await GoalsAPI.getGoal(userId);
+      setIsLoading(false);
+      console.log(data);
+      setGoal(data);
+    })();
+  }, [userId]);
+
+  if (isLoading) {
+    return <InterviewLoading />;
+  }
+
+  if (goal) {
+    return <GoalViewPage goal={goal} userId={userId} />;
+  }
+
+  return <CreateGoalPage />;
 }
