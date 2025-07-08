@@ -21,14 +21,14 @@ export default function useCreateUpdateGoal(type: "update" | "create") {
   const handleSubmitGoal = useCallback(async () => {
     setIsSubmitting(true);
     if (type === "update") {
-      GoalsAPI.updateGoal(
+      await GoalsAPI.updateGoal(
         userId ?? -1, // -1 meaning does not exist
         goalType,
         goalValue,
         dateRange.to ?? DATE_TWO_WEEKS_FROM_NOW // default goal of 2 weeks from now
       );
     } else {
-      GoalsAPI.createGoal(
+      await GoalsAPI.createGoal(
         userId ?? -1, // -1 meaning does not exist
         goalType,
         goalValue,

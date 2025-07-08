@@ -19,12 +19,11 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      alert(`Unable to create goal`);
+      const data = await response.json();
+      alert(`${data.error || "Unable to update goal"}`);
     }
 
     const data = await response.json();
-
-    console.log("Goal created:", data);
 
     return data;
   },
@@ -55,12 +54,11 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      alert(`Unable to update goal`);
+      const data = await response.json();
+      alert(`${data.error || "Unable to update goal"}`);
     }
 
     const data = await response.json();
-
-    console.log("Goal updated:", data);
 
     return data;
   },

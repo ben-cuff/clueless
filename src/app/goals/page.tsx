@@ -17,7 +17,6 @@ export default function GoalPage() {
     (async () => {
       const data = await GoalsAPI.getGoal(userId);
       setIsLoading(false);
-      console.log(data);
       setGoal(data);
     })();
   }, [userId]);
@@ -27,7 +26,7 @@ export default function GoalPage() {
   }
 
   if (goal) {
-    return <GoalViewPage goal={goal} userId={userId} />;
+    return <GoalViewPage userId={userId} />;
   }
 
   return <CreateGoalPage />;

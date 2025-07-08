@@ -23,7 +23,7 @@ export default function TabsCalendarContainer({
         <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
         <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
       </div>
-      <div className="w-full">
+      <div className="w-full mt-4">
         <GoalsTabs
           goalValue={goalValue}
           setGoalValue={setGoalValue}
