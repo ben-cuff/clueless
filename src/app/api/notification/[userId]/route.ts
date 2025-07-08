@@ -152,12 +152,6 @@ function getNotificationForGoalType(
 
   const progressPercentage = (totalProgress / targetValue) * 100;
 
-  console.log(
-    `Progress for ${type}: ${totalProgress}, Target: ${targetValue}, Percentage: ${progressPercentage.toFixed(
-      2
-    )}%, Time Progress Percentage: ${timeProgressPercentage.toFixed(2)}%`
-  );
-
   if (totalProgress >= targetValue) {
     return get200Response({ notify: true, message: "Goal completed!" });
   }

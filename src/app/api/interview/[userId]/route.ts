@@ -1,4 +1,5 @@
 import { prismaLib } from "@/lib/prisma";
+import { ActivityAPI } from "@/utils/activity-api";
 import {
   ForbiddenError,
   get200Response,
@@ -57,13 +58,14 @@ export async function POST(
       },
     });
 
-    const isNewRecord =
-      interview.createdAt.getTime() ===
-      interview.updatedAt.getTime();
+    const createdTime = interview.createdAt.getTime();
+    const updatedTime = interview.updatedAt.getTime();
 
-    return isNewRecord
-      ? get201Response(interview)
-      : get200Response(interview);
+    const isNewRecord = createdTime === updatedTime;
+
+    ActivityAPI.updateActivity(userId, "seconds", updatedTime - createdTime);
+
+    return isNewRecord ? get201Response(interview) : get200Response(interview);
   } catch (error) {
     console.error("Error upserting interview: ", error);
     return UnknownServerError;

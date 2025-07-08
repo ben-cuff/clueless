@@ -25,6 +25,8 @@ const CLUELESS_API_ROUTES = {
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/${id}`,
   recommendedQuestions: (userId: number) =>
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/recommended/${userId}`,
+  activityWithUserId: (userId: number) =>
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/activity/${userId}`,
 };
 
 export { CLUELESS_API_ROUTES, judge0_api_url };

@@ -1,4 +1,5 @@
 import { prismaLib } from "@/lib/prisma";
+import { ActivityAPI } from "@/utils/activity-api";
 import {
   ForbiddenError,
   get201Response,
@@ -50,6 +51,8 @@ export async function POST(req: Request) {
         completed: true,
       },
     });
+
+    ActivityAPI.updateActivity(userId, "questions", undefined, true);
 
     return get201Response(feedbackEntry);
   } catch (error) {

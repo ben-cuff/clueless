@@ -1,15 +1,12 @@
 import { MILLISECONDS_IN_SECOND } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
-  ForbiddenError,
   get200Response,
   get201Response,
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
 import { Activity } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(
   req: Request,
@@ -47,12 +44,6 @@ export async function POST(
 
   if (isNaN(userId)) {
     return get400Response("Invalid user ID");
-  }
-
-  const session = await getServerSession(authOptions);
-
-  if (session?.user.id !== userId) {
-    return ForbiddenError;
   }
 
   const { questions, seconds } = await req.json().catch(() => {
