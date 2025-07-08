@@ -19,7 +19,7 @@ export default function TabsCalendarContainer({
 
   return (
     <>
-      <div className="w-full">
+      <div className="flex flex-col w-full items-center">
         <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
         <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
       </div>
