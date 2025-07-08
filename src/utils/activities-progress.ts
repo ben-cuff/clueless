@@ -24,4 +24,16 @@ function getTimeProgressPercentage(beginAt: Date, endDate: Date): number {
   return Math.max(0, Math.min(100, (elapsedDuration / totalDuration) * 100));
 }
 
-export { filterActivitiesBeforeBeginAt, getTimeProgressPercentage };
+function getDaysLeft(endDate: Date): number {
+  return Math.max(
+    0,
+    Math.ceil(new Date(endDate).getTime() - new Date().setHours(0, 0, 0, 0)) /
+      (1000 * 60 * 60 * 24)
+  );
+}
+
+export {
+  filterActivitiesBeforeBeginAt,
+  getDaysLeft,
+  getTimeProgressPercentage,
+};
