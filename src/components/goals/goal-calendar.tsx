@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { DateRange } from "react-day-picker";
 import { Calendar } from "../ui/calendar";
 
-export default function GoalCalendar() {
-  const TWO_WEEKS_IN_MILLISECONDS = 14 * 24 * 60 * 60 * 1000;
-
-  const [dateRange, setDateRange] = useState<DateRange>({
-    from: new Date(),
-    to: new Date(Date.now() + TWO_WEEKS_IN_MILLISECONDS),
-  });
-
+export default function GoalCalendar({
+  dateRange,
+  setDateRange,
+}: {
+  dateRange: DateRange;
+  setDateRange: Dispatch<SetStateAction<DateRange>>;
+}) {
   return (
     <Calendar
       mode="range"
