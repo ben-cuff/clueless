@@ -138,6 +138,7 @@ function calculateUpdatedSeconds(
     if (isNaN(seconds) || seconds < 0) {
       return DEFAULT_SECONDS;
     }
+    return Math.min(seconds, MAX_SECONDS);
   }
 }
 
