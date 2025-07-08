@@ -172,7 +172,7 @@ export async function DELETE(
   const session = await getServerSession(authOptions);
 
   if (session?.user.id !== userId) {
-    // return ForbiddenError;
+    return ForbiddenError;
   }
 
   try {
