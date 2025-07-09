@@ -39,12 +39,13 @@ export default function useCreateUpdateGoal(type: "update" | "create") {
     window.location.reload(); // reload to reflect changes
     setIsSubmitting(false);
   }, [
-    DATE_TWO_WEEKS_FROM_NOW,
-    dateRange.to,
+    type,
+    userId,
+    NO_USER_ID,
     goalType,
     goalValue,
-    userId,
-    type,
+    dateRange.to,
+    DATE_TWO_WEEKS_FROM_NOW,
   ]);
 
   return {
