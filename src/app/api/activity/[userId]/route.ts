@@ -51,8 +51,8 @@ export async function POST(
     return get400Response("Invalid JSON body");
   });
 
-  const date = new Date();
-  const activityDate = new Date(date.toISOString().split("T")[0]); // Get the date without the time part
+  const currentDate = new Date();
+  const activityDate = new Date(currentDate.toISOString().split("T")[0]); // Get the date without the time part
 
   let existingActivity;
   try {
