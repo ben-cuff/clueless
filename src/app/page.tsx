@@ -1,4 +1,5 @@
 import AlertClient from "@/components/alert-client";
+import ActivityHeatmap from "@/components/home/activity-heatmap";
 import LandingCard from "@/components/landing-card";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/options";
@@ -22,10 +23,12 @@ export default async function Home({
       </div>
     );
   }
+
   return (
     <div className="flex flex-1 justify-center items-center text-center flex-col min-h-screen p-6">
       <h1 className="text-4xl font-bold mb-4">Welcome to Clueless</h1>
       <h3 className="text-xl  mb-8">Use the navbar to get started</h3>
+      <ActivityHeatmap />
       <AlertClient message={error} />
     </div>
   );

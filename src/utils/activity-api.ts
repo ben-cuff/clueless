@@ -1,4 +1,5 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { Activity } from "@prisma/client";
 import { errorLog } from "./logger";
 
 export const ActivityAPI = {
@@ -36,5 +37,22 @@ export const ActivityAPI = {
     const data = await response.json();
 
     return data;
+  },
+  getActivity: async (userId: number) => {
+    const response = await fetch(
+      CLUELESS_API_ROUTES.activityWithUserId(userId),
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      errorLog("Failed to fetch activity: " + response.statusText);
+      return;
+    }
+
+    const data = await response.json();
+
+    return data as Activity[];
   },
 };

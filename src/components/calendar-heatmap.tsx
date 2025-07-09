@@ -1,3 +1,4 @@
+import { activityForHeatmap } from "@/types/activity";
 import { daysInWeek, daysInYear } from "date-fns/constants";
 
 export default function CalendarHeatmap({
@@ -6,7 +7,7 @@ export default function CalendarHeatmap({
   title = "Heatmap",
 }: {
   numDays?: number;
-  dateValues: { date: Date; value: number }[];
+  dateValues: activityForHeatmap[];
   title: string;
 }) {
   const daysArray = generateDaysArray(numDays);
@@ -58,7 +59,6 @@ function generateDaysArray(numDays: number) {
   for (let i = 0; i < roundedNumDays; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() - (roundedNumDays - 1 - i));
-    console.log(today.getDate() - (roundedNumDays - 1 - i));
     array.push(d);
   }
   return array;
