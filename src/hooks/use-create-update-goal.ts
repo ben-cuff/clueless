@@ -17,19 +17,20 @@ export default function useCreateUpdateGoal(type: "update" | "create") {
   const [goalType, setGoalType] = useState<"hours" | "questions">("hours");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const userId = useContext(UserIdContext);
+  const NO_USER_ID = -1;
 
   const handleSubmitGoal = useCallback(async () => {
     setIsSubmitting(true);
     if (type === "update") {
       await GoalsAPI.updateGoal(
-        userId ?? -1, // -1 meaning does not exist
+        userId ?? NO_USER_ID,
         goalType,
         goalValue,
         dateRange.to ?? DATE_TWO_WEEKS_FROM_NOW // default goal of 2 weeks from now
       );
     } else {
       await GoalsAPI.createGoal(
-        userId ?? -1, // -1 meaning does not exist
+        userId ?? NO_USER_ID,
         goalType,
         goalValue,
         dateRange.to ?? DATE_TWO_WEEKS_FROM_NOW // default goal of 2 weeks from now

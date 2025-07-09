@@ -105,10 +105,11 @@ function getRecentValidInterviews(
   interviews: InterviewWithFeedback[]
 ): InterviewWithFeedback[] {
   const SEC_IN_30_DAYS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  const NO_FEEDBACK_NUMBER = -1;
 
   return interviews.filter(
     (interview) =>
-      interview.feedback?.feedbackNumber !== -1 &&
+      interview.feedback?.feedbackNumber !== NO_FEEDBACK_NUMBER &&
       interview.updatedAt > new Date(Date.now() - SEC_IN_30_DAYS)
   );
 }
