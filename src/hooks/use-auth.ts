@@ -24,7 +24,7 @@ export default function useAuth(mode: "login" | "register") {
           return;
         }
 
-       await AccountAPI.createAccount(username, password);
+        await AccountAPI.createAccount(username, password);
       }
 
       const result = await signIn("credentials", {
@@ -37,7 +37,7 @@ export default function useAuth(mode: "login" | "register") {
         router.push("/");
         return;
       }
-      console.error("Login failed.");
+
       alert(
         "Login failed. Make sure you entered the correct username, and password"
       );

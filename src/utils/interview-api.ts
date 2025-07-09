@@ -1,5 +1,6 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { Message } from "@/types/message";
+import { errorLog } from "./logger";
 
 export const interviewAPI = {
   async createOrUpdateInterview(
@@ -31,7 +32,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error creating or updating interview:", error);
+      errorLog("Error creating or updating interview: " + error);
     }
   },
   async updateCodeForInterview(
@@ -55,7 +56,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error updating code for interview:", error);
+      errorLog("Error updating code for interview: " + error);
     }
   },
   async getInterview(userId: number, interviewId: string) {
@@ -70,7 +71,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching interview:", error);
+      errorLog("Error fetching interview: " + error);
     }
   },
   async getInterviewsByUserId(userId: number) {
@@ -82,7 +83,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching interviews by user ID:", error);
+      errorLog("Error fetching interviews by user ID: " + error);
     }
   },
   async deleteInterview(userId: number, interviewId: string) {
@@ -99,7 +100,7 @@ export const interviewAPI = {
 
       return { success: true };
     } catch (error) {
-      console.error("Error deleting interview:", error);
+      errorLog("Error deleting interview: " + error);
       return {
         success: false,
       };

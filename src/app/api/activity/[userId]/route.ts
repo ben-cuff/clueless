@@ -6,6 +6,7 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Activity } from "@prisma/client";
 
 export async function GET(
@@ -30,7 +31,7 @@ export async function GET(
     });
     return get200Response(activities);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error: " + error);
     return UnknownServerError;
   }
 }
@@ -68,7 +69,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error("Error fetching existing activity:", error);
+    errorLog("Error fetching existing activity:" + error);
     return UnknownServerError;
   }
 
@@ -101,7 +102,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(activity) : get200Response(activity);
   } catch (error) {
-    console.error("Error adding activity:", error);
+    errorLog("Error adding activity: " + error);
     return UnknownServerError;
   }
 }

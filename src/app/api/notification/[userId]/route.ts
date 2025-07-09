@@ -11,6 +11,7 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Activity, Goal } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -50,7 +51,7 @@ export async function GET(
       where: { userId },
     });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error: " + error);
     return UnknownServerError;
   }
 
@@ -72,7 +73,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error: " + error);
     return UnknownServerError;
   }
 

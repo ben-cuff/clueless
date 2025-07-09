@@ -9,6 +9,7 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -68,7 +69,7 @@ export async function POST(
     ) {
       return get409Response("Goal already exists for this user");
     } else {
-      console.error("Unexpected error:", error);
+      errorLog("Unexpected error: " + error);
       return UnknownServerError;
     }
   }
@@ -92,7 +93,7 @@ export async function GET(
 
     return get200Response(goal);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error while getting user goal: " + error);
     return UnknownServerError;
   }
 }
@@ -152,7 +153,7 @@ export async function PUT(
     ) {
       return get400Response("No goal found for this user");
     } else {
-      console.error("Unexpected error:", error);
+      errorLog("Unexpected error while updating user goal: " + error);
       return UnknownServerError;
     }
   }
@@ -188,7 +189,7 @@ export async function DELETE(
     ) {
       return get400Response("No goal found for this user");
     } else {
-      console.error("Unexpected error while deleting goal:", error);
+      errorLog("Unexpected error while deleting goal: " + error);
       return UnknownServerError;
     }
   }

@@ -1,5 +1,6 @@
 import { prismaLib } from "@/lib/prisma";
 import { get200Response, UnknownServerError } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { getPagination, getWhereClause } from "@/utils/search-helpers";
 import { Prisma, Question } from "@prisma/client";
 
@@ -69,7 +70,7 @@ export async function GET(req: Request) {
 
     return get200Response(questions);
   } catch (error) {
-    console.error("Error during question search:", error);
+    errorLog("Error during question search: " + error);
     return UnknownServerError;
   }
 }

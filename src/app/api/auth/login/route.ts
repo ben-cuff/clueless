@@ -5,6 +5,7 @@ import {
   get401Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import argon2 from "argon2";
 
 export async function POST(req: Request) {
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
       return get401Response("Username or password incorrect");
     }
   } catch (error) {
-    console.error("Error during user login:", error);
+    errorLog("Error during user login: " + error);
     return UnknownServerError;
   }
 }

@@ -7,6 +7,7 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -67,7 +68,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(interview) : get200Response(interview);
   } catch (error) {
-    console.error("Error upserting interview: ", error);
+    errorLog("Error upserting interview: " + error);
     return UnknownServerError;
   }
 }
@@ -102,7 +103,7 @@ export async function GET(
 
     return get200Response(interviews);
   } catch (error) {
-    console.error("Error fetching interviews: ", error);
+    errorLog("Error fetching interviews: " + error);
     return UnknownServerError;
   }
 }

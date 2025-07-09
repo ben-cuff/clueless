@@ -1,3 +1,4 @@
+import { errorLog } from "@/utils/logger";
 import { test } from "@playwright/test";
 import { promises as fs } from "fs";
 import path from "path";
@@ -11,7 +12,7 @@ const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
   try {
     await fs.mkdir(authDir, { recursive: true });
   } catch (error) {
-    console.error(`Failed to create auth directory: ${error}`);
+    errorLog(`Failed to create auth directory: ${error}`);
   }
 })();
 

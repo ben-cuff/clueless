@@ -1,6 +1,7 @@
 import { prismaLib } from "@/lib/prisma";
 import { Question_Extended } from "@/types/question";
 import { get400Response, UnknownServerError } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { GoogleGenAI } from "@google/genai";
 
 type GenAIChunk = {
@@ -26,7 +27,7 @@ async function GoogleGenAIStream(
           }
         }
       } catch (error) {
-        console.error("Error processing stream:", error);
+        errorLog("Error processing stream: " + error);
         controller.error(error);
       } finally {
         controller.close();
@@ -107,7 +108,7 @@ export async function POST(req: Request) {
     const stream = await GoogleGenAIStream(response);
     return new StreamingTextResponse(stream);
   } catch (error) {
-    console.error("Error processing AI response stream:", error);
+    errorLog("Error processing AI response stream: " + error);
     return UnknownServerError;
   }
 }

@@ -1,4 +1,5 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { errorLog } from "./logger";
 
 export const ActivityAPI = {
   updateActivity: async (
@@ -28,7 +29,7 @@ export const ActivityAPI = {
     );
 
     if (!response.ok) {
-      console.error("Failed to update activity:", response.statusText);
+      errorLog("Failed to update activity: " + response.statusText);
       return;
     }
 
