@@ -1,5 +1,6 @@
 import { activityForHeatmap } from "@/types/activity";
 import { ActivityAPI } from "@/utils/activity-api";
+import { Activity } from "@prisma/client";
 import { secondsInHour } from "date-fns/constants";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
