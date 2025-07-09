@@ -1,3 +1,4 @@
+import { MILLISECONDS_IN_SECOND, SECONDS_IN_A_DAY } from "@/constants/time";
 import { Activity } from "@prisma/client";
 
 function filterActivitiesBeforeBeginAt(
@@ -28,7 +29,7 @@ function getDaysLeft(endDate: Date): number {
   return Math.max(
     0,
     Math.ceil(new Date(endDate).getTime() - new Date().setHours(0, 0, 0, 0)) /
-      (1000 * 60 * 60 * 24)
+      (MILLISECONDS_IN_SECOND * SECONDS_IN_A_DAY)
   );
 }
 
