@@ -7,8 +7,10 @@ import GoalsTabs from "./goal-tabs";
 
 export default function TabsCalendarContainer({
   type,
+  fetchGoal,
 }: {
   type: "create" | "update";
+  fetchGoal: () => Promise<void>;
 }) {
   const {
     dateRange,
@@ -18,7 +20,7 @@ export default function TabsCalendarContainer({
     handleSubmitGoal,
     setGoalType,
     isSubmitting,
-  } = useCreateUpdateGoal(type);
+  } = useCreateUpdateGoal(type, fetchGoal);
 
   return (
     <ErrorBoundary

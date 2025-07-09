@@ -6,15 +6,15 @@ import InterviewLoading from "@/components/interview/interview-loading";
 import useGoalPage from "@/hooks/use-goal-page";
 
 export default function GoalPage() {
-  const { isLoading, goal } = useGoalPage();
+  const { isLoading, goal, fetchGoal } = useGoalPage();
 
   if (isLoading) {
     return <InterviewLoading />;
   }
 
   if (goal) {
-    return <GoalViewPage />;
+    return <GoalViewPage fetchGoal={fetchGoal} />;
   }
 
-  return <CreateGoalPage />;
+  return <CreateGoalPage fetchGoal={fetchGoal} />;
 }
