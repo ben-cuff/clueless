@@ -112,32 +112,21 @@ function getNotification(
   filteredActivities: Activity[],
   timeProgressPercentage: number
 ): Response | undefined {
-  if (goal.questions && goal.questions > 0) {
-    const totalQuestions = filteredActivities.reduce(
-      (acc, activity) => acc + (activity.questions ?? 0),
-      0
-    );
+  const goalTypes: Array<"questions" | "seconds"> = ["questions", "seconds"];
 
-    return getNotificationForGoalType(
-      goal,
-      totalQuestions,
-      timeProgressPercentage,
-      "questions"
-    );
-  }
-
-  if (goal.seconds && goal.seconds > 0) {
-    const totalSeconds = filteredActivities.reduce(
-      (acc, activity) => acc + (activity.seconds ?? 0),
-      0
-    );
-
-    return getNotificationForGoalType(
-      goal,
-      totalSeconds,
-      timeProgressPercentage,
-      "seconds"
-    );
+  for (const type of goalTypes) {
+    if (goal[type] && goal[type] > 0) {
+      const totalProgress = filteredActivities.reduce(
+        (acc, activity) => acc + (activity[type] ?? 0),
+        0
+      );
+      return getNotificationForGoalType(
+        goal,
+        totalProgress,
+        timeProgressPercentage,
+        type
+      );
+    }
   }
 }
 
