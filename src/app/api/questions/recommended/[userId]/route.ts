@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { MILLISECONDS_IN_30_DAYS, SECONDS_IN_HOUR } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
@@ -67,7 +68,7 @@ export async function GET(
   const recommendedQuestions = getRecommendedQuestions(interviews, questions);
 
   redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
-    EX: 60 * 30,
+    EX: SECONDS_IN_HOUR / 2, // cache for half an hour
   });
 
   return get200Response(recommendedQuestions);
@@ -104,22 +105,24 @@ function getRecommendedQuestions(
 function getRecentValidInterviews(
   interviews: InterviewWithFeedback[]
 ): InterviewWithFeedback[] {
-  const SEC_IN_30_DAYS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
   const NO_FEEDBACK_NUMBER = -1;
 
   return interviews.filter(
     (interview) =>
       interview.feedback?.feedbackNumber !== NO_FEEDBACK_NUMBER &&
-      interview.updatedAt > new Date(Date.now() - SEC_IN_30_DAYS)
+      interview.updatedAt > new Date(Date.now() - MILLISECONDS_IN_30_DAYS)
   );
 }
 
-//   ["Arrays", "Trees"] feedbackNumber: 2
-//   ["Dynamic Programming", "Arrays"] feedbackNumber: 3
-//
-// - Arrays: (1/3 + 1/4)/2 = 0.292
-// - Trees: (1/3)/1 = 0.333
-// - Dynamic Programming: (1/4)/1 = 0.25
+/**  ["Arrays", "Trees"] feedbackNumber: 2
+ *   ["Dynamic Programming", "Arrays"] feedbackNumber: 3
+ *
+ *   - Arrays: (1/3 + 1/4)/2 = 0.292
+ *   - Trees: (1/3)/1 = 0.333
+ *   - Dynamic Programming: (1/4)/1 = 0.25
+ *
+ * higher weight means user has performed worse on that topic
+ */
 function getTopicWeights(
   interviews: InterviewWithFeedback[]
 ): Map<string, number> {
