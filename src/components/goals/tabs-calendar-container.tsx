@@ -1,5 +1,6 @@
 import useCreateUpdateGoal from "@/hooks/use-create-update-goal";
 import GoalCalendar from "./goal-calendar";
+import GoalCalendarHeader from "./goal-calendar-header";
 import GoalsTabs from "./goal-tabs";
 
 export default function TabsCalendarContainer({
@@ -19,10 +20,9 @@ export default function TabsCalendarContainer({
 
   return (
     <>
-      <div className="flex flex-col w-full items-center">
-        <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
+      <GoalCalendarHeader>
         <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
-      </div>
+      </GoalCalendarHeader>
       <div className="w-full mt-4">
         <GoalsTabs
           goalValue={goalValue}
