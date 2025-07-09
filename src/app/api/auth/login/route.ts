@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await prismaLib.account.findUnique({
+    const user = await prismaLib.user.findUnique({
       where: { username },
     });
 

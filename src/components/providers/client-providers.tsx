@@ -1,7 +1,9 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
 import { ThemeProvider } from "../theme/theme-provider";
+import { NotificationProvider } from "./notifications-provider";
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +13,10 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <Toaster />
+        <NotificationProvider>{children}</NotificationProvider>
+      </SessionProvider>
     </ThemeProvider>
   );
 }

@@ -8,13 +8,15 @@ export default function FormField({
   value,
   onChange,
   required = true,
+  isDisabled = false,
 }: {
   id: string;
   label: string;
   type: string;
-  value: string;
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  isDisabled?: boolean;
 }) {
   return (
     <div className="mb-4">
@@ -27,6 +29,7 @@ export default function FormField({
         value={value}
         onChange={onChange}
         required={required}
+        disabled={isDisabled}
       />
     </div>
   );

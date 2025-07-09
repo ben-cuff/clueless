@@ -14,15 +14,15 @@ export default function LeetcodeLinkImage({
       rel="noopener noreferrer"
       className="inline-flex items-center"
     >
-    <Badge className="rounded-full p-1">
-      <Image
-        alt="leetcode-logo"
-        src={"/leetcode_logo_black.png"}
-        width={40}
-        height={40}
-        className="object-contain"
-      />
-    </Badge>
+      <Badge className="rounded-full p-1">
+        <Image
+          alt="leetcode-logo"
+          src={"/leet_code_logo_black.png"}
+          width={40}
+          height={40}
+          className="object-contain"
+        />
+      </Badge>
     </Link>
   );
 }

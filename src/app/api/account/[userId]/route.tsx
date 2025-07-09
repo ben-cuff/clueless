@@ -28,7 +28,7 @@ export async function DELETE(
   }
 
   try {
-    const deletedAccount = await prismaLib.account.delete({
+    const deletedAccount = await prismaLib.user.delete({
       where: { id: userId },
     });
 

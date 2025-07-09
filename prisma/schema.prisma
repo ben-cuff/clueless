@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
+model User {
   id             Int         @id @default(autoincrement())
   username       String      @unique
   hashedPassword String      @map("hashed_password")
@@ -21,24 +21,39 @@ model Account {
   updatedAt      DateTime    @updatedAt
   activity       Activity[]
   interview      Interview[]
+  goal           Goal?
 
   @@index([username])
+}
+
+model Goal {
+  id        String   @id @default(uuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seconds   Int?
+  questions Int?
+  endDate   DateTime
+  beginAt   DateTime @default(now())
+
+  @@unique([userId])
 }
 
 model Activity {
   id        String   @id @default(uuid())
   userId    Int
-  account   Account  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      DateTime
-  count     Int      @default(0)
-  totalTime Int      @default(0)
+  questions Int      @default(0)
+  seconds   Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 
   @@unique([userId, date])
   @@index([userId])
 }
 
 model Question {
-  id          Int         @id
+  id          Int         @id // questionNumber
   title       String
   accuracy    Float
   testCases   Json
@@ -58,7 +73,7 @@ model Question {
 model Interview {
   id             String    @id
   userId         Int
-  account        Account   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages       Json
   questionNumber Int
   question       Question  @relation(fields: [questionNumber], references: [id], onDelete: Cascade)
