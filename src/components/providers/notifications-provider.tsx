@@ -15,7 +15,7 @@ export const NotificationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const POLL_INTERVAL = millisecondsInHour / 2; // notifies every half hour if there is a notification to show
+  const POLL_INTERVAL = millisecondsInHour * 2; // notifies every 2 hours if notification is available
   const { data: session } = useSession();
   const router = useRouter();
 
