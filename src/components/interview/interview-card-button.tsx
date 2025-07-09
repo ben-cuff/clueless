@@ -12,7 +12,6 @@ export default function InterviewCardButton({
   return (
     <Button
       variant="outline"
-      className="hover:cursor-pointer"
       onClick={() => {
         if (interview.completed) {
           router.push(

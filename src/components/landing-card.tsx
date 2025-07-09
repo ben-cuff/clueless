@@ -17,7 +17,6 @@ export default function LandingCard() {
             onClick={() => {
               router.push("/login");
             }}
-            className="hover:cursor-pointer"
           >
             Login
           </Button>
@@ -25,7 +24,6 @@ export default function LandingCard() {
             onClick={() => {
               router.push("/register");
             }}
-            className="hover:cursor-pointer"
           >
             Sign Up
           </Button>

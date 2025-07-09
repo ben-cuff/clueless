@@ -47,7 +47,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
             )}
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full hover:cursor-pointer">
+            <Button type="submit" className="w-full">
               {mode === "login" ? "Sign In" : "Register"}
             </Button>
           </CardFooter>

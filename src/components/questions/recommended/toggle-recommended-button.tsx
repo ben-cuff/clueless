@@ -11,7 +11,7 @@ export default function ToggleRecommendedButton({
     <Button
       onClick={toggleIsHidden}
       variant={!isHidden ? "outline" : "default"}
-      className="absolute mt-20 top-0 right-0 hover:cursor-pointer"
+      className="absolute mt-20 top-0 right-0"
     >
       {isHidden ? "Show Recommended" : "Hide Recommended"}
     </Button>

@@ -41,7 +41,7 @@ export default function OutputArea({
     <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[100px]">
       <div>
         <Button
-          className="hover:cursor-pointer mt-2"
+          className="mt-2"
           onClick={handleSubmitCode}
           disabled={isLoading || isFeedback}
         >

@@ -14,10 +14,7 @@ export default function InterviewPage() {
   return (
     <>
       <div className="flex flex-col w-full h-vh justify-center items-center">
-        <Button
-          onClick={() => router.push("/interview/new")}
-          className="hover:cursor-pointer mt-10"
-        >
+        <Button onClick={() => router.push("/interview/new")} className="mt-10">
           Start Random Interview
         </Button>
         {isLoadingInterviews ? (
