@@ -1,4 +1,6 @@
+import ErrorFallback from "@/components/error-fallback";
 import useRecommended from "@/hooks/use-recommended";
+import { ErrorBoundary } from "react-error-boundary";
 import QuestionsList from "../questions-list";
 import QuestionsLoading from "../questions-loading";
 import RecommendedHeader from "./recommended-header";
@@ -18,7 +20,11 @@ export default function RecommendedQuestions() {
   }
 
   return (
-    <>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error while rendering recommended questions, try again later" />
+      }
+    >
       <ToggleRecommendedButton
         isHidden={isHidden}
         toggleIsHidden={toggleIsHidden}
@@ -34,6 +40,6 @@ export default function RecommendedQuestions() {
           )}
         </RecommendedHeader>
       )}
-    </>
+    </ErrorBoundary>
   );
 }

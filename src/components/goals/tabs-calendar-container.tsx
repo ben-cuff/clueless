@@ -1,4 +1,6 @@
 import useCreateUpdateGoal from "@/hooks/use-create-update-goal";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../error-fallback";
 import GoalCalendar from "./goal-calendar";
 import GoalCalendarHeader from "./goal-calendar-header";
 import GoalsTabs from "./goal-tabs";
@@ -19,7 +21,11 @@ export default function TabsCalendarContainer({
   } = useCreateUpdateGoal(type);
 
   return (
-    <>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error while trying to display tabs and calendar, try again later" />
+      }
+    >
       <GoalCalendarHeader>
         <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
       </GoalCalendarHeader>
@@ -31,6 +37,6 @@ export default function TabsCalendarContainer({
         setGoalType={setGoalType}
         isDisabled={isSubmitting}
       />
-    </>
+    </ErrorBoundary>
   );
 }

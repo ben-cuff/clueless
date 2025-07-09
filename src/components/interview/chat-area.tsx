@@ -1,4 +1,6 @@
 import { Message } from "@/types/message";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../error-fallback";
 import { Card } from "../ui/card";
 import ChatInput from "./chat-input";
 import ChatMessages from "./chat-messages";
@@ -11,9 +13,15 @@ export default function ChatArea({
   handleMessageSubmit: (message: string) => Promise<void>;
 }) {
   return (
-    <Card className="flex flex-col h-[800px] overflow-hidden max-h-full">
-      <ChatMessages messages={messages} />
-      <ChatInput handleMessageSubmit={handleMessageSubmit} />
-    </Card>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error while rendering chat area, try again later" />
+      }
+    >
+      <Card className="flex flex-col h-[800px] overflow-hidden max-h-full">
+        <ChatMessages messages={messages} />
+        <ChatInput handleMessageSubmit={handleMessageSubmit} />
+      </Card>
+    </ErrorBoundary>
   );
 }
