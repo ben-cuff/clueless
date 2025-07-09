@@ -155,9 +155,13 @@ function getNotificationForGoalType(
   const progressPercentage = (totalProgress / targetValue) * 100;
 
   if (totalProgress >= targetValue) {
-    return get200Response({ notify: true, message: "Goal completed!" });
+    return get200Response({
+      notify: true,
+      message: "Goal completed! Update it to get a new one.",
+    });
   }
 
+  // if the user is 10% or more behind the time progress percentage, notify them
   if (progressPercentage < timeProgressPercentage - 10) {
     const message =
       type === "seconds"
