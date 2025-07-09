@@ -54,10 +54,6 @@ export async function POST(
   const date = new Date();
   const activityDate = new Date(date.toISOString().split("T")[0]); // Get the date without the time part
 
-  if (isNaN(activityDate.getTime())) {
-    return get400Response("Invalid date format");
-  }
-
   let existingActivity;
   try {
     existingActivity = await prismaLib.activity.findUnique({
