@@ -38,15 +38,8 @@ export default function useCreateUpdateGoal(type: "update" | "create") {
     }
     window.location.reload(); // reload to reflect changes
     setIsSubmitting(false);
-  }, [
-    type,
-    userId,
-    NO_USER_ID,
-    goalType,
-    goalValue,
-    dateRange.to,
-    DATE_TWO_WEEKS_FROM_NOW,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, userId, goalType, goalValue, dateRange.to]);
 
   return {
     dateRange,
