@@ -1,4 +1,6 @@
+import { SECONDS_IN_A_DAY } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
+import redisLib from "@/lib/redis";
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
@@ -17,6 +19,8 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
+  const MAX_NOTIFICATIONS_IN_PERIOD = 3;
+
   const resolvedParams = await params;
   const userId = Number(resolvedParams.userId);
 
@@ -28,6 +32,16 @@ export async function GET(
 
   if (session?.user.id !== userId) {
     return ForbiddenError;
+  }
+
+  const cacheKey = `notification_${userId}`;
+
+  const cachedNotificationCount = await redisLib.get(cacheKey);
+  if (
+    cachedNotificationCount &&
+    parseInt(cachedNotificationCount) >= MAX_NOTIFICATIONS_IN_PERIOD
+  ) {
+    return get200Response({ notify: false });
   }
 
   let goal;
@@ -79,6 +93,13 @@ export async function GET(
   );
 
   if (notification) {
+    if (cachedNotificationCount) {
+      await redisLib.incr(cacheKey);
+    } else {
+      await redisLib.set(cacheKey, "1", {
+        EX: SECONDS_IN_A_DAY,
+      });
+    }
     return notification;
   } else {
     return get200Response({ notify: false });
