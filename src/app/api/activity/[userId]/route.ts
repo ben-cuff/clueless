@@ -1,4 +1,3 @@
-import { MILLISECONDS_IN_SECOND } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
   get200Response,
@@ -8,6 +7,7 @@ import {
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
 import { Activity } from "@prisma/client";
+import { millisecondsInSecond } from "date-fns/constants";
 
 export async function GET(
   req: Request,
@@ -130,7 +130,7 @@ function calculateUpdatedSeconds(
     // this is to prevent the case where the user updates their activity multiple times in a short
     // period of time and the seconds don't increase because the last update was too recent
     const diffInSeconds = Math.ceil(
-      (now.getTime() - lastUpdate.getTime()) / MILLISECONDS_IN_SECOND
+      (now.getTime() - lastUpdate.getTime()) / millisecondsInSecond
     );
 
     const secondsToAdd = Math.min(diffInSeconds, MAX_SECONDS);

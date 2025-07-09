@@ -1,4 +1,3 @@
-import { SECONDS_IN_A_DAY } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
 import { Activity, Goal } from "@prisma/client";
+import { minutesInHour, secondsInDay } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -98,7 +98,7 @@ export async function GET(
       await redisLib.incr(cacheKey);
     } else {
       await redisLib.set(cacheKey, "1", {
-        EX: SECONDS_IN_A_DAY,
+        EX: secondsInDay,
       });
     }
     return notification;
@@ -164,10 +164,21 @@ function getNotificationForGoalType(
 
   // if the user is 10% or more behind the time progress percentage, notify them
   if (progressPercentage < timeProgressPercentage - 10) {
+    const deficit = Math.round(timeProgressPercentage - progressPercentage);
+    let progressString = "";
+    if (type === "seconds") {
+      const minutes = Math.floor(totalProgress / 60);
+      const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
+      progressString = `Current progress: ${minutes}/${targetMinutes} minutes completed`;
+    } else {
+      progressString = `Current progress: ${totalProgress}/${targetValue} questions completed`;
+    }
     const message =
-      type === "seconds"
-        ? "You're falling behind on your study time goal!"
-        : "You're falling behind on your questions goal!";
+      (type === "seconds"
+        ? `You're falling behind on your study time goal by ${deficit}%!`
+        : `You're falling behind on your questions goal by ${deficit}%!`) +
+      "\n" +
+      progressString;
     return get200Response({ notify: true, message });
   }
 }

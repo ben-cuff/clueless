@@ -1,5 +1,4 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { MILLISECONDS_IN_30_DAYS, SECONDS_IN_HOUR } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
@@ -9,6 +8,7 @@ import {
   get400Response,
 } from "@/utils/api-responses";
 import type { Topic } from "@prisma/client";
+import { millisecondsInWeek, secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 
 export async function GET(
@@ -68,7 +68,7 @@ export async function GET(
   const recommendedQuestions = getRecommendedQuestions(interviews, questions);
 
   redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
-    EX: SECONDS_IN_HOUR / 2, // cache for half an hour
+    EX: secondsInHour / 2, // cache for half an hour
   });
 
   return get200Response(recommendedQuestions);
@@ -110,7 +110,7 @@ function getRecentValidInterviews(
   return interviews.filter(
     (interview) =>
       interview.feedback?.feedbackNumber !== NO_FEEDBACK_NUMBER &&
-      interview.updatedAt > new Date(Date.now() - MILLISECONDS_IN_30_DAYS)
+      interview.updatedAt > new Date(Date.now() - millisecondsInWeek * 4) // within the last 4 weeks
   );
 }
 

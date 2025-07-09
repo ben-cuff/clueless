@@ -1,12 +1,12 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { TWO_WEEKS_IN_MILLISECONDS } from "@/constants/time";
 import { GoalsAPI } from "@/utils/goals-api";
+import { millisecondsInWeek } from "date-fns/constants";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 export default function useCreateUpdateGoal(type: "update" | "create") {
   const DATE_TWO_WEEKS_FROM_NOW = useMemo(
-    () => new Date(Date.now() + TWO_WEEKS_IN_MILLISECONDS),
+    () => new Date(Date.now() + millisecondsInWeek * 2),
     []
   );
   const [dateRange, setDateRange] = useState<DateRange>({
