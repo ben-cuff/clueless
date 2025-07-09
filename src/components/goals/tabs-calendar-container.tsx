@@ -23,15 +23,14 @@ export default function TabsCalendarContainer({
       <GoalCalendarHeader>
         <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
       </GoalCalendarHeader>
-      <div className="w-full mt-4">
-        <GoalsTabs
-          goalValue={goalValue}
-          setGoalValue={setGoalValue}
-          handleSubmitGoal={handleSubmitGoal}
-          setGoalType={setGoalType}
-          isDisabled={isSubmitting}
-        />
-      </div>
+      <GoalsTabs
+        className="w-full mt-4"
+        goalValue={goalValue}
+        setGoalValue={setGoalValue}
+        handleSubmitGoal={handleSubmitGoal}
+        setGoalType={setGoalType}
+        isDisabled={isSubmitting}
+      />
     </>
   );
 }

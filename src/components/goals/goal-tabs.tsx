@@ -8,18 +8,20 @@ export default function GoalsTabs({
   setGoalType,
   handleSubmitGoal,
   isDisabled,
+  className,
 }: {
   goalValue: number;
   setGoalValue: Dispatch<SetStateAction<number>>;
   handleSubmitGoal: () => Promise<void>;
   setGoalType: Dispatch<SetStateAction<"hours" | "questions">>;
   isDisabled: boolean;
+  className?: string;
 }) {
   return (
     <Tabs
       defaultValue="hours"
       onValueChange={(value) => setGoalType(value as "hours" | "questions")}
-      className="w-full"
+      className={className}
     >
       <TabsList className="w-full">
         <TabsTrigger value="hours" className="flex-1" disabled={isDisabled}>
