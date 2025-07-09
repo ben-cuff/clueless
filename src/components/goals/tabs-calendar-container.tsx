@@ -28,17 +28,19 @@ export default function TabsCalendarContainer({
         <ErrorFallback text="Error while trying to display tabs and calendar, try again later" />
       }
     >
-      <GoalCalendarHeader>
-        <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
-      </GoalCalendarHeader>
-      <GoalsTabs
-        className="w-full mt-4"
-        goalValue={goalValue}
-        setGoalValue={setGoalValue}
-        handleSubmitGoal={handleSubmitGoal}
-        setGoalType={setGoalType}
-        isDisabled={isSubmitting}
-      />
+      <div className="flex flex-col">
+        <GoalCalendarHeader>
+          <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
+        </GoalCalendarHeader>
+        <GoalsTabs
+          className="w-full mt-4"
+          goalValue={goalValue}
+          setGoalValue={setGoalValue}
+          handleSubmitGoal={handleSubmitGoal}
+          setGoalType={setGoalType}
+          isDisabled={isSubmitting}
+        />
+      </div>
     </ErrorBoundary>
   );
 }
