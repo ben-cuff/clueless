@@ -17,7 +17,6 @@ export async function POST(req: Request) {
     pathname,
   });
 
-  console.log("Interaction created:", interaction);
   return get200Response(interaction);
 }
 
