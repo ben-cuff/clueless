@@ -35,7 +35,7 @@ export default function ChatInput({
       />
       <Button
         type="submit"
-        className="m-2 h-10 hover:cursor-pointer"
+        className="m-2 h-10"
         disabled={isDisabled || isFeedback}
       >
         Submit

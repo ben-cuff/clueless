@@ -5,10 +5,10 @@ import useInterview from "@/hooks/use-interview";
 import { Question_Extended } from "@/types/question";
 import { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../error-fallback";
 import { FeedbackContext } from "../providers/feedback-provider";
 import EndInterviewButton from "./end-interview-button";
 import FeedbackModal from "./feedback/feedback-modal";
-import InterviewError from "./interview-error";
 import InterviewLoading from "./interview-loading";
 
 export default function InterviewQuestionPage({
@@ -30,7 +30,11 @@ export default function InterviewQuestionPage({
   const isFeedback = useContext(FeedbackContext);
 
   return !isLoadingMessages ? (
-    <ErrorBoundary fallback={<InterviewError />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error Loading this page, try again later" />
+      }
+    >
       <CodePlayground
         question={question}
         handleCodeSave={handleCodeSave}

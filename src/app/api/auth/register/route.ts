@@ -5,6 +5,7 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
 import argon2 from "argon2";
 
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
         "Username already exists. Please choose a different username."
       );
     } else {
-      console.error("Error during user registration:", error);
+      errorLog("Error during user registration: " + error);
       return UnknownServerError;
     }
   }

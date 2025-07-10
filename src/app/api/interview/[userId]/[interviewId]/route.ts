@@ -7,6 +7,7 @@ import {
   get404Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
@@ -41,7 +42,7 @@ export async function GET(
 
     return get200Response(interview);
   } catch (error) {
-    console.error("Error in getting a specific interview request:", error);
+    errorLog("Error in getting a specific interview request: " + error);
     return UnknownServerError;
   }
 }
@@ -78,7 +79,7 @@ export async function DELETE(
     ) {
       return get404Response("Interview not found");
     } else {
-      console.error("Error deleting interview:", error);
+      errorLog("Error deleting interview: " + error);
       return UnknownServerError;
     }
   }

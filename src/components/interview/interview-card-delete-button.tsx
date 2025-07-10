@@ -9,7 +9,7 @@ export default function InterviewCardDeleteButton({
 }) {
   return (
     <button
-      className="absolute top-0 right-2 hover:text-red-500 text-lg font-bold hover:cursor-pointer rounded-full transition-colors"
+      className="absolute top-0 right-2 hover:text-red-500 text-lg font-bold cursor-pointer rounded-full transition-colors"
       onClick={() => {
         handleDeleteInterview(interview.userId, interview.id);
       }}

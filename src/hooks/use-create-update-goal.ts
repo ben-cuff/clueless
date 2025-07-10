@@ -1,12 +1,15 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
-import { TWO_WEEKS_IN_MILLISECONDS } from "@/constants/time";
 import { GoalsAPI } from "@/utils/goals-api";
+import { millisecondsInWeek } from "date-fns/constants";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 
-export default function useCreateUpdateGoal(type: "update" | "create") {
+export default function useCreateUpdateGoal(
+  type: "update" | "create",
+  fetchGoal: () => Promise<void>
+) {
   const DATE_TWO_WEEKS_FROM_NOW = useMemo(
-    () => new Date(Date.now() + TWO_WEEKS_IN_MILLISECONDS),
+    () => new Date(Date.now() + millisecondsInWeek * 2),
     []
   );
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -19,31 +22,35 @@ export default function useCreateUpdateGoal(type: "update" | "create") {
   const userId = useContext(UserIdContext);
 
   const handleSubmitGoal = useCallback(async () => {
+    const NO_USER_ID = -1;
     setIsSubmitting(true);
+
     if (type === "update") {
       await GoalsAPI.updateGoal(
-        userId ?? -1, // -1 meaning does not exist
+        userId ?? NO_USER_ID,
         goalType,
         goalValue,
         dateRange.to ?? DATE_TWO_WEEKS_FROM_NOW // default goal of 2 weeks from now
       );
     } else {
       await GoalsAPI.createGoal(
-        userId ?? -1, // -1 meaning does not exist
+        userId ?? NO_USER_ID,
         goalType,
         goalValue,
         dateRange.to ?? DATE_TWO_WEEKS_FROM_NOW // default goal of 2 weeks from now
       );
     }
-    window.location.reload(); // reload to reflect changes
+
     setIsSubmitting(false);
+    fetchGoal();
   }, [
-    DATE_TWO_WEEKS_FROM_NOW,
-    dateRange.to,
+    type,
+    fetchGoal,
+    userId,
     goalType,
     goalValue,
-    userId,
-    type,
+    dateRange.to,
+    DATE_TWO_WEEKS_FROM_NOW,
   ]);
 
   return {

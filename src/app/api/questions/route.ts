@@ -9,6 +9,7 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { getPagination, getWhereClause } from "@/utils/search-helpers";
 import {
   Prisma,
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
         `Question with id ${id} already exists. Please use a different question number.`
       );
     }
-    console.error("Error during question creation:", error);
+    errorLog("Error during question creation: " + error);
     return UnknownServerError;
   }
 }
@@ -154,7 +155,7 @@ export async function GET(req: Request) {
 
     return get200Response(questions);
   } catch (error) {
-    console.error("Error during question retrieval:", error);
+    errorLog("Error during question retrieval: " + error);
     return UnknownServerError;
   }
 }

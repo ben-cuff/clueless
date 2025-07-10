@@ -1,4 +1,5 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { errorLog } from "./logger";
 
 export const GoalsAPI = {
   createGoal: async (
@@ -30,7 +31,7 @@ export const GoalsAPI = {
   getGoal: async (userId: number) => {
     const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId));
     if (!response.ok) {
-      console.error("Failed to fetch goal:", response.statusText);
+      errorLog("Failed to fetch goal: " + response.statusText);
       return null;
     }
     const data = await response.json();
@@ -67,7 +68,7 @@ export const GoalsAPI = {
       CLUELESS_API_ROUTES.goalProgressWithUserId(userId)
     );
     if (!response.ok) {
-      console.error("Failed to fetch goal progress:", response.statusText);
+      errorLog("Failed to fetch goal progress: " + response.statusText);
       return null;
     }
     const data = await response.json();

@@ -1,5 +1,5 @@
-import { MILLISECONDS_IN_SECOND, SECONDS_IN_HOUR } from "@/constants/time";
 import { notificationsAPI } from "@/utils/notifications-api";
+import { millisecondsInHour } from "date-fns/constants";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -15,7 +15,7 @@ export const NotificationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const POLL_INTERVAL = (SECONDS_IN_HOUR * MILLISECONDS_IN_SECOND) / 2; // notifies every half hour if there is a notification to show
+  const POLL_INTERVAL = millisecondsInHour * 2; // notifies every 2 hours if notification is available
   const { data: session } = useSession();
   const router = useRouter();
 

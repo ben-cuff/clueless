@@ -136,35 +136,41 @@ function getPagination(
 }
 
 function getRawSQLPagination(cursor = 0, take = 20, skip = 0, sortBy = "id") {
-  let cursorClause = "";
+  const sqlConfig: {
+    where?: string;
+    orderBy?: string;
+    offset?: number;
+    limit?: number;
+  } = {};
+
   if (cursor !== 0) {
-    cursorClause = ` AND "id" > ${cursor}`;
+    if (take < 0) {
+      sqlConfig.where = `"id" < ${cursor}`;
+    } else {
+      sqlConfig.where = `"id" > ${cursor}`;
+    }
   }
 
-  let orderLimitOffset = "";
   if (sortBy === "rank") {
-    orderLimitOffset += ` ORDER BY "rank" DESC`;
+    sqlConfig.orderBy = `"rank" DESC`;
   } else {
-    orderLimitOffset += ` ORDER BY "id" ASC`;
+    sqlConfig.orderBy = take < 0 ? `"id" DESC` : `"id" ASC`;
   }
 
   if (skip > 0) {
-    orderLimitOffset += ` OFFSET ${skip}`;
-  }
-  if (take < 0) {
-    orderLimitOffset += ` LIMIT ${-take}`;
-    if (cursor !== 0) {
-      cursorClause = ` AND "id" < ${cursor}`;
-    }
-    orderLimitOffset = orderLimitOffset.replace(
-      'ORDER BY "id" ASC',
-      'ORDER BY "id" DESC'
-    );
-  } else {
-    orderLimitOffset += ` LIMIT ${take}`;
+    sqlConfig.offset = skip;
   }
 
-  return cursorClause + orderLimitOffset;
+  sqlConfig.limit = Math.abs(take);
+
+  const sql = `
+    ${sqlConfig.where ? `AND ${sqlConfig.where}` : ""}
+    ${sqlConfig.orderBy ? `ORDER BY ${sqlConfig.orderBy}` : ""}
+    ${sqlConfig.offset !== undefined ? `OFFSET ${sqlConfig.offset}` : ""}
+    ${sqlConfig.limit !== undefined ? `LIMIT ${sqlConfig.limit}` : ""}
+  `.trim();
+
+  return sql;
 }
 
 function getPrismaPagination(cursor = 0, take = 20, skip = 0) {

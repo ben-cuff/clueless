@@ -8,6 +8,7 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Activity, Goal } from "@prisma/client";
 
 export async function GET(
@@ -27,7 +28,9 @@ export async function GET(
       where: { userId },
     });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog(
+      "Unexpected error while getting user progress towards goal: " + error
+    );
     return UnknownServerError;
   }
 

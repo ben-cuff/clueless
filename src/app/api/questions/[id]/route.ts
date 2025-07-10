@@ -5,6 +5,7 @@ import {
   get404Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
 
 export async function GET(
@@ -29,7 +30,7 @@ export async function GET(
 
     return get200Response(question);
   } catch (error) {
-    console.error("Error during question retrieval:", error);
+    errorLog("Error during question retrieval: " + error);
     return UnknownServerError;
   }
 }
@@ -58,7 +59,7 @@ export async function DELETE(
     ) {
       return get404Response("Question not found");
     }
-    console.error("Error deleting question:", error);
+    errorLog("Error deleting question: " + error);
     return UnknownServerError;
   }
 }

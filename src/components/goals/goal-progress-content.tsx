@@ -1,5 +1,5 @@
-import { SECONDS_IN_HOUR } from "@/constants/time";
 import { GoalProgress } from "@/types/goal-progress";
+import { secondsInHour } from "date-fns/constants";
 import AnimatedProgressBar from "../ui/animated-progress-bar";
 import { CardContent } from "../ui/card";
 
@@ -12,10 +12,8 @@ export default function GoalProgressContent({
   if (goalProgress.goalType === "questions") {
     progressText = `${goalProgress.totalProgress} / ${goalProgress.targetValue} questions`;
   } else {
-    const totalHours = (goalProgress.totalProgress / SECONDS_IN_HOUR).toFixed(
-      2
-    );
-    const targetHours = (goalProgress.targetValue / SECONDS_IN_HOUR).toFixed(2);
+    const totalHours = (goalProgress.totalProgress / secondsInHour).toFixed(2);
+    const targetHours = (goalProgress.targetValue / secondsInHour).toFixed(2);
     progressText = `${totalHours} / ${targetHours} hours`;
   }
 

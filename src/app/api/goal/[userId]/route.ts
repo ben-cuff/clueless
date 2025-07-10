@@ -1,4 +1,3 @@
-import { SECONDS_IN_HOUR } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
   ForbiddenError,
@@ -9,7 +8,9 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
+import { secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -54,7 +55,7 @@ export async function POST(
     const goal = await prismaLib.goal.create({
       data: {
         userId,
-        seconds: hours * SECONDS_IN_HOUR,
+        seconds: hours * secondsInHour,
         questions,
         endDate: parsedEndDate,
       },
@@ -68,7 +69,7 @@ export async function POST(
     ) {
       return get409Response("Goal already exists for this user");
     } else {
-      console.error("Unexpected error:", error);
+      errorLog("Unexpected error: " + error);
       return UnknownServerError;
     }
   }
@@ -92,7 +93,7 @@ export async function GET(
 
     return get200Response(goal);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error while getting user goal: " + error);
     return UnknownServerError;
   }
 }
@@ -138,7 +139,7 @@ export async function PUT(
     const goal = await prismaLib.goal.update({
       where: { userId },
       data: {
-        seconds: hours ? hours * SECONDS_IN_HOUR : null,
+        seconds: hours ? hours * secondsInHour : null,
         questions: questions ?? null,
         endDate: parsedEndDate,
       },
@@ -152,7 +153,7 @@ export async function PUT(
     ) {
       return get400Response("No goal found for this user");
     } else {
-      console.error("Unexpected error:", error);
+      errorLog("Unexpected error while updating user goal: " + error);
       return UnknownServerError;
     }
   }
@@ -188,7 +189,7 @@ export async function DELETE(
     ) {
       return get400Response("No goal found for this user");
     } else {
-      console.error("Unexpected error while deleting goal:", error);
+      errorLog("Unexpected error while deleting goal: " + error);
       return UnknownServerError;
     }
   }

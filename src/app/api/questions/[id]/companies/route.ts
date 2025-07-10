@@ -5,6 +5,7 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import type { Company as CompanyEnum } from "@prisma/client";
 
 export async function PATCH(
@@ -44,7 +45,7 @@ export async function PATCH(
 
     return get200Response(updatedQuestion);
   } catch (error) {
-    console.error("Error updating question companies:", error);
+    errorLog("Error updating question companies: " + error);
     return UnknownServerError;
   }
 }

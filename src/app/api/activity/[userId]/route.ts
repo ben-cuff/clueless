@@ -1,4 +1,3 @@
-import { MILLISECONDS_IN_SECOND } from "@/constants/time";
 import { prismaLib } from "@/lib/prisma";
 import {
   get200Response,
@@ -6,7 +5,9 @@ import {
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Activity } from "@prisma/client";
+import { millisecondsInSecond } from "date-fns/constants";
 
 export async function GET(
   req: Request,
@@ -30,7 +31,7 @@ export async function GET(
     });
     return get200Response(activities);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    errorLog("Unexpected error: " + error);
     return UnknownServerError;
   }
 }
@@ -50,12 +51,8 @@ export async function POST(
     return get400Response("Invalid JSON body");
   });
 
-  const date = new Date();
-  const activityDate = new Date(date.toISOString().split("T")[0]); // Get the date without the time part
-
-  if (isNaN(activityDate.getTime())) {
-    return get400Response("Invalid date format");
-  }
+  const currentDate = new Date();
+  const activityDate = new Date(currentDate.toISOString().split("T")[0]); // Get the date without the time part
 
   let existingActivity;
   try {
@@ -68,7 +65,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error("Error fetching existing activity:", error);
+    errorLog("Error fetching existing activity:" + error);
     return UnknownServerError;
   }
 
@@ -101,7 +98,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(activity) : get200Response(activity);
   } catch (error) {
-    console.error("Error adding activity:", error);
+    errorLog("Error adding activity: " + error);
     return UnknownServerError;
   }
 }
@@ -129,7 +126,7 @@ function calculateUpdatedSeconds(
     // this is to prevent the case where the user updates their activity multiple times in a short
     // period of time and the seconds don't increase because the last update was too recent
     const diffInSeconds = Math.ceil(
-      (now.getTime() - lastUpdate.getTime()) / MILLISECONDS_IN_SECOND
+      (now.getTime() - lastUpdate.getTime()) / millisecondsInSecond
     );
 
     const secondsToAdd = Math.min(diffInSeconds, MAX_SECONDS);

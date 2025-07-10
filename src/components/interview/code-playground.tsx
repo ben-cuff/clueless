@@ -52,7 +52,8 @@ export default function CodePlayground({
     if (language?.value) {
       languageRef.current = language.value;
     }
-  }, [language?.value, languageRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language?.value]);
 
   if (!language) {
     return <InterviewLoading />;

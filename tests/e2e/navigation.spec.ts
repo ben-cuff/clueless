@@ -63,3 +63,17 @@ test("navigate-to-settings", async ({ page }) => {
   ).toBeVisible();
   await expect(page).toHaveURL("/settings");
 });
+
+test("navigate-to-goals", async ({ page }) => {
+  await test.step("Click on Goals link", async () => {
+    await page.goto("http://localhost:3000/");
+    await page.getByRole("link", { name: "Goals" }).click();
+  });
+
+  await test.step("Verify goals page is displayed", async () => {
+    await expect(page).toHaveURL("http://localhost:3000/goals");
+    await expect(
+      page.getByRole("heading", { name: "Select Date Range" })
+    ).toBeVisible();
+  });
+});

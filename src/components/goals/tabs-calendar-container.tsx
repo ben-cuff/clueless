@@ -1,11 +1,16 @@
 import useCreateUpdateGoal from "@/hooks/use-create-update-goal";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../error-fallback";
 import GoalCalendar from "./goal-calendar";
+import GoalCalendarHeader from "./goal-calendar-header";
 import GoalsTabs from "./goal-tabs";
 
 export default function TabsCalendarContainer({
   type,
+  fetchGoal,
 }: {
   type: "create" | "update";
+  fetchGoal: () => Promise<void>;
 }) {
   const {
     dateRange,
@@ -15,16 +20,20 @@ export default function TabsCalendarContainer({
     handleSubmitGoal,
     setGoalType,
     isSubmitting,
-  } = useCreateUpdateGoal(type);
+  } = useCreateUpdateGoal(type, fetchGoal);
 
   return (
-    <>
-      <div className="flex flex-col w-full items-center">
-        <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
-        <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
-      </div>
-      <div className="w-full mt-4">
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error while trying to display tabs and calendar, try again later" />
+      }
+    >
+      <div className="flex flex-col">
+        <GoalCalendarHeader>
+          <GoalCalendar dateRange={dateRange} setDateRange={setDateRange} />
+        </GoalCalendarHeader>
         <GoalsTabs
+          className="w-full mt-4"
           goalValue={goalValue}
           setGoalValue={setGoalValue}
           handleSubmitGoal={handleSubmitGoal}
@@ -32,6 +41,6 @@ export default function TabsCalendarContainer({
           isDisabled={isSubmitting}
         />
       </div>
-    </>
+    </ErrorBoundary>
   );
 }

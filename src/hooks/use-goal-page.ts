@@ -1,20 +1,23 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import { GoalsAPI } from "@/utils/goals-api";
 import { Goal } from "@prisma/client";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 export default function useGoalPage() {
   const userId = useContext(UserIdContext);
   const [goal, setGoal] = useState<Goal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      const data = await GoalsAPI.getGoal(userId);
-      setIsLoading(false);
-      setGoal(data);
-    })();
+  const fetchGoal = useCallback(async () => {
+    setIsLoading(true);
+    const data = await GoalsAPI.getGoal(userId);
+    setGoal(data);
+    setIsLoading(false);
   }, [userId]);
 
-  return { isLoading, goal };
+  useEffect(() => {
+    fetchGoal();
+  }, [fetchGoal]);
+
+  return { isLoading, goal, fetchGoal };
 }

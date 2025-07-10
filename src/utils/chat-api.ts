@@ -1,6 +1,7 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { SYSTEM_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
+import { errorLog } from "./logger";
 
 export const chatAPI = {
   getGeminiResponse: async (
@@ -37,11 +38,11 @@ export const chatAPI = {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error(errorData.error);
+        errorLog("Chat API error: " + errorData.error);
       }
 
       if (!response.body) {
-        console.error("No response body");
+        errorLog("No response body");
       }
 
       return response;

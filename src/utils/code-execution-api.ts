@@ -1,5 +1,6 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { LanguageOption } from "@/constants/language-options";
+import { errorLog } from "./logger";
 
 export const codeExecutionAPI = {
   async runCode(code: string, testcases: string, language: LanguageOption) {
@@ -23,7 +24,7 @@ export const codeExecutionAPI = {
         status: result.status || "Success",
       };
     } catch (error) {
-      console.error("Error running code:", error);
+      errorLog("Error running code: " + error);
       return {
         stdout: "",
         stderr: `Error: ${

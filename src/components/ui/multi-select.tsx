@@ -84,7 +84,7 @@ export function MultiSelect({
                     onSelect={() => {
                       onChange([...selected, option]);
                     }}
-                    className={"cursor-pointer"}
+                    className="cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       onChange([...selected, option]);

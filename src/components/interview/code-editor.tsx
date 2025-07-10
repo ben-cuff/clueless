@@ -2,6 +2,8 @@
 
 import Editor from "@monaco-editor/react";
 import { useContext } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../error-fallback";
 import { FeedbackContext } from "../providers/feedback-provider";
 
 export default function CodeEditor({
@@ -17,16 +19,22 @@ export default function CodeEditor({
 }) {
   const isFeedback = useContext(FeedbackContext);
   return (
-    <Editor
-      height={"700px"}
-      language={languageValue}
-      theme={theme}
-      value={code}
-      onChange={(value) => setCode(value ?? "")}
-      options={{
-        minimap: { enabled: false },
-        readOnly: isFeedback,
-      }}
-    />
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback text="Error while trying to display code editor, try again later" />
+      }
+    >
+      <Editor
+        height={"700px"}
+        language={languageValue}
+        theme={theme}
+        value={code}
+        onChange={(value) => setCode(value ?? "")}
+        options={{
+          minimap: { enabled: false },
+          readOnly: isFeedback,
+        }}
+      />
+    </ErrorBoundary>
   );
 }

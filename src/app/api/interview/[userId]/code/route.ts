@@ -8,6 +8,7 @@ import {
   get404Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { errorLog } from "@/utils/logger";
 import { Language } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
@@ -63,7 +64,7 @@ export async function POST(
     }
     return get200Response(updatedInterview);
   } catch (error) {
-    console.error("Error updating interview code:", error);
+    errorLog("Error updating interview code: " + error);
     return UnknownServerError;
   }
 }

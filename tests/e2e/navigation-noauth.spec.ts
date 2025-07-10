@@ -90,3 +90,26 @@ async function signOut(page: Page) {
   await page.getByRole("menuitem", { name: "Sign Out" }).click();
   await page.waitForTimeout(2000);
 }
+
+test("navigate-to-goals-logged-out", async ({ page }) => {
+  await test.step("navigate to banner and sign out", async () => {
+    await signOut(page);
+  });
+
+  await test.step("navigate to goals page", async () => {
+    page.once("dialog", (dialog) => {
+      dialog.dismiss().catch(() => {});
+    });
+    await page.getByRole("link", { name: "Goals" }).click();
+  });
+
+  await test.step("verify that we are on home page", async () => {
+    await expect(
+      page
+        .locator("div")
+        .filter({ hasText: "An AI integrated interview" })
+        .nth(1)
+    ).toBeVisible();
+    await expect(page).toHaveURL(/\/(\?error=unauthenticated)?$/);
+  });
+});

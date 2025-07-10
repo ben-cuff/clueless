@@ -1,6 +1,7 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { FEEDBACK_MESSAGE_TEXT } from "@/constants/prompt-fillers";
 import { interviewAPI } from "./interview-api";
+import { errorLog } from "./logger";
 
 export const feedbackAPI = {
   async getFeedback(interviewId: string) {
@@ -12,7 +13,7 @@ export const feedbackAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching feedback:", error);
+      errorLog("Error fetching feedback: " + error);
       return null;
     }
   },
@@ -29,7 +30,7 @@ export const feedbackAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error creating feedback:", error);
+      errorLog("Error creating feedback: " + error);
       return null;
     }
   },

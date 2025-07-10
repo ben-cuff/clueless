@@ -1,4 +1,5 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { errorLog } from "./logger";
 
 export const apiQuestions = {
   async getQuestions(
@@ -41,7 +42,7 @@ export const apiQuestions = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      errorLog("Error fetching questions: " + error);
     }
   },
   async getQuestionById(id: number) {
@@ -53,7 +54,7 @@ export const apiQuestions = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching question by ID:", error);
+      errorLog("Error fetching question by ID: " + error);
     }
   },
   async getRecommendedQuestions(userId: number) {
@@ -68,7 +69,7 @@ export const apiQuestions = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error fetching recommended questions:", error);
+      errorLog("Error fetching recommended questions: " + error);
     }
   },
 };
