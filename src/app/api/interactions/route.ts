@@ -26,13 +26,19 @@ export async function GET(req: Request) {
 
   const filters: {
     event?: string;
-    contextField?: string;
-    contextValue?: unknown;
+    context?: {
+      contextField?: string;
+      contextValue?: unknown;
+    }[];
   } = {};
 
   if (userId) {
-    filters.contextField = "userId";
-    filters.contextValue = userId;
+    filters.context = [
+      {
+        contextField: "userId",
+        contextValue: userId,
+      },
+    ];
   }
 
   const interactions = await cluelessInteractionsLib.queryEvents(filters);
