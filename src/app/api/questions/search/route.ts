@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   const difficulty = url.searchParams.get("difficulty") ?? undefined;
   const companies = url.searchParams.get("companies") ?? undefined;
   const IS_RAW_SQL = true;
-  
+
   const whereFilters = getWhereClause(
     topics,
     difficulty,
@@ -23,6 +23,8 @@ export async function GET(req: Request) {
   const take = parseInt(url.searchParams.get("take") ?? "20");
 
   const [min_number, max_number] = getPaginationRange(cursor, take);
+
+  const search = url.searchParams.get("query");
 
   const query = `
     WITH ranked_questions AS (
@@ -65,7 +67,6 @@ export async function GET(req: Request) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sqlQuery: any = Prisma.sql([query]);
 
-  const search = url.searchParams.get("query");
   sqlQuery.values = [search ?? ""];
 
   const questions: Array<QuestionWithRowNumber> = await prismaLib.$queryRaw(
