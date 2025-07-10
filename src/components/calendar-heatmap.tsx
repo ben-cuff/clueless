@@ -70,7 +70,7 @@ function groupDaysIntoWeeks(daysArray: Date[]): (Date | undefined)[][] {
 
   // pads the first week with undefined to account for weeks not starting on sunday
   const firstDay = daysArray[0];
-  for (let i = 0; i < (daysInWeek - 1 - firstDay.getDay()) % daysInWeek; i++) {
+  for (let i = 0; i < firstDay.getDay(); i++) {
     week.push(undefined);
   }
 
