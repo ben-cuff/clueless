@@ -36,4 +36,8 @@ export interface Question_Extended extends Question {
   article: string;
 }
 
+export interface QuestionWithRowNumber extends Question {
+  row_num?: bigint | number;
+}
+
 export type TestcasesKey = keyof Question_Extended["testCases"];

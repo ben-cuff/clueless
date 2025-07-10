@@ -1,13 +1,13 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
 import { DEFAULT_TAKE_SIZE } from "@/constants/take-sizes";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
-import { Question } from "@/types/question";
+import { QuestionWithRowNumber } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { useCallback, useEffect, useState } from "react";
 import useDebounce from "./use-debouncer";
 
 export default function useQuestions() {
-  const [questionsData, setQuestionsData] = useState<Question[]>();
+  const [questionsData, setQuestionsData] = useState<QuestionWithRowNumber[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [takeSize, setTakeSize] = useState(DEFAULT_TAKE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,20 +21,17 @@ export default function useQuestions() {
   const fetchQuestions = useCallback(
     async (
       direction: "next" | "prev" | "init" = "init",
-      refQuestionNumber?: number
+      refRowNum?: number
     ) => {
       setIsLoading(true);
       const topicsIdList = topics?.map((topic) => topic.id);
       const companiesIdList = companies?.map((company) => company.id);
 
       let take = takeSize;
-      let after: number | undefined = undefined;
 
-      if (direction === "next") {
-        after = refQuestionNumber;
-      } else if (direction === "prev") {
-        after = refQuestionNumber;
+      if (direction === "prev") {
         take = -takeSize;
+        refRowNum = refRowNum! - 1;
       }
 
       const parsedDifficulty = difficulty === "none" ? undefined : [difficulty];
@@ -43,9 +40,8 @@ export default function useQuestions() {
         topicsIdList,
         parsedDifficulty,
         companiesIdList,
-        after,
+        refRowNum,
         take,
-        undefined,
         debouncedSearch
       );
 
@@ -64,8 +60,13 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length < takeSize) {
       return;
     }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.id;
-    fetchQuestions("next", lastQuestionNumber);
+    const lastQuestionNumber = questionsData[takeSize - 1]?.row_num;
+    fetchQuestions(
+      "next",
+      typeof lastQuestionNumber === "bigint"
+        ? Number(lastQuestionNumber)
+        : lastQuestionNumber
+    );
     setCurrentPage((prev) => prev + 1);
   }
 
@@ -73,8 +74,13 @@ export default function useQuestions() {
     if (!questionsData || questionsData.length === 0) {
       return;
     }
-    const firstQuestionNumber = questionsData[0]?.id;
-    fetchQuestions("prev", firstQuestionNumber);
+    const firstQuestionNumber = questionsData[0]?.row_num;
+    fetchQuestions(
+      "prev",
+      typeof firstQuestionNumber === "bigint"
+        ? Number(firstQuestionNumber)
+        : firstQuestionNumber
+    );
     setCurrentPage((prev) => prev - 1);
   }, [fetchQuestions, questionsData]);
 

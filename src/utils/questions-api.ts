@@ -8,7 +8,6 @@ export const apiQuestions = {
     companies?: string[],
     cursor?: number,
     take?: number,
-    skip?: number,
     query?: string
   ) {
     try {
@@ -23,14 +22,11 @@ export const apiQuestions = {
       if (companies && companies.length > 0) {
         params.append("companies", companies.join(" "));
       }
-      if (cursor && typeof cursor === "number") {
+      if (cursor) {
         params.append("cursor", cursor.toString());
       }
       if (take && typeof take === "number") {
         params.append("take", take.toString());
-      }
-      if (skip && typeof skip === "number") {
-        params.append("skip", skip.toString());
       }
       if (query && query.trim() !== "") {
         params.append("query", query);
