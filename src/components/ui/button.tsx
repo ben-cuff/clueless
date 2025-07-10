@@ -5,6 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { interactionAPI } from "@/utils/interaction-api";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -49,8 +50,14 @@ function Button({
   }) {
   const Comp = asChild ? Slot : "button";
 
+  const handleClick = async () => {
+    const pathname = window.location.pathname;
+    interactionAPI.addEvent(`button_pressed_${props.children}`, pathname);
+  };
+
   return (
     <Comp
+      onClick={handleClick}
       data-slot="button"
       className={cn(
         buttonVariants({ variant, size, className }),

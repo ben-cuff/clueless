@@ -29,6 +29,7 @@ const CLUELESS_API_ROUTES = {
     `${BASE_URL}/api/goal/${userId}/progress`,
   notificationsWithUserId: (userId: number) =>
     `${BASE_URL}/api/notification/${userId}`,
+  interactions: `${BASE_URL}/api/interactions`,
 };
 
 export { CLUELESS_API_ROUTES, judge0_api_url };
