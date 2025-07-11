@@ -52,7 +52,7 @@ export async function POST(
   });
 
   const currentDate = new Date();
-  const activityDate = new Date(currentDate.toISOString().split("T")[0]); // Get the date without the time part
+  currentDate.setHours(0, 0, 0, 0);
 
   let existingActivity;
   try {
@@ -60,7 +60,7 @@ export async function POST(
       where: {
         userId_date: {
           userId,
-          date: activityDate,
+          date: currentDate,
         },
       },
     });
@@ -81,13 +81,13 @@ export async function POST(
       where: {
         userId_date: {
           userId,
-          date: activityDate,
+          date: currentDate,
         },
       },
       update: updateData,
       create: {
         userId,
-        date: activityDate,
+        date: currentDate,
         seconds: updatedSeconds,
         questions: updatedQuestions,
       },
