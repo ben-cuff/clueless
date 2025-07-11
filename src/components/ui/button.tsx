@@ -42,21 +42,21 @@ function Button({
   className,
   variant,
   size,
-  interaction_name,
+  interactionName,
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-    interaction_name?: string;
+    interactionName?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
   const sendInteractionData = React.useCallback(async () => {
     const pathname = window.location.pathname;
-    const name = interaction_name ?? `button_press_${props.children}`;
+    const name = interactionName ?? `button_press_${props.children}`;
     interactionAPI.addEvent(name, pathname);
-  }, [interaction_name, props.children]);
+  }, [interactionName, props.children]);
 
   const mergedOnClick = React.useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
