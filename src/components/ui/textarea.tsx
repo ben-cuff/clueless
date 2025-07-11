@@ -1,8 +1,15 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import useDebouncedInteraction from "@/hooks/use-debounced-interaction";
+import { cn } from "@/lib/utils";
 
-function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+function Textarea({
+  className,
+  interactionName,
+  ...props
+}: React.ComponentProps<"textarea"> & { interactionName?: string }) {
+  useDebouncedInteraction(props.value, interactionName);
+
   return (
     <textarea
       data-slot="textarea"
@@ -12,7 +19,7 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Textarea }
+export { Textarea };
