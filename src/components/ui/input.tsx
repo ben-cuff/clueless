@@ -10,7 +10,7 @@ function Input({
   type,
   interactionName,
   ...props
-}: React.ComponentProps<"input"> & { interactionName: string }) {
+}: React.ComponentProps<"input"> & { interactionName?: string }) {
   const defaultInteractionName = "input_value_change";
   useDebouncedInteraction(props.value, defaultInteractionName, interactionName);
 
