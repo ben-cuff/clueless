@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,23 +24,30 @@ export default function AvatarDropdown() {
 
   if (!session) {
     return (
-      <button onClick={() => signIn()} className="rounded-4xl cursor-pointer">
+      <Button
+        variant="ghost"
+        onClick={() => signIn()}
+        className="rounded-4xl cursor-pointer px-0 py-0"
+      >
         <Avatar>
           <AvatarFallback>?</AvatarFallback>
         </Avatar>
-      </button>
+      </Button>
     );
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-4xl cursor-pointer">
+        <Button
+          variant="ghost"
+          className="rounded-4xl cursor-pointer px-0 py-0"
+        >
           <Avatar>
             <AvatarImage src={"https://github.com/shadcn.png"} />
             <AvatarFallback>{"U"}</AvatarFallback>
           </Avatar>
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem asChild>
