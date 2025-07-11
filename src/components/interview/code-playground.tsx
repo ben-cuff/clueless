@@ -59,6 +59,8 @@ export default function CodePlayground({
     if (language?.value) {
       languageRef.current = language.value;
     }
+
+    // this is done so that a ref is not in the dependency array
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language?.value]);
 
