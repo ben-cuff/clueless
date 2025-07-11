@@ -1,6 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prismaLib } from "@/lib/prisma";
-import { ActivityAPI } from "@/utils/activity-api";
 import {
   ForbiddenError,
   get200Response,
@@ -54,14 +53,6 @@ export async function POST(
       },
     });
 
-    // update the activity for the user if the code has changed
-    if (interview.code !== code) {
-      ActivityAPI.updateActivity(
-        userId,
-        "seconds",
-        updatedInterview.updatedAt.getTime() - interview.createdAt.getTime()
-      );
-    }
     return get200Response(updatedInterview);
   } catch (error) {
     errorLog("Error updating interview code: " + error);

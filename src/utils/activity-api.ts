@@ -3,17 +3,11 @@ import { Activity } from "@prisma/client";
 import { errorLog } from "./logger";
 
 export const ActivityAPI = {
-  updateActivity: async (
-    userId: number,
-    type: "seconds" | "questions",
-    seconds?: number,
-    questions?: boolean
-  ) => {
-    const body: { seconds?: number; questions?: boolean } = {};
-    if (type === "seconds" && seconds !== undefined) {
-      body.seconds = seconds;
-    } else if (type === "questions" && questions !== undefined) {
-      body.questions = questions;
+  updateActivity: async (userId: number, type: "seconds" | "questions") => {
+    const body: { questions?: boolean } = {};
+
+    if (type === "questions") {
+      body.questions = true;
     }
 
     const response = await fetch(

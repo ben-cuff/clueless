@@ -3,6 +3,7 @@ import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
 } from "@/utils/activities-progress";
+import { ActivityAPI } from "@/utils/activity-api";
 import {
   get200Response,
   get400Response,
@@ -38,14 +39,7 @@ export async function GET(
     return get200Response({ goal: null, progress: null });
   }
 
-  const activities = await prismaLib.activity.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
+  const activities = (await ActivityAPI.getActivity(userId)) ?? [];
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
     activities,

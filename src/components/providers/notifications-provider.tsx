@@ -1,4 +1,4 @@
-import { notificationsAPI } from "@/utils/notifications-api";
+import { NotificationsAPI } from "@/utils/notifications-api";
 import { millisecondsInHour } from "date-fns/constants";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ export const NotificationProvider = ({
   useEffect(() => {
     const fetchAndNotify = async () => {
       if (Notification.permission === "granted" && session?.user.id) {
-        const data: NotificationData = await notificationsAPI.getNotification(
+        const data: NotificationData = await NotificationsAPI.getNotification(
           session?.user.id
         );
 

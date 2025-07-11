@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       },
     });
 
-    ActivityAPI.updateActivity(userId, "questions", undefined, true);
+    ActivityAPI.updateActivity(userId, "questions");
 
     return get201Response(feedbackEntry);
   } catch (error) {
