@@ -6,4 +6,6 @@ const cluelessInteractionsLib = new CluelessInteractionTrackerClient(
 
 cluelessInteractionsLib.createContextIndex("userId");
 
+cluelessInteractionsLib.createContextIndex("pathname");
+
 export { cluelessInteractionsLib };
