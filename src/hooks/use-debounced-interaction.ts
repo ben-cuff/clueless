@@ -4,6 +4,7 @@ import useDebounce from "./use-debouncer";
 
 export default function useDebouncedInteraction(
   value: string | number | readonly string[] | undefined,
+  defaultInteractionName: string = "change_in_component",
   interactionName?: string,
   delay: number = 500
 ) {
@@ -12,10 +13,10 @@ export default function useDebouncedInteraction(
   const sendInteractionData = useCallback(
     async (value: string) => {
       const pathname = window.location.pathname;
-      const name = interactionName ?? `textarea_change`;
+      const name = interactionName ?? defaultInteractionName;
       interactionAPI.addEvent(name, pathname, value);
     },
-    [interactionName]
+    [defaultInteractionName, interactionName]
   );
 
   useEffect(() => {

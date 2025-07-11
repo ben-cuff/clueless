@@ -8,7 +8,8 @@ function Textarea({
   interactionName,
   ...props
 }: React.ComponentProps<"textarea"> & { interactionName?: string }) {
-  useDebouncedInteraction(props.value, interactionName);
+  const defaultInteractionName = "textarea_change";
+  useDebouncedInteraction(props.value, defaultInteractionName, interactionName);
 
   return (
     <textarea
