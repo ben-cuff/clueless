@@ -1,6 +1,5 @@
 import { cluelessInteractionsLib } from "@/lib/interactions";
 import { get200Response, get400Response } from "@/utils/api-responses";
-import { debugLog } from "@/utils/logger";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
@@ -13,10 +12,6 @@ export async function POST(req: Request) {
   const { pathname, eventName, value } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
-
-  debugLog(
-    "POST /api/interactions " + pathname + " " + eventName + " " + value
-  );
 
   const interaction = await cluelessInteractionsLib.addEvent(eventName, {
     userId,
