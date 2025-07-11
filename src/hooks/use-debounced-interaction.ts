@@ -23,6 +23,5 @@ export default function useDebouncedInteraction(
     if (debouncedValue) {
       sendInteractionData(debouncedValue as string);
     }
-    console.log(debouncedValue);
   }, [debouncedValue, sendInteractionData]);
 }
