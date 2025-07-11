@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { interactionAPI } from "@/utils/interaction-api";
+import { debugLog } from "@/utils/logger";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -42,28 +43,42 @@ function Button({
   className,
   variant,
   size,
+  interaction_name,
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    interaction_name?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
-  const handleClick = async () => {
+  const sendInteractionData = React.useCallback(async () => {
     const pathname = window.location.pathname;
-    interactionAPI.addEvent(`button_pressed_${props.children}`, pathname);
-  };
+    const name = interaction_name ?? `button_press_${props.children}`;
+    debugLog(`${name}${pathname}`);
+    interactionAPI.addEvent(name, pathname);
+  }, [interaction_name, props.children]);
+
+  const mergedOnClick = React.useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      sendInteractionData();
+      if (typeof props.onClick === "function") {
+        props.onClick(e);
+      }
+    },
+    [props, sendInteractionData]
+  );
 
   return (
     <Comp
-      onClick={handleClick}
       data-slot="button"
       className={cn(
         buttonVariants({ variant, size, className }),
         "cursor-pointer"
       )}
       {...props}
+      onClick={mergedOnClick}
     />
   );
 }
