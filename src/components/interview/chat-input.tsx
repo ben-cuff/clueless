@@ -16,6 +16,8 @@ export default function ChatInput({
   const { handleSubmit, isDisabled, setMessage, message } =
     useChatInput(handleMessageSubmit);
 
+  const isReadOnly = isDisabled || isFeedback; // messages are either pending or feedback is being shown
+
   return (
     <form
       className="flex flex-row items-end p-2"
@@ -29,15 +31,11 @@ export default function ChatInput({
         name="message"
         placeholder="Your message here"
         rows={2}
-        disabled={isDisabled || isFeedback}
+        disabled={isReadOnly}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <Button
-        type="submit"
-        className="m-2 h-10"
-        disabled={isDisabled || isFeedback}
-      >
+      <Button type="submit" className="m-2 h-10" disabled={isReadOnly}>
         Submit
       </Button>
     </form>
