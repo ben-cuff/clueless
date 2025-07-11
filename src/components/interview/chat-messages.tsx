@@ -11,7 +11,7 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
           ...message,
           parts: [
             {
-              text: "The user submitted code, view the code in the output area",
+              text: "The user submitted code, view the code output in the output area",
             },
           ],
         }
