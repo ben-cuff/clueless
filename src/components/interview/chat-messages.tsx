@@ -5,11 +5,24 @@ import { CardContent } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
+  const messagesWithoutOutput = messages.map((message) =>
+    message.parts[0].text.startsWith("Here is the latest code output:")
+      ? {
+          ...message,
+          parts: [
+            {
+              text: "The user submitted code, view the code output in the output area",
+            },
+          ],
+        }
+      : message
+  );
+
   return (
     <ScrollArea className="overflow-y-auto h-full">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4">
-          {messages.map((message, idx) => (
+          {messagesWithoutOutput.map((message, idx) => (
             <div
               key={idx}
               data-testid={`chat-message-${message.role}-${idx}`}

@@ -29,6 +29,8 @@ export default function InterviewQuestionPage({
   } = useInterview(interviewId, question.id);
   const isFeedback = useContext(FeedbackContext);
 
+  const MIN_MESSAGES_TO_END_EARLY = 5;
+
   return !isLoadingMessages ? (
     <ErrorBoundary
       fallback={
@@ -48,7 +50,7 @@ export default function InterviewQuestionPage({
         <FeedbackModal interviewId={interviewId} />
       ) : (
         messages &&
-        messages.length >= 5 && (
+        messages.length >= MIN_MESSAGES_TO_END_EARLY && (
           <EndInterviewButton handleEndInterview={handleEndInterview} />
         )
       )}

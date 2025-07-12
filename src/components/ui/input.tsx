@@ -2,9 +2,18 @@
 
 import * as React from "react";
 
+import useDebouncedInteraction from "@/hooks/use-debounced-interaction";
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({
+  className,
+  type,
+  interactionName,
+  ...props
+}: React.ComponentProps<"input"> & { interactionName?: string }) {
+  const defaultInteractionName = "input_value_change";
+  useDebouncedInteraction(props.value, defaultInteractionName, interactionName);
+
   return (
     <input
       type={type}

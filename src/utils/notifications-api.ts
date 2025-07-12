@@ -1,6 +1,6 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 
-export const notificationsAPI = {
+export const NotificationsAPI = {
   getNotification: async (userId: number) => {
     const response = await fetch(
       CLUELESS_API_ROUTES.notificationsWithUserId(userId),

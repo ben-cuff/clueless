@@ -70,7 +70,7 @@ function groupDaysIntoWeeks(daysArray: Date[]): (Date | undefined)[][] {
 
   // pads the first week with undefined to account for weeks not starting on sunday
   const firstDay = daysArray[0];
-  for (let i = 0; i < (daysInWeek - 1 - firstDay.getDay()) % daysInWeek; i++) {
+  for (let i = 0; i < firstDay.getDay(); i++) {
     week.push(undefined);
   }
 
@@ -93,6 +93,15 @@ function groupDaysIntoWeeks(daysArray: Date[]): (Date | undefined)[][] {
 }
 
 function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
+  const COLORS = [
+    "#ebedf0",
+    "#c6e48b",
+    "#7bc96f",
+    "#239a3b",
+    "#196127",
+    "#0e4429",
+  ];
+
   // Extract all numeric values from the map and sort them in ascending order
   const values = Array.from(valueMap.values())
     .filter((v): v is number => typeof v === "number")
@@ -109,17 +118,17 @@ function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
   const getColor = (value: number | undefined) => {
     switch (true) {
       case value === undefined:
-        return "#ebedf0";
+        return COLORS[0];
       case value! <= thresholds[0]:
-        return "#c6e48b";
+        return COLORS[1];
       case value! <= thresholds[1]:
-        return "#7bc96f";
+        return COLORS[2];
       case value! <= thresholds[2]:
-        return "#239a3b";
+        return COLORS[3];
       case value! <= thresholds[3]:
-        return "#196127";
+        return COLORS[4];
       default:
-        return "#0e4429";
+        return COLORS[5];
     }
   };
 

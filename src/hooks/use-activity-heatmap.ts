@@ -35,7 +35,7 @@ function getActivityForHeatmap(activityData: Activity[]) {
     const value = questionsValue + Math.floor(secondsValue / secondsInHour / 2); // half an hour is 1 point + 1 point for each question
 
     const dateObj = new Date(item.date);
-    dateObj.setDate(dateObj.getDate() + 1);
+    dateObj.setDate(dateObj.getDate());
     const date = dateObj;
 
     return {

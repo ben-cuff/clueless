@@ -45,6 +45,8 @@ model Activity {
   date      DateTime
   questions Int      @default(0)
   seconds   Int      @default(0)
+  completed Boolean @default(false)
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 

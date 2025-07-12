@@ -4,6 +4,7 @@ import useCodePlayground from "@/hooks/use-code-playground";
 import useDebounce from "@/hooks/use-debouncer";
 import { Message } from "@/types/message";
 import { Question_Extended } from "@/types/question";
+import { interactionAPI } from "@/utils/interaction-api";
 import { RefObject, useEffect } from "react";
 import ChatArea from "./chat-area";
 import CodeEditor from "./code-editor";
@@ -44,6 +45,12 @@ export default function CodePlayground({
 
   useEffect(() => {
     handleCodeSave(debouncedCode as string);
+    const pathname = window.location.pathname;
+    interactionAPI.addEvent(
+      "code_editor_change",
+      pathname,
+      debouncedCode as string
+    );
   }, [debouncedCode, handleCodeSave]);
 
   codeRef.current = code;
@@ -52,6 +59,8 @@ export default function CodePlayground({
     if (language?.value) {
       languageRef.current = language.value;
     }
+
+    // this is done so that a ref is not in the dependency array
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language?.value]);
 

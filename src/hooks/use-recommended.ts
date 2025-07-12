@@ -13,7 +13,7 @@ export default function useRecommended() {
 
   useEffect(() => {
     (async () => {
-      if (session && session.user && session.user.id) {
+      if (session?.user?.id) {
         setIsLoading(true);
         setIsLoggedIn(true);
         const data = await apiQuestions.getRecommendedQuestions(

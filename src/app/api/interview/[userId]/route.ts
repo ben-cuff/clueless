@@ -1,5 +1,4 @@
 import { prismaLib } from "@/lib/prisma";
-import { ActivityAPI } from "@/utils/activity-api";
 import {
   ForbiddenError,
   get200Response,
@@ -63,8 +62,6 @@ export async function POST(
     const updatedTime = interview.updatedAt.getTime();
 
     const isNewRecord = createdTime === updatedTime;
-
-    ActivityAPI.updateActivity(userId, "seconds", updatedTime - createdTime);
 
     return isNewRecord ? get201Response(interview) : get200Response(interview);
   } catch (error) {

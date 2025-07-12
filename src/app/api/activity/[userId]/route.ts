@@ -1,4 +1,6 @@
+import { cluelessInteractionsLib } from "@/lib/interactions";
 import { prismaLib } from "@/lib/prisma";
+import { ActivityAPI } from "@/utils/activity-api";
 import {
   get200Response,
   get201Response,
@@ -6,7 +8,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
-import { Activity } from "@prisma/client";
+import { Activity, Prisma } from "@prisma/client";
 import { millisecondsInSecond } from "date-fns/constants";
 
 export async function GET(
@@ -29,7 +31,28 @@ export async function GET(
         date: "desc",
       },
     });
-    return get200Response(activities);
+
+    // if the latest activity is completed, then we know we are on a new day
+    // so we should update the activity for seconds
+    // this will ensure that
+    if (activities[0]?.completed) {
+      const mostRecentActivity = await ActivityAPI.updateActivity(
+        userId,
+        "seconds"
+      );
+
+      if (mostRecentActivity) {
+        activities.unshift(mostRecentActivity);
+      }
+    }
+
+    const updatedActivities = await Promise.all(
+      activities.map((activity) => {
+        return getUpdatedActivity(activity);
+      })
+    );
+
+    return get200Response(updatedActivities);
   } catch (error) {
     errorLog("Unexpected error: " + error);
     return UnknownServerError;
@@ -47,12 +70,12 @@ export async function POST(
     return get400Response("Invalid user ID");
   }
 
-  const { questions, seconds } = await req.json().catch(() => {
+  const { questions } = await req.json().catch(() => {
     return get400Response("Invalid JSON body");
   });
 
   const currentDate = new Date();
-  const activityDate = new Date(currentDate.toISOString().split("T")[0]); // Get the date without the time part
+  currentDate.setHours(0, 0, 0, 0);
 
   let existingActivity;
   try {
@@ -60,7 +83,7 @@ export async function POST(
       where: {
         userId_date: {
           userId,
-          date: activityDate,
+          date: currentDate,
         },
       },
     });
@@ -69,28 +92,33 @@ export async function POST(
     return UnknownServerError;
   }
 
-  const updatedSeconds = calculateUpdatedSeconds(seconds, existingActivity);
-
   const updatedQuestions =
     questions === true ? (existingActivity?.questions ?? 0) + 1 : undefined;
 
-  const updateData = constructUpdateData(updatedSeconds, updatedQuestions);
+  const updatedSeconds = await getActivityForUser(userId, currentDate);
+
+  const update = {
+    questions: updatedQuestions,
+    seconds: updatedSeconds,
+  };
+
+  const create = {
+    userId,
+    date: currentDate,
+    questions: updatedQuestions,
+    seconds: updatedSeconds,
+  };
 
   try {
     const activity = await prismaLib.activity.upsert({
       where: {
         userId_date: {
           userId,
-          date: activityDate,
+          date: currentDate,
         },
       },
-      update: updateData,
-      create: {
-        userId,
-        date: activityDate,
-        seconds: updatedSeconds,
-        questions: updatedQuestions,
-      },
+      update,
+      create,
     });
 
     const isNewRecord =
@@ -103,52 +131,122 @@ export async function POST(
   }
 }
 
-function calculateUpdatedSeconds(
-  seconds: number,
-  existingActivity: Activity | null
-): number | undefined {
-  const DEFAULT_SECONDS = 0;
-  const MAX_SECONDS = 120;
+// gets the start and end of the day for a given date
+function getDayRange(date: Date): { from: Date; to: Date } {
+  const from = new Date(date);
+  from.setHours(0, 0, 0, 0);
+  const to = new Date(date);
+  to.setHours(23, 59, 59, 999);
+  return { from, to };
+}
 
-  if (seconds === undefined) {
-    return undefined;
-  }
+// fetches valid interactions for a user on a specific date
+// filters by pathname prefix and qualifying events
+async function fetchUserInteractions(
+  userId: number,
+  date: Date
+): Promise<InteractionEvent[]> {
+  const PATHNAME_PREFIX = "/interview/";
+  const QUALIFYING_EVENTS = [
+    "textarea_change",
+    "code_editor_change",
+    "run_testcases_button_press",
+    "submit_message_button_press",
+  ];
 
-  // if there is an existing activity, calculate the new seconds
-  // by adding the time since the last update to the existing seconds
-  // but limit the addition to a maximum of 120 seconds
-  // if there is no existing activity, return the provided seconds
-  if (existingActivity) {
-    const now = new Date();
-    const lastUpdate = new Date(existingActivity.updatedAt);
-
-    // rounds up so that if the last update was less than a second ago, it still counts as 1 second
-    // this is to prevent the case where the user updates their activity multiple times in a short
-    // period of time and the seconds don't increase because the last update was too recent
-    const diffInSeconds = Math.ceil(
-      (now.getTime() - lastUpdate.getTime()) / millisecondsInSecond
+  const { from, to } = getDayRange(date);
+  try {
+    return await cluelessInteractionsLib.queryEvents(
+      {
+        context: [
+          {
+            contextField: "userId",
+            contextValue: userId,
+          },
+          {
+            contextField: "pathname",
+            contextValue: PATHNAME_PREFIX,
+            operation: { string_starts_with: PATHNAME_PREFIX },
+          },
+        ],
+        from,
+        to,
+        event: QUALIFYING_EVENTS,
+      },
+      { order: "asc" }
     );
+  } catch (error) {
+    errorLog("Error fetching interactions: " + error);
+    return [];
+  }
+}
 
-    const secondsToAdd = Math.min(diffInSeconds, MAX_SECONDS);
-    return existingActivity.seconds + secondsToAdd;
-  } else {
-    if (isNaN(seconds) || seconds < 0) {
-      return DEFAULT_SECONDS;
+// calculates total time spent based on interactions
+function calculateTotalTime(interactions: InteractionEvent[]): number {
+  const MAX_TIME_ADDED = 60; // cap each interval at 60 seconds
+
+  let totalTime = 0;
+  for (let i = 1; i < interactions.length; i++) {
+    const prev = new Date(interactions[i - 1].timestamp).getTime();
+    const curr = new Date(interactions[i].timestamp).getTime();
+    const diffSeconds = Math.floor((curr - prev) / millisecondsInSecond);
+    if (diffSeconds > 0) {
+      totalTime += Math.min(diffSeconds, MAX_TIME_ADDED);
     }
-    return Math.min(seconds, MAX_SECONDS);
   }
+  return totalTime;
 }
 
-function constructUpdateData(
-  updatedSeconds: number | undefined,
-  updatedQuestions: number | undefined
-): Partial<Activity> {
-  const updateData: Partial<Activity> = {};
-  if (updatedSeconds !== undefined) {
-    updateData.seconds = updatedSeconds;
-  }
-  if (updatedQuestions !== undefined) {
-    updateData.questions = updatedQuestions;
-  }
-  return updateData;
+async function getActivityForUser(userId: number, date: Date): Promise<number> {
+  const interactions = await fetchUserInteractions(userId, date);
+  return calculateTotalTime(interactions);
 }
+
+// gets and updates the activity for a user on a specific date/activity
+async function getUpdatedActivity(activity: Activity): Promise<Activity> {
+  if (!activity.completed) {
+    const interactions = await fetchUserInteractions(
+      activity.userId,
+      activity.date
+    );
+    activity.seconds = calculateTotalTime(interactions);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const activityDate = new Date(activity.date);
+    activityDate.setHours(0, 0, 0, 0);
+
+    // if the activity date is not today, mark it as completed
+    if (activityDate.getTime() !== today.getTime()) {
+      activity.completed = true;
+    }
+
+    updateActivity(activity).catch((error) => {
+      errorLog("Error updating activity: " + error);
+    });
+  }
+  return activity;
+}
+
+async function updateActivity(activity: Activity) {
+  return prismaLib.activity.update({
+    where: {
+      userId_date: {
+        userId: activity.userId,
+        date: activity.date,
+      },
+    },
+    data: {
+      seconds: activity.seconds,
+      questions: activity.questions,
+      completed: activity.completed,
+    },
+  });
+}
+
+type InteractionEvent = {
+  event: string;
+  id: number;
+  context: Prisma.JsonValue;
+  timestamp: Date;
+};
