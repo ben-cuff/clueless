@@ -158,11 +158,8 @@ export default function useInterview(
             type
           );
 
-          const lastMessageContainsEndInterviewStatement = messages[
-            messages.length - 1
-          ].parts[0].text
-            .toLowerCase()
-            .includes(END_INTERVIEW_TEXT.toLowerCase());
+          const lastMessageContainsEndInterviewStatement =
+            doesLastMessageContain(messages, END_INTERVIEW_TEXT);
 
           if (lastMessageContainsEndInterviewStatement) {
             router.push(
@@ -216,8 +213,10 @@ export default function useInterview(
         prevCode === codeRef.current &&
         prevMessages === JSON.stringify(messages);
 
-      const isPreviousMessageNudge =
-        messages?.[messages.length - 1].parts[0].text === NUDGE_MESSAGE;
+      const isPreviousMessageNudge = doesLastMessageContain(
+        messages,
+        NUDGE_MESSAGE
+      );
 
       if (areCodeAndMessagesUnchanged && !isPreviousMessageNudge) {
         setMessages((prev) => [
@@ -269,4 +268,20 @@ export default function useInterview(
     languageRef,
     timer,
   };
+}
+
+function doesLastMessageContain(
+  messages: Message[] | undefined,
+  text: string
+): boolean {
+  if (!messages || messages.length === 0) {
+    return false;
+  }
+
+  const lastMessage = messages[messages.length - 1];
+  if (!lastMessage.parts || lastMessage.parts.length === 0) {
+    return false;
+  }
+
+  return lastMessage.parts[0].text === text;
 }
