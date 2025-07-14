@@ -1,7 +1,7 @@
 import { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
-import { Optional } from "@/types/util";
+import { Nullable, Optional } from "@/types/util";
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
@@ -170,10 +170,10 @@ function getNotificationForGoalType(
 function getProgressString(
   type: GoalType,
   totalProgress: number,
-  targetValue: number | null
+  targetValue: Nullable<number>
 ): string {
   if (type === "SECOND") {
-    const minutes = Math.floor(totalProgress / 60);
+    const minutes = Math.floor(totalProgress / minutesInHour);
     const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
     return `Current progress: ${minutes}/${targetMinutes} minutes completed`;
   } else if (type === "QUESTION") {

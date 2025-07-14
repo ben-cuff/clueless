@@ -9,6 +9,7 @@ import {
   USER_CODE_INCLUSION_MESSAGE,
 } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
+import { Nullable } from "@/types/util";
 import { getMessageObject } from "@/utils/ai-message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
@@ -28,7 +29,7 @@ export default function useInterview(
   const [messages, setMessages] = useState<Message[]>();
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
-  const [timer, setTimer] = useState<number | null>(null);
+  const [timer, setTimer] = useState<Nullable<number>>(null);
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);

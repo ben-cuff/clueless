@@ -1,4 +1,5 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { Nullable } from "@/types/util";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -6,7 +7,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id?: number;
-      username?: string | null;
+      username?: Nullable<string>;
     };
     accessToken?: string;
   }
