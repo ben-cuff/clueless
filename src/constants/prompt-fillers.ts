@@ -1,10 +1,17 @@
 const USER_CODE_INCLUSION_MESSAGE =
   "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n";
 
-const INITIAL_MESSAGE =
+const INITIAL_MESSAGE_UNTIMED =
   "Welcome to the interview! Before we begin, do you have any questions? " +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
   "Explaining your thought process and communication skills are an important part of the interview.";
+
+const INITIAL_MESSAGE_TIMED =
+  "Welcome to the TIMED interview! You have a limited time to complete this interview. " +
+  "You cannot resume this interview if you happen to leave the page. " +
+  "Please talk through your approach to the problem before you start coding. " +
+  "Explaining your thought process and communication skills are an important part of the interview. " +
+  "You can ask for hints or clarifications at any time, but remember that time is limited.";
 
 const END_INTERVIEW_TEXT = "Thank you for your time";
 
@@ -41,12 +48,17 @@ const NUDGE_MESSAGE =
 const MODEL_ERROR_MESSAGE =
   "An error occurred while generating the response. Please try again later.";
 
+const OUT_OF_TIME_MESSAGE =
+  "The interview has ended due to time constraints. Thank you for your participation!";
+
 export {
   END_INTERVIEW_TEXT,
   FEEDBACK_MESSAGE_TEXT,
-  INITIAL_MESSAGE,
+  INITIAL_MESSAGE_TIMED,
+  INITIAL_MESSAGE_UNTIMED,
   MODEL_ERROR_MESSAGE,
   NUDGE_MESSAGE,
+  OUT_OF_TIME_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
 };

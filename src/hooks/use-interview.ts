@@ -1,31 +1,41 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import {
   END_INTERVIEW_TEXT,
-  INITIAL_MESSAGE,
+  INITIAL_MESSAGE_TIMED,
+  INITIAL_MESSAGE_UNTIMED,
   MODEL_ERROR_MESSAGE,
   NUDGE_MESSAGE,
+  OUT_OF_TIME_MESSAGE,
   USER_CODE_INCLUSION_MESSAGE,
 } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
 import { getMessageObject } from "@/utils/ai-message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
-import { millisecondsInMinute } from "date-fns/constants";
+import {
+  millisecondsInMinute,
+  millisecondsInSecond,
+  secondsInHour,
+} from "date-fns/constants";
 import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 export default function useInterview(
   interviewId: string,
-  questionNumber: number
+  questionNumber: number,
+  type: "TIMED" | "UNTIMED" = "UNTIMED"
 ) {
   const [messages, setMessages] = useState<Message[]>();
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
+  const [timer, setTimer] = useState<number | null>(null);
   const userId = useContext(UserIdContext);
   const codeRef = useRef("");
   const hasMounted = useRef(false);
   const languageRef = useRef("python");
   const router = useRouter();
+
+  const TIME_LIMIT = type === "TIMED" ? secondsInHour / 2 : null;
 
   const handleCodeSave = useCallback(
     async (code: string) => {
@@ -143,7 +153,8 @@ export default function useInterview(
             messages!,
             questionNumber,
             codeRef.current,
-            languageRef.current
+            languageRef.current,
+            type
           );
 
           const lastMessageContainsEndInterviewStatement = messages[
@@ -162,7 +173,15 @@ export default function useInterview(
     } else {
       hasMounted.current = true;
     }
-  }, [interviewId, isStreaming, messages, questionNumber, userId, router]);
+  }, [
+    interviewId,
+    isStreaming,
+    messages,
+    questionNumber,
+    userId,
+    router,
+    type,
+  ]);
 
   // runs on mount to fetch the interview messages if they exist
   useEffect(() => {
@@ -174,11 +193,16 @@ export default function useInterview(
       if (!interviewData.error) {
         setMessages(interviewData.messages);
       } else {
-        setMessages([getMessageObject("model", INITIAL_MESSAGE)]);
+        setMessages([
+          getMessageObject(
+            "model",
+            type === "TIMED" ? INITIAL_MESSAGE_TIMED : INITIAL_MESSAGE_UNTIMED
+          ),
+        ]);
       }
       setIsLoadingMessages(false);
     })();
-  }, [interviewId, userId]);
+  }, [interviewId, type, userId]);
 
   useEffect(() => {
     let prevCode = codeRef.current;
@@ -208,6 +232,31 @@ export default function useInterview(
     return () => clearInterval(interval);
   }, [codeRef, messages]);
 
+  useEffect(() => {
+    if (type !== "TIMED") return;
+
+    if (timer === null && TIME_LIMIT) {
+      setTimer(TIME_LIMIT);
+      return;
+    }
+
+    if (timer === 0) {
+      setMessages((prev) => [
+        ...(prev ?? []),
+        getMessageObject("model", OUT_OF_TIME_MESSAGE),
+      ]);
+      handleEndInterview();
+      return;
+    }
+
+    if (timer !== null && timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => (prev ?? 0) - 1);
+      }, millisecondsInSecond);
+      return () => clearInterval(interval);
+    }
+  }, [type, TIME_LIMIT, timer, handleEndInterview]);
+
   return {
     handleCodeSave,
     messages,
@@ -217,5 +266,6 @@ export default function useInterview(
     handleEndInterview,
     userId,
     languageRef,
+    timer,
   };
 }

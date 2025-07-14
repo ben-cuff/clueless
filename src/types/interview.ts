@@ -1,3 +1,5 @@
+import { InterviewType } from "@prisma/client";
+
 export interface Interview {
   code: string;
   codeLanguage: string;
@@ -13,4 +15,5 @@ export interface Interview {
   updatedAt: string;
   userId: number;
   question: { difficulty: 1 | 2 | 3; title: string };
+  type: InterviewType;
 }

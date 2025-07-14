@@ -89,7 +89,13 @@ model Interview {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completed      Boolean   @default(false)
+  type InterviewType @default(UNTIMED)
   feedback       Feedback?
+}
+
+enum InterviewType {
+  TIMED
+  UNTIMED
 }
 
 model Feedback {

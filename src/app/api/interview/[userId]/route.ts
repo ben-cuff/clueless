@@ -27,7 +27,7 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { id, messages, questionNumber, code, codeLanguage } = await req
+  const { id, messages, questionNumber, code, codeLanguage, type } = await req
     .json()
     .catch(() => {
       return get400Response("Invalid JSON body");
@@ -55,6 +55,7 @@ export async function POST(
         questionNumber,
         code,
         codeLanguage,
+        type,
       },
     });
 
