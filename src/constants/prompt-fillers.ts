@@ -33,9 +33,17 @@ const FEEDBACK_MESSAGE_TEXT =
   "After the rating, provide a concise summary of strengths and specific areas for improvement. " +
   "Use markdown formatting (headings, bullet points) to organize your feedback.";
 
+const NUDGE_MESSAGE =
+  "It looks like you've been thinking for a bit. If you'd like a hint or want to talk through your approach, just let me know, I'm here to help!";
+
+const MODEL_ERROR_MESSAGE =
+  "An error occurred while generating the response. Please try again later.";
+
 export {
   FEEDBACK_MESSAGE_TEXT,
   INITIAL_MESSAGE,
+  MODEL_ERROR_MESSAGE,
+  NUDGE_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
 };

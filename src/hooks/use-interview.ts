@@ -1,11 +1,15 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import {
   INITIAL_MESSAGE,
+  MODEL_ERROR_MESSAGE,
+  NUDGE_MESSAGE,
   USER_CODE_INCLUSION_MESSAGE,
 } from "@/constants/prompt-fillers";
 import { Message } from "@/types/message";
+import { getMessageObject } from "@/utils/ai-message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
+import { millisecondsInMinute } from "date-fns/constants";
 import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
@@ -36,14 +40,7 @@ export default function useInterview(
   );
 
   const addUserMessage = useCallback((message: string) => {
-    const userMessage: Message = {
-      role: "user",
-      parts: [
-        {
-          text: message.trim(),
-        },
-      ],
-    };
+    const userMessage: Message = getMessageObject("user", message);
     setMessages((prev) => [...(prev ?? []), userMessage]);
     return userMessage;
   }, []);
@@ -71,14 +68,10 @@ export default function useInterview(
       if (!response?.ok) {
         setMessages((prev) => {
           const updated = [...(prev ?? [])];
-          updated[updated.length - 1] = {
-            role: "model",
-            parts: [
-              {
-                text: "An error occurred while generating the response. Please try again later.",
-              },
-            ],
-          };
+          updated[updated.length - 1] = getMessageObject(
+            "model",
+            MODEL_ERROR_MESSAGE
+          );
           return updated;
         });
         setIsStreaming(false);
@@ -105,8 +98,10 @@ export default function useInterview(
 
           setMessages((prev) => {
             const updated = [...(prev || [])];
-            updated[updated.length - 1] = {
-              ...updated[updated.length - 1],
+
+            const lastMessageIndex = updated.length - 1;
+            updated[lastMessageIndex] = {
+              ...updated[lastMessageIndex],
               parts: [{ text: content }],
             };
             return updated;
@@ -123,13 +118,7 @@ export default function useInterview(
       const userMessage = addUserMessage(message);
 
       // adds a placeholder for the model's response
-      setMessages((prev) => [
-        ...(prev ?? []),
-        {
-          role: "model",
-          parts: [{ text: "" }],
-        },
-      ]);
+      setMessages((prev) => [...(prev ?? []), getMessageObject("model", "")]);
 
       await streamModelResponse(userMessage);
     },
@@ -155,12 +144,14 @@ export default function useInterview(
             codeRef.current,
             languageRef.current
           );
-          if (
-            messages &&
-            messages[messages?.length - 1].parts[0].text
-              .toLowerCase()
-              .includes("thank you for your time")
-          ) {
+
+          const lastMessageContainsEndInterviewStatement = messages[
+            messages.length - 1
+          ].parts[0].text
+            .toLowerCase()
+            .includes("end interview");
+
+          if (lastMessageContainsEndInterviewStatement) {
             router.push(
               `/interview/feedback/${interviewId}?questionNumber=${questionNumber}`
             );
@@ -182,20 +173,37 @@ export default function useInterview(
       if (!interviewData.error) {
         setMessages(interviewData.messages);
       } else {
-        setMessages([
-          {
-            role: "model",
-            parts: [
-              {
-                text: INITIAL_MESSAGE,
-              },
-            ],
-          },
-        ]);
+        setMessages([getMessageObject("model", INITIAL_MESSAGE)]);
       }
       setIsLoadingMessages(false);
     })();
   }, [interviewId, userId]);
+
+  useEffect(() => {
+    let prevCode = codeRef.current;
+    let prevMessages = JSON.stringify(messages);
+
+    const interval = setInterval(() => {
+      const areCodeAndMessagesUnchanged =
+        prevCode === codeRef.current &&
+        prevMessages === JSON.stringify(messages);
+
+      const isPreviousMessageNudge =
+        messages?.[messages.length - 1].parts[0].text === NUDGE_MESSAGE;
+
+      if (areCodeAndMessagesUnchanged && !isPreviousMessageNudge) {
+        setMessages((prev) => [
+          ...(prev ?? []),
+          getMessageObject("model", NUDGE_MESSAGE),
+        ]);
+      } else {
+        prevCode = codeRef.current;
+        prevMessages = JSON.stringify(messages);
+      }
+    }, millisecondsInMinute);
+
+    return () => clearInterval(interval);
+  }, [codeRef, messages]);
 
   return {
     handleCodeSave,
