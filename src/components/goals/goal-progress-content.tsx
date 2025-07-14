@@ -11,10 +11,12 @@ export default function GoalProgressContent({
   let progressText = "";
   if (goalProgress.goalType === "QUESTION") {
     progressText = `${goalProgress.totalProgress} / ${goalProgress.targetValue} questions`;
-  } else {
+  } else if (goalProgress.goalType === "SECOND") {
     const totalHours = (goalProgress.totalProgress / secondsInHour).toFixed(2);
     const targetHours = (goalProgress.targetValue / secondsInHour).toFixed(2);
     progressText = `${totalHours} / ${targetHours} hours`;
+  } else {
+    progressText = `${goalProgress.totalProgress} / ${goalProgress.targetValue}`;
   }
 
   return (
