@@ -1,8 +1,4 @@
 import { expect, Page } from "@playwright/test";
-import dotenv from "dotenv";
-
-dotenv.config();
-
 const username = `user_${Math.random().toString(36).substring(2, 10)}`;
 const password = `Passw0rd!${Math.random().toString(36).substring(2, 8)}`;
 
