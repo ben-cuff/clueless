@@ -135,12 +135,8 @@ test("questions-leetcode-link", async ({ page }) => {
     await page.goto("http://localhost:3000/questions");
     page1Promise = page.waitForEvent("popup");
     await page
-      .locator("div")
-      .filter({
-        hasText:
-          /^1\. Two SumEasyGoogle, Amazon, Microsoft, BloombergStart InterviewArrayHash Table$/,
-      })
-      .getByRole("link")
+      .getByTestId("question-card-1")
+      .getByRole("link", { name: "leetcode-logo" })
       .click();
   });
 
@@ -156,17 +152,38 @@ test("questions-start-interview", async ({ page }) => {
   await test.step("click on start interview button", async () => {
     await page.goto("http://localhost:3000/questions");
     await page
-      .locator("div")
-      .filter({
-        hasText:
-          /^1\. Two SumEasyGoogle, Amazon, Microsoft, BloombergStart InterviewArrayHash Table$/,
-      })
-      .getByRole("button", { name: "Start" })
+      .getByTestId("question-card-1")
+      .getByRole("button", { name: "Start Interview" })
       .click();
   });
 
   await test.step("verify interview page is loaded", async () => {
     await expect(page).toHaveURL("/interview/new?questionNumber=1");
+    await expect(
+      page.getByRole("button", { name: "Run Testcases" })
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Submit" })).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Your message here" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Python (3.8.1)" })
+    ).toBeVisible();
+  });
+});
+
+test("questions-start-timed-interview", async ({ page }) => {
+  await test.step("click on start timed interview button", async () => {
+    await page.goto("http://localhost:3000/questions");
+    await page
+      .getByTestId("question-card-1")
+      .getByRole("button", { name: "Start Timed Interview" })
+      .click();
+  });
+
+  await test.step("verify timed interview page is loaded", async () => {
+    await expect(page).toHaveURL("/interview/new?questionNumber=1&type=TIMED");
+    await expect(page.getByText("Timed Interview")).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Run Testcases" })
     ).toBeVisible();

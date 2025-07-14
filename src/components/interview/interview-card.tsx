@@ -27,6 +27,9 @@ export default function InterviewCard({
       <div className="flex justify-center w-3/5">
         <InterviewCardTooltip interview={interview} />
       </div>
+      <div className="flex justify-center text-red-500">
+        {interview.type === "TIMED" && "Timed"}
+      </div>
       <div className="flex justify-center w-1/5">
         <InterviewCardButton interview={interview} router={router} />
       </div>

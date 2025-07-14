@@ -16,8 +16,6 @@ jobs:
       BASE_URL: ${{ secrets.BASE_URL || 'http://localhost:3000' }}
       NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
       ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY || '' }}
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '' }}
-      TEST_USERNAME: ${{ secrets.TEST_USERNAME || '' }}
       REDIS_HOST: ${{secrets.REDIS_HOST || '' }}
       REDIS_PORT: ${{secrets.REDIS_PORT || '' }}
       REDIS_TOKEN: ${{secrets.REDIS_TOKEN || '' }}
@@ -47,8 +45,6 @@ jobs:
       BASE_URL: ${{ secrets.BASE_URL || 'http://localhost:3000' }}
       NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
       ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY || '' }}
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '' }}
-      TEST_USERNAME: ${{ secrets.TEST_USERNAME || '' }}
       REDIS_HOST: ${{secrets.REDIS_HOST || '' }}
       REDIS_PORT: ${{secrets.REDIS_PORT || '' }}
       REDIS_TOKEN: ${{secrets.REDIS_TOKEN || '' }}

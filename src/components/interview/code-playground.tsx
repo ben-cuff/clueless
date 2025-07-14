@@ -80,7 +80,6 @@ export default function CodePlayground({
           handleLanguageChange={handleLanguageChange}
           initialLanguage={language}
         />
-        )
         <ThemeSelect handleThemeChange={handleThemeChange} />
       </div>
       <div className="flex flex-row">

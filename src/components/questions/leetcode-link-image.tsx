@@ -27,7 +27,7 @@ export default function LeetcodeLinkImage({
             src={"/leet_code_logo_black.png"}
             width={40}
             height={40}
-            className="object-contain"
+            className="object-contain min-w-8"
           />
         </Badge>
       </Link>

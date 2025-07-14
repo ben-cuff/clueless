@@ -14,9 +14,14 @@ export default function InterviewPage() {
   return (
     <>
       <div className="flex flex-col w-full h-vh justify-center items-center">
-        <Button onClick={() => router.push("/interview/new")} className="mt-10">
-          Start Random Interview
-        </Button>
+        <div className="flex mt-10 gap-2">
+          <Button onClick={() => router.push("/interview/new")}>
+            Start Random Interview
+          </Button>
+          <Button onClick={() => router.push("/interview/new?type=TIMED")}>
+            Start Random Timed Interview
+          </Button>
+        </div>
         {isLoadingInterviews ? (
           <InterviewLoading />
         ) : (

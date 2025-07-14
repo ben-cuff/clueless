@@ -2,6 +2,7 @@ import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
+import { Optional } from "@/types/util";
 import {
   get200Response,
   get201Response,
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const validCompanies: (string | undefined)[] = companies.map(
+  const validCompanies: Optional<string>[] = companies.map(
     (company: Company) => COMPANIES[company]
   );
 
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const validTopics: (string | undefined)[] = topics.map((topic: Topic) =>
+  const validTopics: Optional<string>[] = topics.map((topic: Topic) =>
     normalizeTopic(topic)
   );
 
@@ -114,7 +115,7 @@ export async function POST(req: Request) {
   }
 }
 
-function normalizeTopic(topic: Topic): string | undefined {
+function normalizeTopic(topic: Topic): Optional<string> {
   return TOPICS[
     topic
       .toLowerCase()

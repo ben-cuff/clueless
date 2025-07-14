@@ -8,7 +8,10 @@ export default function QuestionCardHeader({
   questionNumber: number;
 }) {
   return (
-    <div className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6">
+    <div
+      className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
+      data-testid={`question-card-${questionNumber}`}
+    >
       <h2 className="text-xl font-semibold min-w-60">
         {questionNumber}. {title}
       </h2>

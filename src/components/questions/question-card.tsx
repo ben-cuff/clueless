@@ -15,6 +15,11 @@ export default function QuestionCard({ question }: { question: Question }) {
       <CompaniesList companies={question.companies} />
       <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
       <StartInterviewButton questionNumber={question.id} />
+      <StartInterviewButton
+        questionNumber={question.id}
+        text="Start Timed Interview"
+        type="TIMED"
+      />
       <TopicsBadges topics={question.topics} />
     </QuestionCardHeader>
   );

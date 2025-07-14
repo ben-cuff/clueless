@@ -1,5 +1,7 @@
+import { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
+import { Nullable, Optional } from "@/types/util";
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
@@ -11,7 +13,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
-import { Activity, Goal } from "@prisma/client";
+import { Activity, Goal, GoalType } from "@prisma/client";
 import { minutesInHour, secondsInDay } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -111,13 +113,12 @@ function getNotification(
   goal: Goal,
   filteredActivities: Activity[],
   timeProgressPercentage: number
-): Response | undefined {
-  const goalTypes: Array<"questions" | "seconds"> = ["questions", "seconds"];
-
-  for (const type of goalTypes) {
-    if (goal[type] && goal[type] > 0) {
+): Optional<Response> {
+  for (const type of GOAL_TYPES_ARRAY) {
+    if (goal.goalType === type && goal.value > 0) {
+      const field = ACTIVITY_FIELD_MAP[type];
       const totalProgress = filteredActivities.reduce(
-        (acc, activity) => acc + (activity[type] ?? 0),
+        (acc, activity) => acc + Number(activity[field]),
         0
       );
       return getNotificationForGoalType(
@@ -134,9 +135,10 @@ function getNotificationForGoalType(
   goal: Goal,
   totalProgress: number,
   timeProgressPercentage: number,
-  type: "seconds" | "questions"
-): Response | undefined {
-  const targetValue = type === "seconds" ? goal.seconds : goal.questions;
+  type: GoalType
+): Optional<Response> {
+  const targetValue = goal.value;
+  const MAX_AMOUNT_BEHIND = 10;
 
   if (targetValue == null) {
     return get400Response(`${type} must be provided`);
@@ -152,22 +154,31 @@ function getNotificationForGoalType(
   }
 
   // if the user is 10% or more behind the time progress percentage, notify them
-  if (progressPercentage < timeProgressPercentage - 10) {
+  if (progressPercentage < timeProgressPercentage - MAX_AMOUNT_BEHIND) {
     const deficit = Math.round(timeProgressPercentage - progressPercentage);
-    let progressString = "";
-    if (type === "seconds") {
-      const minutes = Math.floor(totalProgress / 60);
-      const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
-      progressString = `Current progress: ${minutes}/${targetMinutes} minutes completed`;
-    } else {
-      progressString = `Current progress: ${totalProgress}/${targetValue} questions completed`;
-    }
+
+    const progressString = getProgressString(type, totalProgress, targetValue);
+
     const message =
-      (type === "seconds"
-        ? `You're falling behind on your study time goal by ${deficit}%!`
-        : `You're falling behind on your questions goal by ${deficit}%!`) +
+      `You're falling behind on your goal by ${deficit}%!` +
       "\n" +
       progressString;
     return get200Response({ notify: true, message });
+  }
+}
+
+function getProgressString(
+  type: GoalType,
+  totalProgress: number,
+  targetValue: Nullable<number>
+): string {
+  if (type === "SECOND") {
+    const minutes = Math.floor(totalProgress / minutesInHour);
+    const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
+    return `Current progress: ${minutes}/${targetMinutes} minutes completed`;
+  } else if (type === "QUESTION") {
+    return `Current progress: ${totalProgress}/${targetValue} questions completed`;
+  } else {
+    return `Current progress: ${totalProgress}/${targetValue} completed`;
   }
 }

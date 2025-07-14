@@ -1,10 +1,19 @@
 const USER_CODE_INCLUSION_MESSAGE =
   "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n";
 
-const INITIAL_MESSAGE =
+const INITIAL_MESSAGE_UNTIMED =
   "Welcome to the interview! Before we begin, do you have any questions? " +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
   "Explaining your thought process and communication skills are an important part of the interview.";
+
+const INITIAL_MESSAGE_TIMED =
+  "Welcome to the TIMED interview! You have a limited time to complete this interview. " +
+  "You cannot resume this interview if you happen to leave the page. " +
+  "Please talk through your approach to the problem before you start coding. " +
+  "Explaining your thought process and communication skills are an important part of the interview. " +
+  "You can ask for hints or clarifications at any time, but remember that time is limited.";
+
+const END_INTERVIEW_TEXT = "Thank you for your time";
 
 const SYSTEM_MESSAGE_TEXT =
   "You are an AI interviewer who is conducting a technical interview. " +
@@ -16,7 +25,7 @@ const SYSTEM_MESSAGE_TEXT =
   "You should ask the user to walk through their thought process and explain their reasoning before coding." +
   "Whenever the user submits code, you will receive the output of the code execution " +
   "and you will help lead the user in the correct direction if there is a bug" +
-  "Once you are satisfied with the user's response, you will end the interview by saying 'Thank you for your time.'";
+  `Once you are satisfied with the user's response, you will end the interview by saying '${END_INTERVIEW_TEXT}.'`;
 
 const FEEDBACK_MESSAGE_TEXT =
   "You are an AI feedback provider evaluating a user's technical interview performance. " +
@@ -33,9 +42,23 @@ const FEEDBACK_MESSAGE_TEXT =
   "After the rating, provide a concise summary of strengths and specific areas for improvement. " +
   "Use markdown formatting (headings, bullet points) to organize your feedback.";
 
+const NUDGE_MESSAGE =
+  "It looks like you've been thinking for a bit. If you'd like a hint or want to talk through your approach, just let me know, I'm here to help!";
+
+const MODEL_ERROR_MESSAGE =
+  "An error occurred while generating the response. Please try again later.";
+
+const OUT_OF_TIME_MESSAGE =
+  "The interview has ended due to time constraints. Thank you for your participation!";
+
 export {
+  END_INTERVIEW_TEXT,
   FEEDBACK_MESSAGE_TEXT,
-  INITIAL_MESSAGE,
+  INITIAL_MESSAGE_TIMED,
+  INITIAL_MESSAGE_UNTIMED,
+  MODEL_ERROR_MESSAGE,
+  NUDGE_MESSAGE,
+  OUT_OF_TIME_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
 };

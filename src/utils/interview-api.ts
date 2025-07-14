@@ -9,7 +9,8 @@ export const interviewAPI = {
     messages: Message[],
     questionNumber: number,
     code: string,
-    codeLanguage: string
+    codeLanguage: string,
+    type: "TIMED" | "UNTIMED" = "UNTIMED"
   ) {
     try {
       const response = await fetch(
@@ -25,6 +26,7 @@ export const interviewAPI = {
             questionNumber,
             code,
             codeLanguage: codeLanguage.toUpperCase(),
+            type,
           }),
         }
       );

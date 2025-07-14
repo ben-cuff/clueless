@@ -2,6 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
+import { Nullable } from "@/types/util";
 import {
   ForbiddenError,
   get200Response,
@@ -180,10 +181,10 @@ type InterviewWithFeedback = {
   question: {
     topics: Topic[];
   };
-  feedback: {
+  feedback: Nullable<{
     id: string;
     interviewId: string;
     feedback: string;
     feedbackNumber: number;
-  } | null;
+  }> ;
 };

@@ -27,15 +27,20 @@ model User {
 }
 
 model Goal {
-  id        String   @id @default(uuid())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  seconds   Int?
-  questions Int?
-  endDate   DateTime
-  beginAt   DateTime @default(now())
+  id       String   @id @default(uuid())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalType GoalType @default(QUESTION)
+  value    Int      @default(20)
+  endDate  DateTime
+  beginAt  DateTime @default(now())
 
   @@unique([userId])
+}
+
+enum GoalType {
+  QUESTION
+  SECOND
 }
 
 model Activity {
@@ -45,7 +50,7 @@ model Activity {
   date      DateTime
   questions Int      @default(0)
   seconds   Int      @default(0)
-  completed Boolean @default(false)
+  completed Boolean  @default(false)
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
@@ -84,7 +89,13 @@ model Interview {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completed      Boolean   @default(false)
+  type InterviewType @default(UNTIMED)
   feedback       Feedback?
+}
+
+enum InterviewType {
+  TIMED
+  UNTIMED
 }
 
 model Feedback {

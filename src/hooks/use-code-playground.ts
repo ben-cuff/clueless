@@ -7,6 +7,7 @@ import {
 import { defineTheme } from "@/lib/define-theme";
 import { Question_Extended } from "@/types/question";
 import { Theme } from "@/types/theme";
+import { Optional } from "@/types/util";
 import { interviewAPI } from "@/utils/interview-api";
 import { useTheme } from "next-themes";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ export default function useCodePlayground(
   const [theme, setTheme] = useState(
     systemTheme === "dark" ? "vs-dark" : "light"
   );
-  const [language, setLanguage] = useState<LanguageOption | undefined>();
+  const [language, setLanguage] = useState<Optional<LanguageOption>>();
   const [code, setCode] = useState<string>("");
 
   const handleThemeChange = useCallback((newTheme: Theme) => {
@@ -57,7 +58,7 @@ export default function useCodePlayground(
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(
-        userId || -1, // 
+        userId || -1, // fallbacks to -1 if userId is not available
         interviewId
       );
       if (!interview.error) {

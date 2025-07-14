@@ -1,12 +1,14 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import { GoalProgress } from "@/types/goal-progress";
+import { Nullable } from "@/types/util";
 import { GoalsAPI } from "@/utils/goals-api";
 import { Goal } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 
 export default function useGoalProgress() {
-  const [goalProgress, setGoalProgress] = useState<GoalProgress | null>(null);
-  const [goal, setGoal] = useState<Goal | null>(null);
+  const [goalProgress, setGoalProgress] =
+    useState<Nullable<GoalProgress>>(null);
+  const [goal, setGoal] = useState<Nullable<Goal>>(null);
   const [isLoading, setIsLoading] = useState(true);
   const userId = useContext(UserIdContext);
 

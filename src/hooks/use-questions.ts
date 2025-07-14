@@ -61,12 +61,7 @@ export default function useQuestions() {
       return;
     }
     const lastQuestionNumber = questionsData[takeSize - 1]?.row_num;
-    fetchQuestions(
-      "next",
-      typeof lastQuestionNumber === "bigint"
-        ? Number(lastQuestionNumber)
-        : lastQuestionNumber
-    );
+    fetchQuestions("next", Number(lastQuestionNumber));
     setCurrentPage((prev) => prev + 1);
   }
 
@@ -75,12 +70,7 @@ export default function useQuestions() {
       return;
     }
     const firstQuestionNumber = questionsData[0]?.row_num;
-    fetchQuestions(
-      "prev",
-      typeof firstQuestionNumber === "bigint"
-        ? Number(firstQuestionNumber)
-        : firstQuestionNumber
-    );
+    fetchQuestions("prev", Number(firstQuestionNumber));
     setCurrentPage((prev) => prev - 1);
   }, [fetchQuestions, questionsData]);
 

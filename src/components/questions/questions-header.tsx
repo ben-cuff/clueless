@@ -1,9 +1,10 @@
 import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
+import { Optional } from "@/types/util";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import DifficultySelect from "./difficulty-select";
 import { MultiSelect } from "../ui/multi-select";
+import DifficultySelect from "./difficulty-select";
 
 export default function QuestionsHeader({
   handleSearchInputChange,
@@ -15,9 +16,9 @@ export default function QuestionsHeader({
 }: {
   handleSearchInputChange: (searchInput: string) => void;
   handleDifficultySelectChange: (difficulty: string) => void;
-  companies: CompanyInfo[] | undefined;
+  companies: Optional<CompanyInfo[]>;
   handleCompaniesChange: (selected: string[]) => void;
-  topics: TopicInfo[] | undefined;
+  topics: Optional<TopicInfo[]>;
   handleTopicsChange: (selected: string[]) => void;
 }) {
   return (
