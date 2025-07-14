@@ -9,7 +9,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
-import { Prisma } from "@prisma/client";
+import { GoalType, Prisma } from "@prisma/client";
 import { secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -52,11 +52,13 @@ export async function POST(
   }
 
   try {
+    const { goalType, value } = getGoalTypeAndValue(hours, questions);
+
     const goal = await prismaLib.goal.create({
       data: {
         userId,
-        seconds: hours * secondsInHour,
-        questions,
+        goalType,
+        value,
         endDate: parsedEndDate,
       },
     });
@@ -136,11 +138,13 @@ export async function PUT(
   }
 
   try {
+    const { goalType, value } = getGoalTypeAndValue(hours, questions);
+
     const goal = await prismaLib.goal.update({
       where: { userId },
       data: {
-        seconds: hours ? hours * secondsInHour : null,
-        questions: questions ?? null,
+        goalType,
+        value,
         endDate: parsedEndDate,
       },
     });
@@ -193,4 +197,19 @@ export async function DELETE(
       return UnknownServerError;
     }
   }
+}
+
+function getGoalTypeAndValue(hours?: number, questions?: number) {
+  let goalType: GoalType;
+  let value: number;
+
+  if (hours) {
+    goalType = "SECOND";
+    value = hours * secondsInHour;
+  } else {
+    goalType = "QUESTION";
+    value = questions!;
+  }
+
+  return { goalType, value };
 }

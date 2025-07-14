@@ -70,26 +70,28 @@ function getProgressData(
     progressPercentage: 0,
     totalProgress: 0,
     targetValue: 0,
-    goalType: goal.questions ? "questions" : "seconds",
+    goalType: goal.goalType,
   };
 
-  if (goal.questions && goal.questions > 0) {
+  if (goal.goalType === "QUESTION" && goal.value > 0) {
     const totalQuestions = filteredActivities.reduce(
       (acc, activity) => acc + (activity.questions ?? 0),
       0
     );
     progressData.totalProgress = totalQuestions;
-    progressData.targetValue = goal.questions;
-    progressData.progressPercentage = (totalQuestions / goal.questions) * 100;
-  } else if (goal.seconds && goal.seconds > 0) {
+    progressData.targetValue = goal.value;
+    progressData.progressPercentage = (totalQuestions / goal.value) * 100;
+  } else if (goal.goalType === "SECOND" && goal.value > 0) {
     const totalSeconds = filteredActivities.reduce(
       (acc, activity) => acc + (activity.seconds ?? 0),
       0
     );
     progressData.totalProgress = totalSeconds;
-    progressData.targetValue = goal.seconds;
-    progressData.progressPercentage = (totalSeconds / goal.seconds) * 100;
+    progressData.targetValue = goal.value;
+    progressData.progressPercentage = (totalSeconds / goal.value) * 100;
   }
+
+  console.log(progressData);
 
   return progressData;
 }

@@ -9,7 +9,7 @@ export default function GoalProgressContent({
   goalProgress: GoalProgress;
 }) {
   let progressText = "";
-  if (goalProgress.goalType === "questions") {
+  if (goalProgress.goalType === "QUESTION") {
     progressText = `${goalProgress.totalProgress} / ${goalProgress.targetValue} questions`;
   } else {
     const totalHours = (goalProgress.totalProgress / secondsInHour).toFixed(2);

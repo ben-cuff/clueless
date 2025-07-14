@@ -1,3 +1,4 @@
+import { ACTIVITY_FIELD_MAP, GOAL_TYPES } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import {
@@ -11,7 +12,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
-import { Activity, Goal } from "@prisma/client";
+import { Activity, Goal, GoalType } from "@prisma/client";
 import { minutesInHour, secondsInDay } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -112,12 +113,11 @@ function getNotification(
   filteredActivities: Activity[],
   timeProgressPercentage: number
 ): Response | undefined {
-  const goalTypes: Array<"questions" | "seconds"> = ["questions", "seconds"];
-
-  for (const type of goalTypes) {
-    if (goal[type] && goal[type] > 0) {
+  for (const type of GOAL_TYPES) {
+    if (goal.goalType === type && goal.value > 0) {
+      const field = ACTIVITY_FIELD_MAP[type];
       const totalProgress = filteredActivities.reduce(
-        (acc, activity) => acc + (activity[type] ?? 0),
+        (acc, activity) => acc + Number(activity[field]),
         0
       );
       return getNotificationForGoalType(
@@ -134,9 +134,9 @@ function getNotificationForGoalType(
   goal: Goal,
   totalProgress: number,
   timeProgressPercentage: number,
-  type: "seconds" | "questions"
+  type: GoalType
 ): Response | undefined {
-  const targetValue = type === "seconds" ? goal.seconds : goal.questions;
+  const targetValue = goal.value;
 
   if (targetValue == null) {
     return get400Response(`${type} must be provided`);
@@ -155,7 +155,7 @@ function getNotificationForGoalType(
   if (progressPercentage < timeProgressPercentage - 10) {
     const deficit = Math.round(timeProgressPercentage - progressPercentage);
     let progressString = "";
-    if (type === "seconds") {
+    if (type === "SECOND") {
       const minutes = Math.floor(totalProgress / 60);
       const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
       progressString = `Current progress: ${minutes}/${targetMinutes} minutes completed`;
@@ -163,7 +163,7 @@ function getNotificationForGoalType(
       progressString = `Current progress: ${totalProgress}/${targetValue} questions completed`;
     }
     const message =
-      (type === "seconds"
+      (type === "SECOND"
         ? `You're falling behind on your study time goal by ${deficit}%!`
         : `You're falling behind on your questions goal by ${deficit}%!`) +
       "\n" +
