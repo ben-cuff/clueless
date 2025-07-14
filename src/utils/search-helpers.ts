@@ -1,6 +1,7 @@
 import { COMPANIES, Company } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
+import { Optional } from "@/types/util";
 
 function getWhereClause(
   topics = "",
@@ -20,7 +21,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
 
   // Process topics
   if (topics) {
-    const topicArray: (string | undefined)[] = topics
+    const topicArray: Optional<string>[] = topics
       .split(" ")
       .map((t) => TOPICS[t as Topic])
       .filter((t) => t !== undefined);
@@ -36,7 +37,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
 
   // Process difficulty
   if (difficulty) {
-    const difficultyArray: (number | undefined)[] = difficulty
+    const difficultyArray: Optional<number>[] = difficulty
       .split(" ")
       .map((d) => DIFFICULTIES[d as Difficulty])
       .filter((d) => d !== undefined);
@@ -51,7 +52,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
 
   // Process companies
   if (companies) {
-    const companyArray: (string | undefined)[] = companies
+    const companyArray: Optional<string>[] = companies
       .split(" ")
       .map((c) => COMPANIES[c as Company])
       .filter((c) => c !== undefined);
@@ -72,7 +73,7 @@ function getRawSQLWhereClause(topics = "", difficulty = "", companies = "") {
 
   // topics should be formatted as a space-separated string of topic keys
   if (topics) {
-    let topicArray: (string | undefined)[] = topics
+    let topicArray: Optional<string>[] = topics
       .split(" ")
       .map((t) => TOPICS[t as Topic]);
     topicArray = topicArray.filter((t) => t !== undefined);
@@ -88,7 +89,7 @@ function getRawSQLWhereClause(topics = "", difficulty = "", companies = "") {
 
   // difficulty should be formatted as a space-separated string of difficulty levels
   if (difficulty) {
-    let difficultyArray: (number | undefined)[] = difficulty
+    let difficultyArray: Optional<number>[] = difficulty
       .split(" ")
       .map((d) => DIFFICULTIES[d as Difficulty]);
     difficultyArray = difficultyArray.filter((d) => d !== undefined);
@@ -104,7 +105,7 @@ function getRawSQLWhereClause(topics = "", difficulty = "", companies = "") {
 
   // companies should be formatted as a space-separated string of company keys
   if (companies) {
-    let companyArray: (string | undefined)[] = companies
+    let companyArray: Optional<string>[] = companies
       .split(" ")
       .map((c) => COMPANIES[c as Company]);
     companyArray = companyArray.filter((c) => c !== undefined);

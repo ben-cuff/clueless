@@ -1,4 +1,5 @@
-import { activityForHeatmap } from "@/types/activity";
+import { ActivityForHeatmap } from "@/types/activity";
+import { Optional } from "@/types/util";
 import { daysInWeek, daysInYear } from "date-fns/constants";
 import HeatmapGrid from "./heatmap-grid";
 import MonthLabels from "./month-labels";
@@ -9,7 +10,7 @@ export default function CalendarHeatmap({
   showMonthLabels = true,
   title = "Heatmap",
 }: {
-  dateValues: activityForHeatmap[];
+  dateValues: ActivityForHeatmap[];
   numDays?: number;
   showMonthLabels?: boolean;
   title?: string;
@@ -52,9 +53,9 @@ function generateDaysArray(numDays: number) {
   return array;
 }
 
-function groupDaysIntoWeeks(daysArray: Date[]): (Date | undefined)[][] {
-  const weeks: (Date | undefined)[][] = [];
-  let week: (Date | undefined)[] = [];
+function groupDaysIntoWeeks(daysArray: Date[]): Optional<Date>[][] {
+  const weeks: Optional<Date>[][] = [];
+  let week: Optional<Date>[] = [];
 
   // pads the first week with undefined to account for weeks not starting on sunday
   const firstDay = daysArray[0];

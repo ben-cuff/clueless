@@ -1,8 +1,6 @@
-export default function MonthLabels({
-  weeks,
-}: {
-  weeks: (Date | undefined)[][];
-}) {
+import { Optional } from "@/types/util";
+
+export default function MonthLabels({ weeks }: { weeks: Optional<Date>[][] }) {
   const monthLabels = getMonthLabels(weeks);
 
   return (
@@ -20,11 +18,11 @@ export default function MonthLabels({
   );
 }
 
-function getMonthLabels(weeks: (Date | undefined)[][]) {
+function getMonthLabels(weeks: Optional<Date>[][]) {
   const monthLabels: { index: number; label: string }[] = [];
   let lastMonth = -1;
   weeks.forEach((week, i) => {
-    const firstDay = week.find(Boolean) as Date | undefined;
+    const firstDay = week.find(Boolean) as Optional<Date>;
     if (firstDay) {
       const month = firstDay.getMonth();
       if (month !== lastMonth) {

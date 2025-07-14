@@ -1,6 +1,7 @@
 import { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
+import { Optional } from "@/types/util";
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
@@ -112,7 +113,7 @@ function getNotification(
   goal: Goal,
   filteredActivities: Activity[],
   timeProgressPercentage: number
-): Response | undefined {
+): Optional<Response> {
   for (const type of GOAL_TYPES_ARRAY) {
     if (goal.goalType === type && goal.value > 0) {
       const field = ACTIVITY_FIELD_MAP[type];
@@ -135,7 +136,7 @@ function getNotificationForGoalType(
   totalProgress: number,
   timeProgressPercentage: number,
   type: GoalType
-): Response | undefined {
+): Optional<Response> {
   const targetValue = goal.value;
   const MAX_AMOUNT_BEHIND = 10;
 

@@ -1,8 +1,10 @@
+import { Optional } from "@/types/util";
+
 export default function HeatmapGrid({
   weeks,
   valueMap,
 }: {
-  weeks: (Date | undefined)[][];
+  weeks: Optional<Date>[][];
   valueMap: Map<string, number>;
 }) {
   const getColor = getColorFunctionBasedOnPercentile(valueMap);
@@ -54,7 +56,7 @@ function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
 
   const thresholds = [20, 40, 60, 80].map(percentile);
 
-  const getColor = (value: number | undefined) => {
+  const getColor = (value: Optional<number> ) => {
     switch (true) {
       case value === undefined:
         return COLORS[0];

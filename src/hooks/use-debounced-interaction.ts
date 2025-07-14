@@ -1,9 +1,10 @@
 import { interactionAPI } from "@/utils/interaction-api";
 import { useCallback, useEffect } from "react";
 import useDebounce from "./use-debouncer";
+import { Optional } from "@/types/util";
 
 export default function useDebouncedInteraction(
-  value: string | number | readonly string[] | undefined,
+  value: Optional<string | number | readonly string[]>,
   defaultInteractionName: string = "change_in_component",
   interactionName?: string,
   delay: number = 500

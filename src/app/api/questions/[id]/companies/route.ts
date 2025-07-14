@@ -1,5 +1,6 @@
 import { COMPANIES, Company } from "@/constants/companies";
 import { prismaLib } from "@/lib/prisma";
+import { Optional } from "@/types/util";
 import {
   get200Response,
   get400Response,
@@ -27,7 +28,7 @@ export async function PATCH(
     return get400Response("Invalid or missing companies array");
   }
 
-  const validCompanies: (string | undefined)[] = companies.map(
+  const validCompanies: Optional<string>[] = companies.map(
     (company: Company) => COMPANIES[company]
   );
 
