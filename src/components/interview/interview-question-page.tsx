@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../error-fallback";
 import { FeedbackContext } from "../providers/feedback-provider";
+import Timer from "../timer";
 import EndInterviewButton from "./end-interview-button";
 import FeedbackModal from "./feedback/feedback-modal";
 import InterviewLoading from "./interview-loading";
@@ -45,6 +46,7 @@ export default function InterviewQuestionPage({
         <ErrorFallback text="Error Loading this page, try again later" />
       }
     >
+      {timer && <Timer timer={timer} />}
       <CodePlayground
         question={question}
         handleCodeSave={handleCodeSave}

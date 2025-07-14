@@ -10,8 +10,10 @@ export default function InterviewCardButton({
   interview: Interview;
   router: AppRouterInstance;
 }) {
+  const isInterviewDone = interview.completed || interview.type === "TIMED";
+
   const handleClick = useCallback(() => {
-    if (interview.completed) {
+    if (isInterviewDone) {
       router.push(
         `/interview/feedback/${interview.id}?questionNumber=${interview.questionNumber}`
       );
@@ -20,11 +22,11 @@ export default function InterviewCardButton({
         `/interview/${interview.id}?questionNumber=${interview.questionNumber}`
       );
     }
-  }, [interview.completed, interview.id, interview.questionNumber, router]);
+  }, [interview.id, interview.questionNumber, isInterviewDone, router]);
 
   return (
     <Button variant="outline" onClick={handleClick}>
-      {interview.completed ? "View Feedback" : "Resume"}
+      {isInterviewDone ? "View Feedback" : "Resume"}
     </Button>
   );
 }
