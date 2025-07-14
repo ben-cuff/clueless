@@ -1,6 +1,6 @@
 import { cluelessInteractionsLib } from "@/lib/interactions";
 import { get200Response, get400Response } from "@/utils/api-responses";
-import { Prisma } from "@prisma/client";
+import type { Prisma as CluelessPrisma } from "clueless-interactions/dist/generated/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 
@@ -71,11 +71,10 @@ export async function GET(req: Request) {
 
   return get200Response(interactions);
 }
-
 type ContextFilters = {
   contextField?: string;
   contextValue?: unknown;
-  operation?: Prisma.JsonFilter;
+  operation?: CluelessPrisma.JsonFilter;
 };
 
 type InteractionFilters = {
