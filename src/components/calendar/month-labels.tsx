@@ -6,18 +6,16 @@ export default function MonthLabels({
   const monthLabels = getMonthLabels(weeks);
 
   return (
-    <div className="flex flex-row">
-      <div className="flex flex-row mb-1">
-        {weeks.map((_, weekIndex) => {
-          const label =
-            monthLabels.find((ml) => ml.index === weekIndex)?.label ?? "";
-          return (
-            <div key={weekIndex} className="text-xs w-4.5">
-              {label}
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex flex-row mb-1">
+      {weeks.map((_, weekIndex) => {
+        const label =
+          monthLabels.find((ml) => ml.index === weekIndex)?.label ?? "";
+        return (
+          <div key={weekIndex} className="text-xs w-4.5">
+            {label}
+          </div>
+        );
+      })}
     </div>
   );
 }
