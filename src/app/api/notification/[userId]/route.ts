@@ -154,20 +154,29 @@ function getNotificationForGoalType(
   // if the user is 10% or more behind the time progress percentage, notify them
   if (progressPercentage < timeProgressPercentage - 10) {
     const deficit = Math.round(timeProgressPercentage - progressPercentage);
-    let progressString = "";
-    if (type === "SECOND") {
-      const minutes = Math.floor(totalProgress / 60);
-      const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
-      progressString = `Current progress: ${minutes}/${targetMinutes} minutes completed`;
-    } else {
-      progressString = `Current progress: ${totalProgress}/${targetValue} questions completed`;
-    }
+
+    const progressString = getProgressString(type, totalProgress, targetValue);
+
     const message =
-      (type === "SECOND"
-        ? `You're falling behind on your study time goal by ${deficit}%!`
-        : `You're falling behind on your questions goal by ${deficit}%!`) +
+      `You're falling behind on your goal by ${deficit}%!` +
       "\n" +
       progressString;
     return get200Response({ notify: true, message });
+  }
+}
+
+function getProgressString(
+  type: GoalType,
+  totalProgress: number,
+  targetValue: number | null
+): string {
+  if (type === "SECOND") {
+    const minutes = Math.floor(totalProgress / 60);
+    const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
+    return `Current progress: ${minutes}/${targetMinutes} minutes completed`;
+  } else if (type === "QUESTION") {
+    return `Current progress: ${totalProgress}/${targetValue} questions completed`;
+  } else {
+    return `Current progress: ${totalProgress}/${targetValue} completed`;
   }
 }
