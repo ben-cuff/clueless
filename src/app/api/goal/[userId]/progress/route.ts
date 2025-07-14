@@ -91,7 +91,5 @@ function getProgressData(
     progressData.progressPercentage = (totalSeconds / goal.value) * 100;
   }
 
-  console.log(progressData);
-
   return progressData;
 }
