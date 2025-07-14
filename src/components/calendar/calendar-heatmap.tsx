@@ -12,7 +12,7 @@ export default function CalendarHeatmap({
   dateValues: activityForHeatmap[];
   numDays?: number;
   showMonthLabels?: boolean;
-  title: string;
+  title?: string;
 }) {
   const daysArray = generateDaysArray(numDays);
 
