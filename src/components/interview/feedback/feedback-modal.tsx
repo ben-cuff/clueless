@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/dialog";
 import useFeedback from "@/hooks/use-feedback";
 import FeedbackContent from "./feedback-content";
+import FeedbackError from "./feedback-error";
 
 export default function FeedbackModal({
   interviewId,
 }: {
   interviewId: string;
 }) {
-  const { isModalOpen, toggleModal, feedbackContent, isLoading } =
+  const { isModalOpen, toggleModal, feedbackContent, isLoading, isError } =
     useFeedback(interviewId);
 
   return (
@@ -30,9 +31,12 @@ export default function FeedbackModal({
           <div className="flex justify-center">
             {isLoading && <LoadingSpinner />}
           </div>
-          {!isLoading && feedbackContent && (
-            <FeedbackContent feedback={feedbackContent} />
-          )}
+          {!isLoading &&
+            (isError ? (
+              <FeedbackError />
+            ) : (
+              <FeedbackContent feedback={feedbackContent} />
+            ))}
         </DialogContent>
       </Dialog>
     </>
