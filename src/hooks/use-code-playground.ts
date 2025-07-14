@@ -57,7 +57,7 @@ export default function useCodePlayground(
   useEffect(() => {
     (async () => {
       const interview = await interviewAPI.getInterview(
-        userId || -1, // 
+        userId || -1, // fallbacks to -1 if userId is not available
         interviewId
       );
       if (!interview.error) {

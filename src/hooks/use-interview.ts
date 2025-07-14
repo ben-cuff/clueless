@@ -1,5 +1,6 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import {
+  END_INTERVIEW_TEXT,
   INITIAL_MESSAGE,
   MODEL_ERROR_MESSAGE,
   NUDGE_MESSAGE,
@@ -149,7 +150,7 @@ export default function useInterview(
             messages.length - 1
           ].parts[0].text
             .toLowerCase()
-            .includes("end interview");
+            .includes(END_INTERVIEW_TEXT.toLowerCase());
 
           if (lastMessageContainsEndInterviewStatement) {
             router.push(
@@ -182,7 +183,7 @@ export default function useInterview(
   useEffect(() => {
     let prevCode = codeRef.current;
     let prevMessages = JSON.stringify(messages);
-  
+
     const DURATION_BETWEEN_NUDGES = millisecondsInMinute * 2;
 
     const interval = setInterval(() => {
