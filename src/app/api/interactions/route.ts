@@ -13,6 +13,10 @@ export async function POST(req: Request) {
     return get400Response("Invalid JSON body");
   });
 
+  if (!eventName) {
+    return get400Response("Missing eventName in request body");
+  }
+
   const interaction = await cluelessInteractionsLib.addEvent(eventName, {
     userId,
     pathname,
