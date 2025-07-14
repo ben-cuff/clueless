@@ -80,10 +80,15 @@ export default function useInterview(
       if (!response?.ok) {
         setMessages((prev) => {
           const updated = [...(prev ?? [])];
-          updated[updated.length - 1] = getMessageObject(
+
+          const newMessageObject = getMessageObject(
             "model",
             MODEL_ERROR_MESSAGE
           );
+          if (updated.length === 0) {
+            return [newMessageObject];
+          }
+          updated[updated.length - 1] = newMessageObject;
           return updated;
         });
         setIsStreaming(false);
