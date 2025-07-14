@@ -137,6 +137,7 @@ function getNotificationForGoalType(
   type: GoalType
 ): Response | undefined {
   const targetValue = goal.value;
+  const MAX_AMOUNT_BEHIND = 10;
 
   if (targetValue == null) {
     return get400Response(`${type} must be provided`);
@@ -152,7 +153,7 @@ function getNotificationForGoalType(
   }
 
   // if the user is 10% or more behind the time progress percentage, notify them
-  if (progressPercentage < timeProgressPercentage - 10) {
+  if (progressPercentage < timeProgressPercentage - MAX_AMOUNT_BEHIND) {
     const deficit = Math.round(timeProgressPercentage - progressPercentage);
 
     const progressString = getProgressString(type, totalProgress, targetValue);
