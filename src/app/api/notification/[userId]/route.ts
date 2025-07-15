@@ -1,3 +1,4 @@
+import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import {
   ForbiddenError,
@@ -6,6 +7,8 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { checkIfGoalProgressNotification } from "@/utils/goal-progress";
+import { Activity } from "@prisma/client";
+import { secondsInDay } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -60,19 +63,19 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const cacheKey = `notification_progress_${userId}`;
+  const cacheKeyProgress = `notification_progress_${userId}`;
 
-  const cachedNotificationCount = await redisLib.get(cacheKey);
-  if (
-    !cachedNotificationCount ||
-    !(
-      parseInt(cachedNotificationCount) >=
-      MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD
-    )
-  ) {
+  const cachedNotificationCount = await redisLib.get(cacheKeyProgress);
+
+  const hasSentMaxProgressNotification =
+    cachedNotificationCount &&
+    parseInt(cachedNotificationCount) >=
+      MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD;
+
+  if (!hasSentMaxProgressNotification) {
     const notificationResult = await checkIfGoalProgressNotification(
       userId,
-      cacheKey,
+      cacheKeyProgress,
       cachedNotificationCount
     ).catch(() => {
       return UnknownServerError;
@@ -83,8 +86,84 @@ export async function POST(
     }
   }
 
+  const cacheKeyStreak = `notification_streak_${userId}`;
+  const cachedStreakNotification = await redisLib.get(cacheKeyStreak);
+  if (!cachedStreakNotification) {
+    const notificationStreak = await checkIfStreakNotification(userId).catch(
+      () => {
+        return UnknownServerError;
+      }
+    );
+
+    if (typeof notificationStreak === "number") {
+      notificationsAdded += notificationStreak;
+    }
+    await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay }); // only send 1 streak notification per day
+  }
+
   return get200Response({
     notify: notificationsAdded > 0,
     notificationsAdded,
   });
+}
+
+async function checkIfStreakNotification(userId: number) {
+  const MIN_NUM_DAYS_FOR_STREAK = 2;
+  let activity: Activity[];
+
+  try {
+    activity = await prismaLib.activity.findMany({
+      where: { userId },
+      orderBy: { date: "desc" },
+    });
+  } catch (error) {
+    console.error("Error fetching activity for streak notification:", error);
+    throw new Error("Failed to fetch activity data");
+  }
+
+  if (!activity || activity.length === 0) {
+    return 0;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let streak = 0;
+  const currentDate = new Date(today);
+  for (const act of activity) {
+    const actDate = new Date(act.date);
+    actDate.setHours(0, 0, 0, 0);
+
+    if (streak === 0) {
+      if (actDate.getTime() !== currentDate.getTime()) {
+        break;
+      }
+    } else {
+      currentDate.setDate(currentDate.getDate() - 1);
+      if (actDate.getTime() !== currentDate.getTime()) {
+        break;
+      }
+    }
+
+    if (act.questions > 0) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  if (streak >= MIN_NUM_DAYS_FOR_STREAK) {
+    const progressNotification = `🔥 You're on a ${streak}-day streak! Keep it up!`;
+    await redisLib.publish(
+      "notifications",
+      JSON.stringify({
+        text: progressNotification,
+        type: "STREAK",
+        userId,
+      })
+    );
+    return 1;
+  }
+
+  return 0;
 }
