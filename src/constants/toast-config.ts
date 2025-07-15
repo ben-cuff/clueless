@@ -10,7 +10,7 @@ type Position =
   | "bottom-center";
 
 interface ToastConfigEntry {
-  fn: (title: string, options: { description: string } & ToastOptions) => void;
+  fn: (title: string, options: { description: string }) => void;
   title: string;
   options: {
     position: Position;
