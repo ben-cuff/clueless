@@ -9,7 +9,7 @@ import {
 import { checkIfGoalProgressNotification } from "@/utils/goal-progress";
 import { errorLog } from "@/utils/logger";
 import { Activity } from "@prisma/client";
-import { secondsInDay } from "date-fns/constants";
+import { secondsInDay, secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -65,6 +65,7 @@ export async function POST(
   }
 
   const cacheKeyProgress = `notification_progress_${userId}`;
+  const cacheKeyProgressLastSent = `notification_progress_last_sent_${userId}`;
 
   const cachedNotificationCount = (await redisLib
     .get(cacheKeyProgress)
@@ -72,12 +73,20 @@ export async function POST(
       return UnknownServerError;
     })) as string;
 
+  // Is there a notification in the last 2 hours?
+  const lastSentProgressNotification = await redisLib
+    .get(cacheKeyProgressLastSent)
+    .catch(() => {
+      return UnknownServerError;
+    });
+
+  // Check if we have already sent the max number of progress notifications in a period
   const hasSentMaxProgressNotification =
     cachedNotificationCount &&
     parseInt(cachedNotificationCount) >=
       MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD;
 
-  if (!hasSentMaxProgressNotification) {
+  if (!hasSentMaxProgressNotification && !lastSentProgressNotification) {
     const notificationResult = await checkIfGoalProgressNotification(
       userId,
       cacheKeyProgress,
@@ -86,8 +95,11 @@ export async function POST(
       return UnknownServerError;
     });
 
-    if (typeof notificationResult === "number") {
+    if (typeof notificationResult === "number" && notificationResult > 0) {
       notificationsAdded += notificationResult;
+      await redisLib.set(cacheKeyProgressLastSent, "1", {
+        EX: secondsInHour * 2, // Only allow progress notifications every 2 hours
+      });
     }
   }
 
@@ -108,11 +120,8 @@ export async function POST(
     if (typeof notificationStreak === "number") {
       notificationsAdded += notificationStreak;
     }
-    await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay }); // only send 1 streak notification per day
+    await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay }); // Only send 1 streak notification per day
   }
-
-  // await redisLib.del(cacheKeyProgress); // TEMPORARY FOR TESTING
-  // await redisLib.del(cacheKeyStreak); // TEMPORARY FOR TESTING
 
   return get200Response({
     notify: notificationsAdded > 0,
