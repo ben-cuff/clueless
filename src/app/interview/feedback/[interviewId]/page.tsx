@@ -1,6 +1,7 @@
 import InterviewLoading from "@/components/interview/interview-loading";
 import InterviewQuestionPage from "@/components/interview/interview-question-page";
 import FeedbackProvider from "@/components/providers/feedback-provider";
+import { NotificationProvider } from "@/components/providers/notifications-provider";
 import { Question_Extended } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { redirect } from "next/navigation";
@@ -36,10 +37,15 @@ export default async function InterviewFeedbackPage({
   }
 
   return (
-    <FeedbackProvider value={true}>
-      <Suspense fallback={<InterviewLoading />}>
-        <InterviewQuestionPage question={question} interviewId={interviewId} />
-      </Suspense>
-    </FeedbackProvider>
+    <NotificationProvider>
+      <FeedbackProvider value={true}>
+        <Suspense fallback={<InterviewLoading />}>
+          <InterviewQuestionPage
+            question={question}
+            interviewId={interviewId}
+          />
+        </Suspense>
+      </FeedbackProvider>
+    </NotificationProvider>
   );
 }

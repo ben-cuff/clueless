@@ -1,3 +1,4 @@
+import { NotificationProvider } from "@/components/providers/notifications-provider";
 import RouteProtector from "@/components/route-protector";
 import React from "react";
 
@@ -6,5 +7,9 @@ export default function GoalsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <RouteProtector>{children}</RouteProtector>;
+  return (
+    <NotificationProvider>
+      <RouteProtector>{children}</RouteProtector>
+    </NotificationProvider>
+  );
 }

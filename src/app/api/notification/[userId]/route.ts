@@ -111,6 +111,9 @@ export async function POST(
     await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay }); // only send 1 streak notification per day
   }
 
+  // await redisLib.del(cacheKeyProgress); // TEMPORARY FOR TESTING
+  // await redisLib.del(cacheKeyStreak); // TEMPORARY FOR TESTING
+
   return get200Response({
     notify: notificationsAdded > 0,
     notificationsAdded,
