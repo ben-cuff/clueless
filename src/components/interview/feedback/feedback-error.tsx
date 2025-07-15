@@ -1,7 +1,3 @@
-export default function FeedbackError() {
-    return (
-      <div className="text-red-500 text-center">
-        Failed to load feedback. Is the interviewID valid?
-      </div>
-    );
+export default function FeedbackError({ message }: { message: string }) {
+  return <div className="text-red-500 text-center">{message}</div>;
 }

@@ -15,7 +15,7 @@ export default function FeedbackModal({
 }: {
   interviewId: string;
 }) {
-  const { isModalOpen, toggleModal, feedbackContent, isLoading, isError } =
+  const { isModalOpen, toggleModal, feedbackContent, isLoading, error } =
     useFeedback(interviewId);
 
   return (
@@ -32,8 +32,8 @@ export default function FeedbackModal({
             {isLoading && <LoadingSpinner />}
           </div>
           {!isLoading &&
-            (isError ? (
-              <FeedbackError />
+            (error !== "" ? (
+              <FeedbackError message={error} />
             ) : (
               <FeedbackContent feedback={feedbackContent} />
             ))}

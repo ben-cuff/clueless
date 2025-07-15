@@ -35,49 +35,56 @@ export const feedbackAPI = {
     }
   },
   getGeminiResponse: async (interviewId: string, userId: number) => {
-    try {
-      const systemMessage = {
-        role: "model",
-        parts: [
-          {
-            text: FEEDBACK_MESSAGE_TEXT,
-          },
-        ],
-      };
-
-      const interview = await interviewAPI.getInterview(userId, interviewId);
-      const messages = interview?.messages || [];
-      const finalCode = interview?.code || "";
-
-      const codeMessage = {
-        role: "user",
-        parts: [
-          {
-            text: `This is the state of the users code at the end of the interview: ${finalCode}`,
-          },
-        ],
-      };
-
-      const newMessagesWithSystemAndUser = [
-        systemMessage,
-        ...messages,
-        codeMessage,
-      ];
-
-      const response = await fetch(CLUELESS_API_ROUTES.chat, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const systemMessage = {
+      role: "model",
+      parts: [
+        {
+          text: FEEDBACK_MESSAGE_TEXT,
         },
-        body: JSON.stringify({
-          messages: newMessagesWithSystemAndUser,
-          interviewId,
-        }),
-      });
+      ],
+    };
 
-      return response;
-    } catch {
-      alert("An unexpected error occurred");
+    const interview = await interviewAPI.getInterview(userId, interviewId);
+
+    console.log("interview", interview);
+
+    if (interview.error) {
+      throw new Error("Interview not found");
     }
+
+    const messages = interview?.messages || [];
+    const finalCode = interview?.code || "";
+
+    const codeMessage = {
+      role: "user",
+      parts: [
+        {
+          text: `This is the state of the users code at the end of the interview: ${finalCode}`,
+        },
+      ],
+    };
+
+    const newMessagesWithSystemAndUser = [
+      systemMessage,
+      ...messages,
+      codeMessage,
+    ];
+
+    const response = await fetch(CLUELESS_API_ROUTES.chat, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messages: newMessagesWithSystemAndUser,
+        interviewId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch Gemini response");
+    }
+
+    return response;
   },
 };

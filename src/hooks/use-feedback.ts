@@ -1,12 +1,13 @@
 import { UserIdContext } from "@/components/providers/user-id-provider";
 import { feedbackAPI } from "@/utils/feedback-api";
+import { errorLog } from "@/utils/logger";
 import { useCallback, useContext, useEffect, useState } from "react";
 
 export default function useFeedback(interviewId: string) {
   const [isModalOpen, setIsModalOpened] = useState(true);
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
   const userId = useContext(UserIdContext);
 
   const toggleModal = useCallback(() => {
@@ -14,14 +15,26 @@ export default function useFeedback(interviewId: string) {
   }, [isModalOpen]);
 
   const generateFeedback = useCallback(async () => {
-    const response = await feedbackAPI.getGeminiResponse(interviewId, userId);
+    let response;
+    try {
+      response = await feedbackAPI.getGeminiResponse(interviewId, userId);
+    } catch (error) {
+      if (error instanceof Error) {
+        errorLog("Error generating feedback: " + error);
+        setError(error.message || "Failed to generate feedback");
+      } else {
+        errorLog("Unexpected error: " + error);
+        setError("Failed to generate feedback");
+      }
+      return;
+    }
     if (!response || !response.body) {
       alert("An unexpected error occurred");
       return;
     }
 
     if (!response.ok) {
-      setIsError(true);
+      setError("Failed to generate feedback. Please try again later.");
       return;
     }
 
@@ -61,5 +74,5 @@ export default function useFeedback(interviewId: string) {
     })();
   }, [interviewId, generateFeedback, userId]);
 
-  return { isModalOpen, toggleModal, feedbackContent, isLoading, isError };
+  return { isModalOpen, toggleModal, feedbackContent, isLoading, error };
 }
