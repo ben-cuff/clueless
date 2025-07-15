@@ -1,10 +1,12 @@
+"use client";
+
 import {
   NotificationData,
   NotificationItem,
   NotificationType,
 } from "@/types/notifications";
 import { NotificationsAPI } from "@/utils/notifications-api";
-import { millisecondsInHour, millisecondsInSecond } from "date-fns/constants";
+import { millisecondsInMinute, millisecondsInSecond } from "date-fns/constants";
 import { useSession } from "next-auth/react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
@@ -16,7 +18,7 @@ export const NotificationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const POLL_INTERVAL = millisecondsInHour * 2; // notifies every 2 hours if notification is available
+  const POLL_INTERVAL = millisecondsInMinute; // checks for new notification once a minute
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -39,9 +41,14 @@ export const NotificationProvider = ({
   }, []);
 
   useEffect(() => {
-    fetchAndNotify();
-    const intervalId = setInterval(fetchAndNotify, POLL_INTERVAL);
-    return () => clearInterval(intervalId);
+    (async () => {
+      if (session?.user.id !== undefined) {
+        await NotificationsAPI.postNotification(session.user.id);
+      }
+      await fetchAndNotify();
+      const intervalId = setInterval(fetchAndNotify, POLL_INTERVAL);
+      return () => clearInterval(intervalId);
+    })();
   }, [POLL_INTERVAL, fetchAndNotify, router, session?.user.id]);
 
   return <>{children}</>;
@@ -64,7 +71,7 @@ function getToast(
   router: AppRouterInstance
 ) {
   if (type === "GOAL_PROGRESS") {
-    toast.success("🔔 Notification", {
+    toast.success("🔔 Goal Update", {
       description: text,
       position: "top-right",
       action: {
@@ -73,6 +80,11 @@ function getToast(
           router.push("/goals");
         },
       },
+    });
+  } else if (type === "STREAK") {
+    toast.success("🔥 Streak Alert!", {
+      description: text,
+      position: "top-center",
     });
   } else {
     toast.success("🔔 Notification", {

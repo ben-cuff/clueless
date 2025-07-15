@@ -1,4 +1,4 @@
-type NotificationType = "GOAL_PROGRESS" | "GENERAL";
+type NotificationType = "GOAL_PROGRESS" | "GENERAL" | "STREAK";
 
 type NotificationItem = {
   text: string;
