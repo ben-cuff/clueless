@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "npx prisma generate && next dev --turbopack",
+    "dev:all": "concurrently \"npm run dev\" \"npm run start:worker\"",
     "build": "npx prisma generate && next build",
-    "start": "next start",
+    "start": "npx prisma generate && next start",
+    "start:worker": "npx ts-node src/scripts/notification-worker.ts --watch",
+    "start:all": "concurrently \"npm run start\" \"npm run start:worker\"",
     "lint": "next lint",
     "test": "npx playwright test"
   },
@@ -51,6 +54,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "prisma": "^6.10.1",
