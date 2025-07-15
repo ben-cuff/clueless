@@ -9,6 +9,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
+import { NotificationsAPI } from "@/utils/notifications-api";
 import { GoalType, Prisma } from "@prisma/client";
 import { secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
@@ -62,6 +63,8 @@ export async function POST(
         endDate: parsedEndDate,
       },
     });
+
+    NotificationsAPI.postNotification(userId);
 
     return get201Response(goal);
   } catch (error) {
@@ -148,6 +151,8 @@ export async function PUT(
         endDate: parsedEndDate,
       },
     });
+
+    NotificationsAPI.postNotification(userId);
 
     return get200Response(goal);
   } catch (error) {

@@ -7,6 +7,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
+import { NotificationsAPI } from "@/utils/notifications-api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -63,6 +64,8 @@ export async function POST(
     const updatedTime = interview.updatedAt.getTime();
 
     const isNewRecord = createdTime === updatedTime;
+
+    NotificationsAPI.postNotification(userId);
 
     return isNewRecord ? get201Response(interview) : get200Response(interview);
   } catch (error) {
