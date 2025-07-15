@@ -34,6 +34,7 @@ export async function GET(
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
+
   const cacheKey = `notifications:${userId}`;
   const notifications = await redisLib.lRange(cacheKey, 0, -1);
 
@@ -97,7 +98,11 @@ export async function POST(
   });
 }
 
-async function checkIfGoalProgressNotification( userId: number, cacheKey: string, cachedNotificationCount: Nullable<string> ) {
+async function checkIfGoalProgressNotification(
+  userId: number,
+  cacheKey: string,
+  cachedNotificationCount: Nullable<string>
+) {
   let goal;
   try {
     goal = await prismaLib.goal.findUnique({
@@ -155,19 +160,19 @@ async function checkIfGoalProgressNotification( userId: number, cacheKey: string
       });
     }
 
-    if (typeof progressNotification === "string") {
-      await redisLib.publish(
-        "notifications",
-        JSON.stringify({
-          text: progressNotification,
-          type: "GOAL_PROGRESS",
-          userId,
-        })
-      );
-      return 1;
-    }
+    await redisLib.publish(
+      "notifications",
+      JSON.stringify({
+        text: progressNotification,
+        type: "GOAL_PROGRESS",
+        userId,
+      })
+    );
 
-    return 0;
+    return 1;
+  }
+
+  return 0;
 }
 
 function getProgressNotification(
