@@ -64,22 +64,32 @@ async function checkIfGoalProgressNotification(
   );
 
   if (progressNotification) {
-    if (cachedNotificationCount) {
-      await redisLib.incr(cacheKey);
-    } else {
-      await redisLib.set(cacheKey, "1", {
-        EX: secondsInDay,
-      });
+    try {
+      if (cachedNotificationCount) {
+        await redisLib.incr(cacheKey);
+      } else {
+        await redisLib.set(cacheKey, "1", {
+          EX: secondsInDay,
+        });
+      }
+    } catch (error) {
+      errorLog("Error setting cache key: " + error);
+      throw new Error("Failed to set cache key for goal progress notification");
     }
 
-    await redisLib.publish(
-      "notifications",
-      JSON.stringify({
-        text: progressNotification,
-        type: "GOAL_PROGRESS",
-        userId,
-      })
-    );
+    await redisLib
+      .publish(
+        "notifications",
+        JSON.stringify({
+          text: progressNotification,
+          type: "GOAL_PROGRESS",
+          userId,
+        })
+      )
+      .catch((error) => {
+        errorLog("Error publishing goal progress notification: " + error);
+        throw new Error("Failed to publish goal progress notification");
+      });
 
     return 1;
   }

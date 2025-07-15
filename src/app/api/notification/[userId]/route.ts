@@ -7,6 +7,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { checkIfGoalProgressNotification } from "@/utils/goal-progress";
+import { errorLog } from "@/utils/logger";
 import { Activity } from "@prisma/client";
 import { secondsInDay } from "date-fns/constants";
 import { getServerSession } from "next-auth";
@@ -65,7 +66,11 @@ export async function POST(
 
   const cacheKeyProgress = `notification_progress_${userId}`;
 
-  const cachedNotificationCount = await redisLib.get(cacheKeyProgress);
+  const cachedNotificationCount = (await redisLib
+    .get(cacheKeyProgress)
+    .catch(() => {
+      return UnknownServerError;
+    })) as string;
 
   const hasSentMaxProgressNotification =
     cachedNotificationCount &&
@@ -87,7 +92,12 @@ export async function POST(
   }
 
   const cacheKeyStreak = `notification_streak_${userId}`;
-  const cachedStreakNotification = await redisLib.get(cacheKeyStreak);
+  const cachedStreakNotification = await redisLib
+    .get(cacheKeyStreak)
+    .catch(() => {
+      return UnknownServerError;
+    });
+
   if (!cachedStreakNotification) {
     const notificationStreak = await checkIfStreakNotification(userId).catch(
       () => {
@@ -117,7 +127,7 @@ async function checkIfStreakNotification(userId: number) {
       orderBy: { date: "desc" },
     });
   } catch (error) {
-    console.error("Error fetching activity for streak notification:", error);
+    errorLog("Error fetching activity for streak notification: " + error);
     throw new Error("Failed to fetch activity data");
   }
 
@@ -154,14 +164,19 @@ async function checkIfStreakNotification(userId: number) {
 
   if (streak >= MIN_NUM_DAYS_FOR_STREAK) {
     const progressNotification = `🔥 You're on a ${streak}-day streak! Keep it up!`;
-    await redisLib.publish(
-      "notifications",
-      JSON.stringify({
-        text: progressNotification,
-        type: "STREAK",
-        userId,
-      })
-    );
+    await redisLib
+      .publish(
+        "notifications",
+        JSON.stringify({
+          text: progressNotification,
+          type: "STREAK",
+          userId,
+        })
+      )
+      .catch((error) => {
+        errorLog("Error publishing streak notification: " + error);
+        throw new Error("Failed to publish streak notification");
+      });
     return 1;
   }
 

@@ -46,8 +46,6 @@ export const feedbackAPI = {
 
     const interview = await interviewAPI.getInterview(userId, interviewId);
 
-    console.log("interview", interview);
-
     if (interview.error) {
       throw new Error("Interview not found");
     }
