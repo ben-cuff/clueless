@@ -1,6 +1,7 @@
 import { ACTIVITY_FIELD_MAP } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
+import { NotificationType } from "@/types/notifications";
 import { Nullable, Optional } from "@/types/util";
 import { Activity, Goal, GoalType } from "@prisma/client";
 import { minutesInHour, secondsInDay } from "date-fns/constants";
@@ -80,7 +81,7 @@ async function checkIfGoalProgressNotification(
         "notifications",
         JSON.stringify({
           text: progressNotification,
-          type: "GOAL_PROGRESS",
+          type: NotificationType.GOAL_PROGRESS,
           userId,
         })
       )

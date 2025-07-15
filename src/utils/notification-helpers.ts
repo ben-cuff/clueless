@@ -1,6 +1,6 @@
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
-import { NotificationItem } from "@/types/notifications";
+import { NotificationItem, NotificationType } from "@/types/notifications";
 import { Activity } from "@prisma/client";
 
 async function handleGlobalNotifications(
@@ -146,7 +146,7 @@ async function checkIfStreakNotification(userId: number) {
         "notifications",
         JSON.stringify({
           text: progressNotification,
-          type: "STREAK",
+          type: NotificationType.STREAK,
           userId,
         })
       )
