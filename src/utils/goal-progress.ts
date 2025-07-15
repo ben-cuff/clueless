@@ -8,7 +8,6 @@ import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
 } from "./activities-progress";
-import { errorLog } from "./logger";
 
 async function checkIfGoalProgressNotification(
   userId: number,
@@ -21,12 +20,11 @@ async function checkIfGoalProgressNotification(
       where: { userId },
     });
   } catch (error) {
-    errorLog("Unexpected error: " + error);
-    throw new Error("Unexpected error during goal retrieval");
+    throw new Error("Unexpected error during goal retrieval: " + error);
   }
 
   if (!goal) {
-    return 0;
+    return false;
   }
 
   const endDate = new Date(goal.endDate);
@@ -43,8 +41,7 @@ async function checkIfGoalProgressNotification(
       },
     });
   } catch (error) {
-    errorLog("Unexpected error: " + error);
-    throw new Error("Unexpected error during activity retrieval");
+    throw new Error("Unexpected error during activity retrieval: " + error);
   }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
@@ -73,8 +70,9 @@ async function checkIfGoalProgressNotification(
         });
       }
     } catch (error) {
-      errorLog("Error setting cache key: " + error);
-      throw new Error("Failed to set cache key for goal progress notification");
+      throw new Error(
+        "Failed to set cache key for goal progress notification: " + error
+      );
     }
 
     await redisLib
@@ -87,14 +85,15 @@ async function checkIfGoalProgressNotification(
         })
       )
       .catch((error) => {
-        errorLog("Error publishing goal progress notification: " + error);
-        throw new Error("Failed to publish goal progress notification");
+        throw new Error(
+          "Failed to publish goal progress notification: " + error
+        );
       });
 
-    return 1;
+    return true;
   }
 
-  return 0;
+  return false;
 }
 
 function getProgressNotification(

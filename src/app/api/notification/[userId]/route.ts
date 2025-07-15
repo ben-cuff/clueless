@@ -1,5 +1,5 @@
-import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
+import { NotificationItem } from "@/types/notifications";
 import {
   ForbiddenError,
   get200Response,
@@ -8,7 +8,11 @@ import {
 } from "@/utils/api-responses";
 import { checkIfGoalProgressNotification } from "@/utils/goal-progress";
 import { errorLog } from "@/utils/logger";
-import { Activity } from "@prisma/client";
+import {
+  checkIfStreakNotification,
+  handleGlobalNotifications,
+  handleUserNotifications,
+} from "@/utils/notification-helpers";
 import { secondsInDay, secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
@@ -30,14 +34,55 @@ export async function GET(
     return ForbiddenError;
   }
 
-  const cacheKey = `notifications:${userId}`;
-  const notifications = await redisLib.lRange(cacheKey, 0, -1);
+  const cacheKeyUser = `notifications:${userId}`;
+  const cacheKeyGlobal = `notifications:global`;
+  const cacheKeyViewed = `notifications:viewed:${userId}`;
 
-  if (notifications.length > 0) {
-    redisLib.del(cacheKey);
+  let userNotifications: string[] = [];
+  let globalNotifications: string[] = [];
+
+  try {
+    userNotifications = await redisLib.lRange(cacheKeyUser, 0, -1); // Fetch user notifications
+  } catch (error) {
+    errorLog("Error fetching user notifications: " + error);
+    return UnknownServerError;
+  }
+
+  try {
+    globalNotifications = await redisLib.lRange(cacheKeyGlobal, 0, -1); // Fetch global notifications
+  } catch (error) {
+    errorLog("Error fetching global notifications: " + error);
+    return UnknownServerError;
+  }
+
+  let allNotifications: NotificationItem[] = [];
+
+  try {
+    allNotifications = allNotifications.concat(
+      await handleUserNotifications(userNotifications, cacheKeyUser) // parse user notifications and delete
+    );
+  } catch (error) {
+    errorLog("Error handling user notifications: " + error);
+    return UnknownServerError;
+  }
+
+  try {
+    allNotifications = allNotifications.concat(
+      await handleGlobalNotifications(
+        globalNotifications,
+        userId,
+        cacheKeyViewed
+      ) // parse global notifications and mark as viewed
+    );
+  } catch (error) {
+    errorLog("Error handling global notifications: " + error);
+    return UnknownServerError;
+  }
+
+  if (allNotifications.length > 0) {
     return get200Response({
       notify: true,
-      notifications: notifications.map((n) => JSON.parse(n)),
+      notifications: allNotifications,
     });
   }
 
@@ -67,18 +112,20 @@ export async function POST(
   const cacheKeyProgress = `notification_progress_${userId}`;
   const cacheKeyProgressLastSent = `notification_progress_last_sent_${userId}`;
 
-  const cachedNotificationCount = (await redisLib
-    .get(cacheKeyProgress)
-    .catch(() => {
-      return UnknownServerError;
-    })) as string;
+  let cachedNotificationCount;
+  try {
+    cachedNotificationCount = (await redisLib.get(cacheKeyProgress)) as string;
+  } catch {
+    return UnknownServerError;
+  }
 
   // Is there a notification in the last 2 hours?
-  const lastSentProgressNotification = await redisLib
-    .get(cacheKeyProgressLastSent)
-    .catch(() => {
-      return UnknownServerError;
-    });
+  let lastSentProgressNotification;
+  try {
+    lastSentProgressNotification = await redisLib.get(cacheKeyProgressLastSent);
+  } catch {
+    return UnknownServerError;
+  }
 
   // Check if we have already sent the max number of progress notifications in a period
   const hasSentMaxProgressNotification =
@@ -87,110 +134,63 @@ export async function POST(
       MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD;
 
   if (!hasSentMaxProgressNotification && !lastSentProgressNotification) {
-    const notificationResult = await checkIfGoalProgressNotification(
-      userId,
-      cacheKeyProgress,
-      cachedNotificationCount
-    ).catch(() => {
+    let notificationResult;
+    try {
+      notificationResult = await checkIfGoalProgressNotification(
+        userId,
+        cacheKeyProgress,
+        cachedNotificationCount
+      );
+    } catch (error) {
+      errorLog("Error checking goal progress notification: " + error);
       return UnknownServerError;
-    });
-
-    if (typeof notificationResult === "number" && notificationResult > 0) {
-      notificationsAdded += notificationResult;
-      await redisLib.set(cacheKeyProgressLastSent, "1", {
-        EX: secondsInHour * 2, // Only allow progress notifications every 2 hours
-      });
+    }
+    if (notificationResult) {
+      notificationsAdded += 1;
+      try {
+        await redisLib.set(cacheKeyProgressLastSent, "1", {
+          EX: secondsInHour * 2, // Only allow progress notifications every 2 hours
+        });
+      } catch (error) {
+        errorLog("Error setting progress notification last sent: " + error);
+        return UnknownServerError;
+      }
     }
   }
 
   const cacheKeyStreak = `notification_streak_${userId}`;
-  const cachedStreakNotification = await redisLib
-    .get(cacheKeyStreak)
-    .catch(() => {
-      return UnknownServerError;
-    });
+  let cachedStreakNotification;
+  try {
+    cachedStreakNotification = await redisLib.get(cacheKeyStreak);
+  } catch (error) {
+    errorLog("Error fetching cached streak notification: " + error);
+    return UnknownServerError;
+  }
 
+  // Check if we have already sent a streak notification today
   if (!cachedStreakNotification) {
-    const notificationStreak = await checkIfStreakNotification(userId).catch(
-      () => {
-        return UnknownServerError;
-      }
-    );
-
-    if (typeof notificationStreak === "number") {
-      notificationsAdded += notificationStreak;
+    let notificationStreak;
+    try {
+      notificationStreak = await checkIfStreakNotification(userId);
+    } catch (error) {
+      errorLog("Error checking streak notification: " + error);
+      return UnknownServerError;
     }
-    await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay }); // Only send 1 streak notification per day
+
+    if (notificationStreak) {
+      notificationsAdded += 1;
+    }
+
+    try {
+      await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay });
+    } catch (error) {
+      errorLog("Error setting streak notification cache: " + error);
+      return UnknownServerError;
+    }
   }
 
   return get200Response({
     notify: notificationsAdded > 0,
     notificationsAdded,
   });
-}
-
-async function checkIfStreakNotification(userId: number) {
-  const MIN_NUM_DAYS_FOR_STREAK = 2;
-  let activity: Activity[];
-
-  try {
-    activity = await prismaLib.activity.findMany({
-      where: { userId },
-      orderBy: { date: "desc" },
-    });
-  } catch (error) {
-    errorLog("Error fetching activity for streak notification: " + error);
-    throw new Error("Failed to fetch activity data");
-  }
-
-  if (!activity || activity.length === 0) {
-    return 0;
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let streak = 0;
-  const currentDate = new Date(today);
-  for (const act of activity) {
-    const actDate = new Date(act.date);
-    actDate.setHours(0, 0, 0, 0);
-
-    if (streak === 0) {
-      if (actDate.getTime() !== currentDate.getTime()) {
-        break;
-      }
-    } else {
-      currentDate.setDate(currentDate.getDate() - 1);
-      if (actDate.getTime() !== currentDate.getTime()) {
-        break;
-      }
-    }
-
-    if (act.questions > 0) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-
-  if (streak >= MIN_NUM_DAYS_FOR_STREAK) {
-    const progressNotification = `🔥 You're on a ${streak}-day streak! Keep it up!`;
-    await redisLib
-      .publish(
-        "notifications",
-        JSON.stringify({
-          text: progressNotification,
-          type: "STREAK",
-          userId,
-        })
-      )
-      .catch((error) => {
-        errorLog("Error publishing streak notification: " + error);
-        throw new Error("Failed to publish streak notification");
-      });
-    return 1;
-  }
-
-  return 0;
 }

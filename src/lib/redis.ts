@@ -11,4 +11,14 @@ const redisLib = createClient({
 
 await redisLib.connect();
 
+process.on("SIGINT", async () => {
+  await redisLib.quit();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await redisLib.quit();
+  process.exit(0);
+});
+
 export default redisLib;
