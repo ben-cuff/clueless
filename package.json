@@ -4,11 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "npx prisma generate && next dev --turbopack",
-    "dev:all": "concurrently \"npm run dev\" \"npm run start:worker\"",
     "build": "npx prisma generate && next build",
     "start": "npx prisma generate && next start",
-    "start:worker": "npx ts-node src/scripts/notification-worker.ts --watch",
-    "start:all": "concurrently \"npm run start\" \"npm run start:worker\"",
     "lint": "next lint",
     "test": "npx playwright test"
   },
