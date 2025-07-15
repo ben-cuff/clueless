@@ -1,5 +1,6 @@
 "use client";
 
+import { toastConfigs } from "@/constants/toast-config";
 import {
   NotificationData,
   NotificationItem,
@@ -8,10 +9,7 @@ import {
 import { NotificationsAPI } from "@/utils/notifications-api";
 import { millisecondsInMinute, millisecondsInSecond } from "date-fns/constants";
 import { useSession } from "next-auth/react";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
-import { toast } from "sonner";
 
 export const NotificationProvider = ({
   children,
@@ -20,7 +18,6 @@ export const NotificationProvider = ({
 }) => {
   const POLL_INTERVAL = millisecondsInMinute; // checks for new notification once a minute
   const { data: session } = useSession();
-  const router = useRouter();
 
   const fetchAndNotify = useCallback(async () => {
     if (Notification.permission === "granted" && session?.user.id) {
@@ -29,10 +26,10 @@ export const NotificationProvider = ({
       );
 
       if (data?.notify && Array.isArray(data.notifications)) {
-        showNotifications(data.notifications, router);
+        showNotifications(data.notifications);
       }
     }
-  }, [router, session?.user.id]);
+  }, [session?.user.id]);
 
   useEffect(() => {
     if (Notification.permission !== "granted") {
@@ -49,47 +46,20 @@ export const NotificationProvider = ({
       const intervalId = setInterval(fetchAndNotify, POLL_INTERVAL);
       return () => clearInterval(intervalId);
     })();
-  }, [POLL_INTERVAL, fetchAndNotify, router, session?.user.id]);
+  }, [POLL_INTERVAL, fetchAndNotify, session?.user.id]);
 
   return <>{children}</>;
 };
 
-function showNotifications(
-  notifications: NotificationItem[],
-  router: AppRouterInstance
-) {
+function showNotifications(notifications: NotificationItem[]) {
   notifications.forEach((notification, idx) => {
     setTimeout(() => {
-      getToast(notification.text, notification.type, router);
+      getToast(notification.text, notification.type);
     }, idx * millisecondsInSecond * 2); // puts a 2 second gap between each notification
   });
 }
 
-function getToast(
-  text: string,
-  type: NotificationType,
-  router: AppRouterInstance
-) {
-  if (type === "GOAL_PROGRESS") {
-    toast.success("🔔 Goal Update", {
-      description: text,
-      position: "top-right",
-      action: {
-        label: "View Goals",
-        onClick: () => {
-          router.push("/goals");
-        },
-      },
-    });
-  } else if (type === "STREAK") {
-    toast.success("🔥 Streak Alert!", {
-      description: text,
-      position: "top-center",
-    });
-  } else {
-    toast.success("🔔 Notification", {
-      description: text,
-      position: "top-right",
-    });
-  }
+function getToast(text: string, type: NotificationType): void {
+  const config = toastConfigs[type];
+  config.fn(config.title, { description: text, ...config.options });
 }
