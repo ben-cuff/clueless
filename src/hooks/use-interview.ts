@@ -288,5 +288,5 @@ function doesLastMessageContain(
     return false;
   }
 
-  return lastMessage.parts[0].text === text;
+  return lastMessage.parts[0].text.includes(text);
 }
