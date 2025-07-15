@@ -2,6 +2,7 @@ import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { NotificationItem, NotificationType } from "@/types/notifications";
 import { Activity } from "@prisma/client";
+import { secondsInDay } from "date-fns/constants";
 
 async function handleGlobalNotifications(
   globalNotifications: string[],
@@ -36,6 +37,11 @@ async function handleGlobalNotifications(
         .catch((error) => {
           throw new Error("Failed to push viewed notifications: " + error);
         });
+
+      const ttl = await redisLib.ttl(cacheKeyViewed);
+      if (ttl === -1) {
+        await redisLib.expire(cacheKeyViewed, secondsInDay); // Set TTL to 1 day if not already set
+      }
       return filtered;
     }
   }
