@@ -28,12 +28,7 @@ export default function useFeedback(interviewId: string) {
       }
       return;
     }
-    if (!response || !response.body) {
-      alert("An unexpected error occurred");
-      return;
-    }
-
-    if (!response.ok) {
+    if (!response || !response.ok || !response.body) {
       setError("Failed to generate feedback. Please try again later.");
       return;
     }
