@@ -22,7 +22,38 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
-  const MAX_NOTIFICATIONS_IN_PERIOD = 3;
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+  const cacheKey = `notifications:${userId}`;
+  const notifications = await redisLib.lRange(cacheKey, 0, -1);
+
+  if (notifications.length > 0) {
+    redisLib.del(cacheKey);
+    return get200Response({
+      notify: true,
+      notifications: notifications.map((n) => JSON.parse(n)),
+    });
+  }
+
+  return get200Response({ notify: false });
+}
+
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD = 3;
+  let notificationsAdded = 0;
 
   const resolvedParams = await params;
   const userId = Number(resolvedParams.userId);
@@ -37,16 +68,36 @@ export async function GET(
     return ForbiddenError;
   }
 
-  const cacheKey = `notification_${userId}`;
+  const cacheKey = `notification_progress_${userId}`;
 
   const cachedNotificationCount = await redisLib.get(cacheKey);
   if (
-    cachedNotificationCount &&
-    parseInt(cachedNotificationCount) >= MAX_NOTIFICATIONS_IN_PERIOD
+    !cachedNotificationCount ||
+    !(
+      parseInt(cachedNotificationCount) >=
+      MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD
+    )
   ) {
-    return get200Response({ notify: false });
+    const notificationResult = await checkIfGoalProgressNotification(
+      userId,
+      cacheKey,
+      cachedNotificationCount
+    ).catch(() => {
+      return UnknownServerError;
+    });
+
+    if (typeof notificationResult === "number") {
+      notificationsAdded += notificationResult;
+    }
   }
 
+  return get200Response({
+    notify: notificationsAdded > 0,
+    notificationsAdded,
+  });
+}
+
+async function checkIfGoalProgressNotification( userId: number, cacheKey: string, cachedNotificationCount: Nullable<string> ) {
   let goal;
   try {
     goal = await prismaLib.goal.findUnique({
@@ -54,11 +105,11 @@ export async function GET(
     });
   } catch (error) {
     errorLog("Unexpected error: " + error);
-    return UnknownServerError;
+    throw new Error("Unexpected error during goal retrieval");
   }
 
   if (!goal) {
-    return get200Response({ notify: false });
+    return 0;
   }
 
   const endDate = new Date(goal.endDate);
@@ -76,7 +127,7 @@ export async function GET(
     });
   } catch (error) {
     errorLog("Unexpected error: " + error);
-    return UnknownServerError;
+    throw new Error("Unexpected error during activity retrieval");
   }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
@@ -89,13 +140,13 @@ export async function GET(
     endDate
   );
 
-  const notification = getNotification(
+  const progressNotification = getProgressNotification(
     goal,
     filteredActivities,
     timeProgressPercentage
   );
 
-  if (notification) {
+  if (progressNotification) {
     if (cachedNotificationCount) {
       await redisLib.incr(cacheKey);
     } else {
@@ -103,17 +154,27 @@ export async function GET(
         EX: secondsInDay,
       });
     }
-    return notification;
-  } else {
-    return get200Response({ notify: false });
-  }
+
+    if (typeof progressNotification === "string") {
+      await redisLib.publish(
+        "notifications",
+        JSON.stringify({
+          text: progressNotification,
+          type: "GOAL_PROGRESS",
+          userId,
+        })
+      );
+      return 1;
+    }
+
+    return 0;
 }
 
-function getNotification(
+function getProgressNotification(
   goal: Goal,
   filteredActivities: Activity[],
   timeProgressPercentage: number
-): Optional<Response> {
+): Optional<string> {
   for (const type of GOAL_TYPES_ARRAY) {
     if (goal.goalType === type && goal.value > 0) {
       const field = ACTIVITY_FIELD_MAP[type];
@@ -121,7 +182,7 @@ function getNotification(
         (acc, activity) => acc + Number(activity[field]),
         0
       );
-      return getNotificationForGoalType(
+      return getProgressNotificationForGoalType(
         goal,
         totalProgress,
         timeProgressPercentage,
@@ -131,26 +192,23 @@ function getNotification(
   }
 }
 
-function getNotificationForGoalType(
+function getProgressNotificationForGoalType(
   goal: Goal,
   totalProgress: number,
   timeProgressPercentage: number,
   type: GoalType
-): Optional<Response> {
+): Optional<string> {
   const targetValue = goal.value;
   const MAX_AMOUNT_BEHIND = 10;
 
   if (targetValue == null) {
-    return get400Response(`${type} must be provided`);
+    return;
   }
 
   const progressPercentage = (totalProgress / targetValue) * 100;
 
   if (totalProgress >= targetValue) {
-    return get200Response({
-      notify: true,
-      message: "Goal completed! Update it to get a new one.",
-    });
+    return "Goal completed! Update it to get a new one.";
   }
 
   // if the user is 10% or more behind the time progress percentage, notify them
@@ -163,7 +221,7 @@ function getNotificationForGoalType(
       `You're falling behind on your goal by ${deficit}%!` +
       "\n" +
       progressString;
-    return get200Response({ notify: true, message });
+    return message;
   }
 }
 

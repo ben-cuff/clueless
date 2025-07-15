@@ -28,7 +28,7 @@
     "clueless-interactions": "^1.0.17",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.0.0",
+    "dotenv": "^17.2.0",
     "lucide-react": "^0.522.0",
     "monaco-themes": "^0.4.5",
     "next": "15.3.3",
