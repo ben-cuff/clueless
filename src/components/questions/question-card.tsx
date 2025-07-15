@@ -1,4 +1,5 @@
 import { Question } from "@/types/question";
+import { InterviewType } from "@prisma/client";
 import DifficultyBadge from "../difficulty-badge";
 import CompaniesList from "./companies-list";
 import LeetcodeLinkImage from "./leetcode-link-image";
@@ -18,7 +19,7 @@ export default function QuestionCard({ question }: { question: Question }) {
       <StartInterviewButton
         questionNumber={question.id}
         text="Start Timed Interview"
-        type="TIMED"
+        type={InterviewType.TIMED}
       />
       <TopicsBadges topics={question.topics} />
     </QuestionCardHeader>

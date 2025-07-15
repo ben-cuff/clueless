@@ -1,4 +1,4 @@
-import { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY } from "@/constants/goals";
+import { ACTIVITY_FIELD_MAP } from "@/constants/goals";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { Nullable, Optional } from "@/types/util";
@@ -101,7 +101,7 @@ function getProgressNotification(
   filteredActivities: Activity[],
   timeProgressPercentage: number
 ): Optional<string> {
-  for (const type of GOAL_TYPES_ARRAY) {
+  for (const type of Object.values(GoalType)) {
     if (goal.goalType === type && goal.value > 0) {
       const field = ACTIVITY_FIELD_MAP[type];
       const totalProgress = filteredActivities.reduce(
@@ -156,11 +156,11 @@ function getProgressString(
   totalProgress: number,
   targetValue: Nullable<number>
 ): string {
-  if (type === "SECOND") {
+  if (type === GoalType.SECOND) {
     const minutes = Math.floor(totalProgress / minutesInHour);
     const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
     return `Current progress: ${minutes}/${targetMinutes} minutes completed`;
-  } else if (type === "QUESTION") {
+  } else if (type === GoalType.QUESTION) {
     return `Current progress: ${totalProgress}/${targetValue} questions completed`;
   } else {
     return `Current progress: ${totalProgress}/${targetValue} completed`;

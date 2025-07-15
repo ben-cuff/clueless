@@ -3,6 +3,7 @@
 import CodePlayground from "@/components/interview/code-playground";
 import useInterview from "@/hooks/use-interview";
 import { Question_Extended } from "@/types/question";
+import { InterviewType } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -24,7 +25,9 @@ export default function InterviewQuestionPage({
   const type = searchParams.get("type");
 
   const interviewType =
-    type === "TIMED" || type === "UNTIMED" ? type : undefined;
+    type === InterviewType.TIMED || type === InterviewType.UNTIMED
+      ? type
+      : undefined;
 
   const {
     handleCodeSave,

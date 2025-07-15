@@ -18,8 +18,8 @@ export default function StartInterviewButton({
     const params = new URLSearchParams({
       questionNumber: questionNumber.toString(),
     });
-    if (type === "TIMED") {
-      params.set("type", "TIMED");
+    if (type === InterviewType.TIMED) {
+      params.set("type", InterviewType.TIMED);
     }
     router.push(`/interview/new?${params.toString()}`);
   }, [questionNumber, router, type]);

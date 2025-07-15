@@ -209,10 +209,10 @@ function getGoalTypeAndValue(hours?: number, questions?: number) {
   let value: number;
 
   if (hours) {
-    goalType = "SECOND";
+    goalType = GoalType.SECOND;
     value = hours * secondsInHour;
   } else {
-    goalType = "QUESTION";
+    goalType = GoalType.QUESTION;
     value = questions!;
   }
 

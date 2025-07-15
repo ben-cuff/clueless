@@ -1,4 +1,5 @@
 import { Interview } from "@/types/interview";
+import { InterviewType } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import DifficultyBadge from "../difficulty-badge";
 import { Card } from "../ui/card";
@@ -28,7 +29,7 @@ export default function InterviewCard({
         <InterviewCardTooltip interview={interview} />
       </div>
       <div className="flex justify-center text-red-500">
-        {interview.type === "TIMED" && "Timed"}
+        {interview.type === InterviewType.TIMED && "Timed"}
       </div>
       <div className="flex justify-center w-1/5">
         <InterviewCardButton interview={interview} router={router} />

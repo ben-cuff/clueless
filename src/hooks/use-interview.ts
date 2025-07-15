@@ -13,6 +13,7 @@ import { Nullable } from "@/types/util";
 import { getMessageObject } from "@/utils/ai-message";
 import { chatAPI } from "@/utils/chat-api";
 import { interviewAPI } from "@/utils/interview-api";
+import { InterviewType } from "@prisma/client";
 import {
   millisecondsInMinute,
   millisecondsInSecond,
@@ -24,7 +25,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 export default function useInterview(
   interviewId: string,
   questionNumber: number,
-  type: "TIMED" | "UNTIMED" = "UNTIMED"
+  type: InterviewType = InterviewType.UNTIMED
 ) {
   const [messages, setMessages] = useState<Message[]>();
   const [isStreaming, setIsStreaming] = useState(false);
@@ -36,7 +37,7 @@ export default function useInterview(
   const languageRef = useRef("python");
   const router = useRouter();
 
-  const TIME_LIMIT = type === "TIMED" ? secondsInHour / 2 : null;
+  const TIME_LIMIT = type === InterviewType.TIMED ? secondsInHour / 2 : null;
 
   const handleCodeSave = useCallback(
     async (code: string) => {
@@ -199,7 +200,7 @@ export default function useInterview(
         setMessages([
           getMessageObject(
             "model",
-            type === "TIMED" ? INITIAL_MESSAGE_TIMED : INITIAL_MESSAGE_UNTIMED
+            type === InterviewType.TIMED ? INITIAL_MESSAGE_TIMED : INITIAL_MESSAGE_UNTIMED
           ),
         ]);
       }
@@ -238,7 +239,7 @@ export default function useInterview(
   }, [codeRef, messages]);
 
   useEffect(() => {
-    if (type !== "TIMED") return;
+    if (type !== InterviewType.TIMED) return;
 
     if (timer === null && TIME_LIMIT) {
       setTimer(TIME_LIMIT);

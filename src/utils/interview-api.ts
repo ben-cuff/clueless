@@ -1,5 +1,6 @@
 import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
 import { Message } from "@/types/message";
+import { InterviewType } from "@prisma/client";
 import { errorLog } from "./logger";
 
 export const interviewAPI = {
@@ -10,7 +11,7 @@ export const interviewAPI = {
     questionNumber: number,
     code: string,
     codeLanguage: string,
-    type: "TIMED" | "UNTIMED" = "UNTIMED"
+    type: InterviewType = InterviewType.UNTIMED
   ) {
     try {
       const response = await fetch(

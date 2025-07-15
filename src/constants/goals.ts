@@ -5,6 +5,4 @@ const ACTIVITY_FIELD_MAP: Record<GoalType, keyof Activity> = {
   SECOND: "seconds",
 };
 
-const GOAL_TYPES_ARRAY: GoalType[] = ["QUESTION", "SECOND"];
-
-export { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY };
+export { ACTIVITY_FIELD_MAP };
