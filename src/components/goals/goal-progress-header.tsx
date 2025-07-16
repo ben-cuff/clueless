@@ -1,12 +1,16 @@
 import { getDaysLeft } from "@/utils/activities-progress";
+import { Company } from "@prisma/client";
+import CompaniesList from "../companies-list";
 import { CardDescription, CardHeader, CardTitle } from "../ui/card";
 
 export default function GoalProgressHeader({
   beginAt,
   endDate,
+  companies,
 }: {
   beginAt: Date;
   endDate: Date;
+  companies?: Company[];
 }) {
   return (
     <CardHeader>
@@ -17,6 +21,13 @@ export default function GoalProgressHeader({
         <span className="text-xl">
           Days left: {Math.floor(getDaysLeft(endDate))}
         </span>
+        {companies && (
+          <CompaniesList
+            companies={companies}
+            text="Targeted Companies: "
+            className="font-bold"
+          />
+        )}
       </CardDescription>
     </CardHeader>
   );

@@ -32,6 +32,7 @@ export default function GoalProgress() {
           <GoalProgressHeader
             endDate={goal?.endDate ?? new Date()}
             beginAt={goal?.beginAt ?? new Date()}
+            companies={goal?.companies}
           />
           <GoalProgressContent goalProgress={goalProgress} />
         </Card>

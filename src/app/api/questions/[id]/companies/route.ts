@@ -1,4 +1,4 @@
-import { COMPANIES, Company } from "@/constants/companies";
+import { COMPANIES } from "@/constants/companies";
 import { prismaLib } from "@/lib/prisma";
 import { Optional } from "@/types/util";
 import {
@@ -29,7 +29,7 @@ export async function PATCH(
   }
 
   const validCompanies: Optional<string>[] = companies.map(
-    (company: Company) => COMPANIES[company]
+    (company: keyof typeof COMPANIES) => COMPANIES[company]
   );
 
   if (validCompanies.some((company) => company === undefined)) {
