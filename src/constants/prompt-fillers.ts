@@ -1,6 +1,11 @@
 const USER_CODE_INCLUSION_MESSAGE =
   "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n";
 
+const USER_SUBMITTED_CODE_MESSAGE = 'Here is the latest code output:';
+
+const USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT =
+  'The user submitted code, view the code output in the output area';
+
 const INITIAL_MESSAGE_UNTIMED =
   'Welcome to the interview! Before we begin, do you have any questions? ' +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
@@ -61,4 +66,6 @@ export {
   OUT_OF_TIME_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
+  USER_SUBMITTED_CODE_MESSAGE,
+  USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
 };

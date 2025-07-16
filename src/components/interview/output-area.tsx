@@ -1,6 +1,7 @@
 'use client';
 
 import { LanguageOption } from '@/constants/language-options';
+import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
 import useCodeOutput from '@/hooks/use-code-output';
 import { Question_Extended } from '@/types/question';
 import { useContext, useEffect } from 'react';
@@ -26,7 +27,7 @@ export default function OutputArea({
   const isFeedback = useContext(FeedbackContext);
 
   useEffect(() => {
-    const outputMessage = `Here is the latest code output:\n\n${
+    const outputMessage = `${USER_SUBMITTED_CODE_MESSAGE}\n\n${
       output.stdout ? `Output:\n${output.stdout}\n` : ''
     }${output.stderr ? `Errors:\n${output.stderr}\n` : ''}`;
 
