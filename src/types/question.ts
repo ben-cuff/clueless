@@ -1,12 +1,14 @@
+import { Company, Topic } from "@prisma/client";
+
 export interface Question {
   accuracy: number;
-  companies: string[];
+  companies: Company[];
   createdAt: string;
   difficulty: 1 | 2 | 3;
   prompt: string;
   id: number;
   title: string;
-  topics: string[];
+  topics: Topic[];
   updatedAt: string;
   titleSlug: string;
 }

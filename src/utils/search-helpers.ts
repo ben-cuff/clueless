@@ -1,4 +1,4 @@
-import { COMPANIES, Company } from "@/constants/companies";
+import { COMPANIES } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { Optional } from "@/types/util";
@@ -54,7 +54,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
   if (companies) {
     const companyArray: Optional<string>[] = companies
       .split(" ")
-      .map((c) => COMPANIES[c as Company])
+      .map((c) => COMPANIES[c as keyof typeof COMPANIES])
       .filter((c) => c !== undefined);
 
     if (companyArray.length !== 0) {
@@ -107,7 +107,7 @@ function getRawSQLWhereClause(topics = "", difficulty = "", companies = "") {
   if (companies) {
     let companyArray: Optional<string>[] = companies
       .split(" ")
-      .map((c) => COMPANIES[c as Company]);
+      .map((c) => COMPANIES[c as keyof typeof COMPANIES]);
     companyArray = companyArray.filter((c) => c !== undefined);
     if (companyArray.length !== 0) {
       if (whereClause) {

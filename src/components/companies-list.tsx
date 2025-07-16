@@ -3,13 +3,21 @@ import { Question } from "@/types/question";
 
 export default function CompaniesList({
   companies,
+  text,
+  className,
 }: {
   companies: Question["companies"];
+  text?: string;
+  className?: string;
 }) {
   return (
-    <div className="ml-5 font-bold">
+    <div className={className}>
+      {text}
       {companies
-        .map((company: string) => READABLE_COMPANIES[company])
+        .map(
+          (company) =>
+            READABLE_COMPANIES[company as keyof typeof READABLE_COMPANIES]
+        )
         .join(", ")}
     </div>
   );

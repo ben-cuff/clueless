@@ -1,9 +1,9 @@
-import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
 import { DEFAULT_TAKE_SIZE } from "@/constants/take-sizes";
 import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
 import { QuestionWithRowNumber } from "@/types/question";
 import { apiQuestions } from "@/utils/questions-api";
 import { useCallback, useEffect, useState } from "react";
+import useCompanies from "./use-companies";
 import useDebounce from "./use-debouncer";
 
 export default function useQuestions() {
@@ -13,8 +13,8 @@ export default function useQuestions() {
   const [currentPage, setCurrentPage] = useState(1);
   const [topics, setTopics] = useState<TopicInfo[]>();
   const [searchInput, setSearchInput] = useState("");
-  const [companies, setCompanies] = useState<CompanyInfo[]>();
   const [difficulty, setDifficulty] = useState("none");
+  const { companies, handleCompaniesChange } = useCompanies();
 
   const debouncedSearch = useDebounce(searchInput, 500) as string;
 
@@ -79,13 +79,6 @@ export default function useQuestions() {
       selected.includes(topic.readable)
     );
     setTopics(selectedTopics);
-  }, []);
-
-  const handleCompaniesChange = useCallback((selected: string[]) => {
-    const selectedCompanies = COMPANY_LIST.filter((company) =>
-      selected.includes(company.readable)
-    );
-    setCompanies(selectedCompanies);
   }, []);
 
   const handleTakeSizeChange = useCallback((size: number) => {

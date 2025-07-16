@@ -1,7 +1,7 @@
 import { Question } from "@/types/question";
 import { InterviewType } from "@prisma/client";
+import CompaniesList from "../companies-list";
 import DifficultyBadge from "../difficulty-badge";
-import CompaniesList from "./companies-list";
 import LeetcodeLinkImage from "./leetcode-link-image";
 import QuestionCardHeader from "./question-card-header";
 import StartInterviewButton from "./start-interview-button";
@@ -13,7 +13,10 @@ export default function QuestionCard({ question }: { question: Question }) {
   return (
     <QuestionCardHeader title={question.title} questionNumber={question.id}>
       <DifficultyBadge difficulty={question.difficulty} />
-      <CompaniesList companies={question.companies} />
+      <CompaniesList
+        className="font-bold ml-5"
+        companies={question.companies}
+      />
       <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
       <StartInterviewButton questionNumber={question.id} />
       <StartInterviewButton

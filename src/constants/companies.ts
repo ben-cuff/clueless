@@ -1,23 +1,23 @@
+import { Company } from "@prisma/client";
+
 export const COMPANIES = {
-  google: "GOOGLE",
-  amazon: "AMAZON",
-  meta: "META",
-  microsoft: "MICROSOFT",
-  bloomberg: "BLOOMBERG",
-  apple: "APPLE",
-  uber: "UBER",
-  adobe: "ADOBE",
-  tiktok: "TIKTOK",
-  oracle: "ORACLE",
-  linkedin: "LINKEDIN",
-  nvidia: "NVIDIA",
-  roblox: "ROBLOX",
-  intuit: "INTUIT",
+  google: Company.GOOGLE,
+  amazon: Company.AMAZON,
+  meta: Company.META,
+  microsoft: Company.MICROSOFT,
+  bloomberg: Company.BLOOMBERG,
+  apple: Company.APPLE,
+  uber: Company.UBER,
+  adobe: Company.ADOBE,
+  tiktok: Company.TIKTOK,
+  oracle: Company.ORACLE,
+  linkedin: Company.LINKEDIN,
+  nvidia: Company.NVIDIA,
+  roblox: Company.ROBLOX,
+  intuit: Company.INTUIT,
 };
 
-export type Company = keyof typeof COMPANIES;
-
-export const READABLE_COMPANIES: Record<string, string> = {
+export const READABLE_COMPANIES: Record<Company, string> = {
   GOOGLE: "Google",
   AMAZON: "Amazon",
   META: "Meta",
@@ -35,14 +35,14 @@ export const READABLE_COMPANIES: Record<string, string> = {
 };
 
 export interface CompanyInfo {
-  id: Company;
-  db: string;
+  id: string;
+  db: Company;
   readable: string;
 }
 
 export const COMPANY_LIST: CompanyInfo[] = Object.entries(COMPANIES).map(
   ([id, db]) => ({
-    id: id as Company,
+    id: id,
     db,
     readable: READABLE_COMPANIES[db] ?? db,
   })

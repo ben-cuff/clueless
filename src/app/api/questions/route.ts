@@ -1,4 +1,4 @@
-import { COMPANIES, Company } from "@/constants/companies";
+import { COMPANIES } from "@/constants/companies";
 import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
 import { Topic, TOPICS } from "@/constants/topics";
 import { prismaLib } from "@/lib/prisma";
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   }
 
   const validCompanies: Optional<string>[] = companies.map(
-    (company: Company) => COMPANIES[company]
+    (company: CompanyEnum) => COMPANIES[company as keyof typeof COMPANIES]
   );
 
   if (validCompanies.includes(undefined)) {
