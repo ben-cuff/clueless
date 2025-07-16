@@ -1,7 +1,7 @@
-import { Question } from "@/types/question";
-import { apiQuestions } from "@/utils/questions-api";
-import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import { Question } from '@/types/question';
+import { apiQuestions } from '@/utils/questions-api';
+import { useSession } from 'next-auth/react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function useRecommended() {
   const [recommendedQuestions, setRecommendedQuestions] =

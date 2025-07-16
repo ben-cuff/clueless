@@ -1,13 +1,13 @@
-import { monacoThemes } from "@/lib/define-theme";
-import { Theme } from "@/types/theme";
-import { useTheme } from "next-themes";
+import { monacoThemes } from '@/lib/define-theme';
+import { Theme } from '@/types/theme';
+import { useTheme } from 'next-themes';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from '../ui/select';
 
 export default function ThemeSelect({
   handleThemeChange,
@@ -17,7 +17,7 @@ export default function ThemeSelect({
   const { theme: systemTheme } = useTheme();
   return (
     <Select
-      defaultValue={systemTheme === "dark" ? "vs-dark" : "light"}
+      defaultValue={systemTheme === 'dark' ? 'vs-dark' : 'light'}
       onValueChange={handleThemeChange}
     >
       <SelectTrigger>

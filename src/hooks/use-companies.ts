@@ -1,5 +1,5 @@
-import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
-import { useCallback, useState } from "react";
+import { COMPANY_LIST, CompanyInfo } from '@/constants/companies';
+import { useCallback, useState } from 'react';
 
 export default function useCompanies() {
   const [companies, setCompanies] = useState<CompanyInfo[]>();

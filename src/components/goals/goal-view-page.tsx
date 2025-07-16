@@ -1,6 +1,6 @@
-import GoalAddCompany from "./goal-add-company";
-import GoalProgress from "./goal-progress";
-import UpdateGoal from "./update-goal";
+import GoalAddCompany from './goal-add-company';
+import GoalProgress from './goal-progress';
+import UpdateGoal from './update-goal';
 
 export default function GoalViewPage({
   fetchGoal,

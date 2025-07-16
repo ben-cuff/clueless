@@ -1,4 +1,4 @@
-import TabsCalendarContainer from "./tabs-calendar-container";
+import TabsCalendarContainer from './tabs-calendar-container';
 
 export default function UpdateGoal({
   fetchGoal,

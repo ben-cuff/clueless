@@ -1,11 +1,15 @@
-import { LanguageOption, languageOptions, PYTHON_INDEX } from "@/constants/language-options";
+import {
+  LanguageOption,
+  languageOptions,
+  PYTHON_INDEX,
+} from '@/constants/language-options';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from '../ui/select';
 
 export default function LanguagesSelect({
   handleLanguageChange,

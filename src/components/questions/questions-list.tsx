@@ -1,7 +1,7 @@
-import { Question } from "@/types/question";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import QuestionCard from "./question-card";
+import { Question } from '@/types/question';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import QuestionCard from './question-card';
 
 export default function QuestionsList({
   questionsData,

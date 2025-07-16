@@ -1,10 +1,10 @@
-import InterviewLoading from "@/components/interview/interview-loading";
-import InterviewQuestionPage from "@/components/interview/interview-question-page";
-import { Question_Extended } from "@/types/question";
-import { apiQuestions } from "@/utils/questions-api";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { v4 as uuidv4 } from "uuid";
+import InterviewLoading from '@/components/interview/interview-loading';
+import InterviewQuestionPage from '@/components/interview/interview-question-page';
+import { Question_Extended } from '@/types/question';
+import { apiQuestions } from '@/utils/questions-api';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export default async function NewInterviewPage({
   searchParams,
@@ -17,7 +17,7 @@ export default async function NewInterviewPage({
   const randomQuestionId = Math.floor(Math.random() * numberOfQuestions) + 1;
 
   const resolvedSearchParams = await searchParams;
-  const questionNumberParam = resolvedSearchParams["questionNumber"];
+  const questionNumberParam = resolvedSearchParams['questionNumber'];
   const questionNumber = Array.isArray(questionNumberParam)
     ? questionNumberParam[0]
     : questionNumberParam;
@@ -29,7 +29,7 @@ export default async function NewInterviewPage({
   );
 
   if (question == null) {
-    redirect("/interview");
+    redirect('/interview');
   }
 
   return (

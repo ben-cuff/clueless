@@ -1,7 +1,7 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { Message } from "@/types/message";
-import { InterviewType } from "@prisma/client";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { Message } from '@/types/message';
+import { InterviewType } from '@prisma/client';
+import { errorLog } from './logger';
 
 export const interviewAPI = {
   async createOrUpdateInterview(
@@ -17,9 +17,9 @@ export const interviewAPI = {
       const response = await fetch(
         CLUELESS_API_ROUTES.interviewWithUserId(userId),
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             id,
@@ -35,7 +35,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error creating or updating interview: " + error);
+      errorLog('Error creating or updating interview: ' + error);
     }
   },
   async updateCodeForInterview(
@@ -48,9 +48,9 @@ export const interviewAPI = {
       const response = await fetch(
         CLUELESS_API_ROUTES.interviewWithUserIdForCode(userId),
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ id, code, language }),
         }
@@ -59,7 +59,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error updating code for interview: " + error);
+      errorLog('Error updating code for interview: ' + error);
     }
   },
   async getInterview(userId: number, interviewId: string) {
@@ -74,7 +74,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching interview: " + error);
+      errorLog('Error fetching interview: ' + error);
     }
   },
   async getInterviewsByUserId(userId: number) {
@@ -86,7 +86,7 @@ export const interviewAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching interviews by user ID: " + error);
+      errorLog('Error fetching interviews by user ID: ' + error);
     }
   },
   async deleteInterview(userId: number, interviewId: string) {
@@ -97,13 +97,13 @@ export const interviewAPI = {
           interviewId
         ),
         {
-          method: "DELETE",
+          method: 'DELETE',
         }
       );
 
       return { success: true };
     } catch (error) {
-      errorLog("Error deleting interview: " + error);
+      errorLog('Error deleting interview: ' + error);
       return {
         success: false,
       };

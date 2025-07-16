@@ -1,4 +1,4 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
   get200Response,
@@ -7,13 +7,13 @@ import {
   get404Response,
   get409Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { NotificationsAPI } from "@/utils/notifications-api";
-import { GoalType, Prisma } from "@prisma/client";
-import { secondsInHour } from "date-fns/constants";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { NotificationsAPI } from '@/utils/notifications-api';
+import { GoalType, Prisma } from '@prisma/client';
+import { secondsInHour } from 'date-fns/constants';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/options';
 
 export async function POST(
   req: Request,
@@ -23,7 +23,7 @@ export async function POST(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -33,23 +33,23 @@ export async function POST(
   }
 
   const { hours, questions, endDate } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
-      "You must provide either hours or questions, and an end date"
+      'You must provide either hours or questions, and an end date'
     );
   }
 
   if (hours && questions) {
-    return get400Response("You cannot provide both hours and questions");
+    return get400Response('You cannot provide both hours and questions');
   }
 
   const parsedEndDate = new Date(endDate);
 
   if (parsedEndDate <= new Date()) {
-    return get400Response("End date must be in the future");
+    return get400Response('End date must be in the future');
   }
 
   try {
@@ -70,11 +70,11 @@ export async function POST(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002" // Unique constraint failed (duplicate userId)
+      error.code === 'P2002' // Unique constraint failed (duplicate userId)
     ) {
-      return get409Response("Goal already exists for this user");
+      return get409Response('Goal already exists for this user');
     } else {
-      errorLog("Unexpected error: " + error);
+      errorLog('Unexpected error: ' + error);
       return UnknownServerError;
     }
   }
@@ -93,12 +93,12 @@ export async function GET(
     });
 
     if (!goal) {
-      return get404Response("No goal found for this user");
+      return get404Response('No goal found for this user');
     }
 
     return get200Response(goal);
   } catch (error) {
-    errorLog("Unexpected error while getting user goal: " + error);
+    errorLog('Unexpected error while getting user goal: ' + error);
     return UnknownServerError;
   }
 }
@@ -111,7 +111,7 @@ export async function PUT(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -121,23 +121,23 @@ export async function PUT(
   }
 
   const { hours, questions, endDate } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
-      "You must provide either minutes or questions, and an end date"
+      'You must provide either minutes or questions, and an end date'
     );
   }
 
   if (hours && questions) {
-    return get400Response("You cannot provide both hours and questions");
+    return get400Response('You cannot provide both hours and questions');
   }
 
   const parsedEndDate = new Date(endDate);
 
   if (parsedEndDate <= new Date()) {
-    return get400Response("End date must be in the future");
+    return get400Response('End date must be in the future');
   }
 
   try {
@@ -158,11 +158,11 @@ export async function PUT(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025" // Record to update not found
+      error.code === 'P2025' // Record to update not found
     ) {
-      return get400Response("No goal found for this user");
+      return get400Response('No goal found for this user');
     } else {
-      errorLog("Unexpected error while updating user goal: " + error);
+      errorLog('Unexpected error while updating user goal: ' + error);
       return UnknownServerError;
     }
   }
@@ -176,7 +176,7 @@ export async function DELETE(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -194,11 +194,11 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025" // Record to delete not found
+      error.code === 'P2025' // Record to delete not found
     ) {
-      return get400Response("No goal found for this user");
+      return get400Response('No goal found for this user');
     } else {
-      errorLog("Unexpected error while deleting goal: " + error);
+      errorLog('Unexpected error while deleting goal: ' + error);
       return UnknownServerError;
     }
   }

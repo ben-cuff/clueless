@@ -1,11 +1,11 @@
-import { interactionAPI } from "@/utils/interaction-api";
-import { useCallback, useEffect } from "react";
-import useDebounce from "./use-debouncer";
-import { Optional } from "@/types/util";
+import { Optional } from '@/types/util';
+import { interactionAPI } from '@/utils/interaction-api';
+import { useCallback, useEffect } from 'react';
+import useDebounce from './use-debouncer';
 
 export default function useDebouncedInteraction(
   value: Optional<string | number | readonly string[]>,
-  defaultInteractionName: string = "change_in_component",
+  defaultInteractionName: string = 'change_in_component',
   interactionName?: string,
   delay: number = 500
 ) {

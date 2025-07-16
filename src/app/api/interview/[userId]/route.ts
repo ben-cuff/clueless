@@ -1,15 +1,15 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
   get200Response,
   get201Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { NotificationsAPI } from "@/utils/notifications-api";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { NotificationsAPI } from '@/utils/notifications-api';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/options';
 
 export async function POST(
   req: Request,
@@ -19,7 +19,7 @@ export async function POST(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -31,12 +31,12 @@ export async function POST(
   const { id, messages, questionNumber, code, codeLanguage, type } = await req
     .json()
     .catch(() => {
-      return get400Response("Invalid JSON body");
+      return get400Response('Invalid JSON body');
     });
 
   if (!id || !messages || !questionNumber || !code || !codeLanguage) {
     return get400Response(
-      "Missing required fields: id, messages, questionNumber, code, codeLanguage"
+      'Missing required fields: id, messages, questionNumber, code, codeLanguage'
     );
   }
 
@@ -69,7 +69,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(interview) : get200Response(interview);
   } catch (error) {
-    errorLog("Error upserting interview: " + error);
+    errorLog('Error upserting interview: ' + error);
     return UnknownServerError;
   }
 }
@@ -82,7 +82,7 @@ export async function GET(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -94,7 +94,7 @@ export async function GET(
   try {
     const interviews = await prismaLib.interview.findMany({
       where: { userId },
-      orderBy: { updatedAt: "desc" },
+      orderBy: { updatedAt: 'desc' },
       include: {
         question: {
           select: { title: true, difficulty: true },
@@ -104,7 +104,7 @@ export async function GET(
 
     return get200Response(interviews);
   } catch (error) {
-    errorLog("Error fetching interviews: " + error);
+    errorLog('Error fetching interviews: ' + error);
     return UnknownServerError;
   }
 }

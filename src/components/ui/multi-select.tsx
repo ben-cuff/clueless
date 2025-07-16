@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 // inspired/taken from https://medium.com/@codeaprogram/building-a-custom-multi-select-dropdown-in-next-js-with-shadcn-ui-b4574089df27
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import {
   Command,
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { X } from "lucide-react";
-import { useRef, useState } from "react";
+} from '@/components/ui/command';
+import { X } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 export function MultiSelect({
   options,
@@ -50,7 +50,7 @@ export function MultiSelect({
               <button
                 className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === 'Enter') {
                     handleUnselect(option);
                   }
                 }}

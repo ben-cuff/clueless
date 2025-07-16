@@ -1,12 +1,12 @@
-import { COMPANIES } from "@/constants/companies";
-import { DIFFICULTIES, Difficulty } from "@/constants/difficulties";
-import { Topic, TOPICS } from "@/constants/topics";
-import { Optional } from "@/types/util";
+import { COMPANIES } from '@/constants/companies';
+import { DIFFICULTIES, Difficulty } from '@/constants/difficulties';
+import { Topic, TOPICS } from '@/constants/topics';
+import { Optional } from '@/types/util';
 
 function getWhereClause(
-  topics = "",
-  difficulty = "",
-  companies = "",
+  topics = '',
+  difficulty = '',
+  companies = '',
   useRawSQL = true
 ) {
   if (useRawSQL) {
@@ -16,13 +16,13 @@ function getWhereClause(
   }
 }
 
-function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
+function getPrismaWhereClause(companies = '', topics = '', difficulty = '') {
   let whereClause = {};
 
   // Process topics
   if (topics) {
     const topicArray: Optional<string>[] = topics
-      .split(" ")
+      .split(' ')
       .map((t) => TOPICS[t as Topic])
       .filter((t) => t !== undefined);
 
@@ -38,7 +38,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
   // Process difficulty
   if (difficulty) {
     const difficultyArray: Optional<number>[] = difficulty
-      .split(" ")
+      .split(' ')
       .map((d) => DIFFICULTIES[d as Difficulty])
       .filter((d) => d !== undefined);
 
@@ -53,7 +53,7 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
   // Process companies
   if (companies) {
     const companyArray: Optional<string>[] = companies
-      .split(" ")
+      .split(' ')
       .map((c) => COMPANIES[c as keyof typeof COMPANIES])
       .filter((c) => c !== undefined);
 
@@ -68,54 +68,54 @@ function getPrismaWhereClause(companies = "", topics = "", difficulty = "") {
   return whereClause;
 }
 
-function getRawSQLWhereClause(topics = "", difficulty = "", companies = "") {
-  let whereClause = "";
+function getRawSQLWhereClause(topics = '', difficulty = '', companies = '') {
+  let whereClause = '';
 
   // topics should be formatted as a space-separated string of topic keys
   if (topics) {
     let topicArray: Optional<string>[] = topics
-      .split(" ")
+      .split(' ')
       .map((t) => TOPICS[t as Topic]);
     topicArray = topicArray.filter((t) => t !== undefined);
     if (topicArray.length !== 0) {
       if (whereClause) {
-        whereClause += " AND ";
+        whereClause += ' AND ';
       }
       whereClause += `"topics" && ARRAY[${topicArray
         .map((t) => `'${t}'`)
-        .join(",")}]::"Topic"[]`;
+        .join(',')}]::"Topic"[]`;
     }
   }
 
   // difficulty should be formatted as a space-separated string of difficulty levels
   if (difficulty) {
     let difficultyArray: Optional<number>[] = difficulty
-      .split(" ")
+      .split(' ')
       .map((d) => DIFFICULTIES[d as Difficulty]);
     difficultyArray = difficultyArray.filter((d) => d !== undefined);
     if (difficultyArray.length !== 0) {
       if (whereClause) {
-        whereClause += " AND ";
+        whereClause += ' AND ';
       }
       whereClause += `"difficulty" IN (${difficultyArray
         .map((d) => `'${d}'`)
-        .join(",")})`;
+        .join(',')})`;
     }
   }
 
   // companies should be formatted as a space-separated string of company keys
   if (companies) {
     let companyArray: Optional<string>[] = companies
-      .split(" ")
+      .split(' ')
       .map((c) => COMPANIES[c as keyof typeof COMPANIES]);
     companyArray = companyArray.filter((c) => c !== undefined);
     if (companyArray.length !== 0) {
       if (whereClause) {
-        whereClause += " AND ";
+        whereClause += ' AND ';
       }
       whereClause += `"companies" && ARRAY[${companyArray
         .map((c) => `'${c}'`)
-        .join(",")}]::"Company"[]`;
+        .join(',')}]::"Company"[]`;
     }
   }
 
@@ -126,7 +126,7 @@ function getPagination(
   cursor = 0,
   take = 20,
   skip = 0,
-  sortBy = "id",
+  sortBy = 'id',
   useRawSQL = true
 ) {
   if (useRawSQL) {
@@ -136,7 +136,7 @@ function getPagination(
   }
 }
 
-function getRawSQLPagination(cursor = 0, take = 20, skip = 0, sortBy = "id") {
+function getRawSQLPagination(cursor = 0, take = 20, skip = 0, sortBy = 'id') {
   const sqlConfig: {
     where?: string;
     orderBy?: string;
@@ -152,7 +152,7 @@ function getRawSQLPagination(cursor = 0, take = 20, skip = 0, sortBy = "id") {
     }
   }
 
-  if (sortBy === "rank") {
+  if (sortBy === 'rank') {
     sqlConfig.orderBy = `"rank" DESC`;
   } else {
     sqlConfig.orderBy = take < 0 ? `"id" DESC` : `"id" ASC`;
@@ -165,10 +165,10 @@ function getRawSQLPagination(cursor = 0, take = 20, skip = 0, sortBy = "id") {
   sqlConfig.limit = Math.abs(take);
 
   const sql = `
-    ${sqlConfig.where ? `AND ${sqlConfig.where}` : ""}
-    ${sqlConfig.orderBy ? `ORDER BY ${sqlConfig.orderBy}` : ""}
-    ${sqlConfig.offset !== undefined ? `OFFSET ${sqlConfig.offset}` : ""}
-    ${sqlConfig.limit !== undefined ? `LIMIT ${sqlConfig.limit}` : ""}
+    ${sqlConfig.where ? `AND ${sqlConfig.where}` : ''}
+    ${sqlConfig.orderBy ? `ORDER BY ${sqlConfig.orderBy}` : ''}
+    ${sqlConfig.offset !== undefined ? `OFFSET ${sqlConfig.offset}` : ''}
+    ${sqlConfig.limit !== undefined ? `LIMIT ${sqlConfig.limit}` : ''}
   `.trim();
 
   return sql;

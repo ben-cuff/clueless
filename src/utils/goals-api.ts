@@ -1,18 +1,18 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { CompanyInfo } from "@/constants/companies";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { CompanyInfo } from '@/constants/companies';
+import { errorLog } from './logger';
 
 export const GoalsAPI = {
   createGoal: async (
     userId: number,
-    goalType: "hours" | "questions",
+    goalType: 'hours' | 'questions',
     goalValue: number,
     endDate: Date
   ) => {
     const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId), {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         [goalType]: goalValue,
@@ -22,7 +22,7 @@ export const GoalsAPI = {
 
     if (!response.ok) {
       const data = await response.json();
-      alert(`${data.error || "Unable to update goal"}`);
+      alert(`${data.error || 'Unable to update goal'}`);
     }
 
     const data = await response.json();
@@ -32,7 +32,7 @@ export const GoalsAPI = {
   getGoal: async (userId: number) => {
     const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId));
     if (!response.ok) {
-      errorLog("Failed to fetch goal: " + response.statusText);
+      errorLog('Failed to fetch goal: ' + response.statusText);
       return null;
     }
     const data = await response.json();
@@ -40,14 +40,14 @@ export const GoalsAPI = {
   },
   updateGoal: async (
     userId: number,
-    goalType: "hours" | "questions",
+    goalType: 'hours' | 'questions',
     goalValue: number,
     endDate: Date
   ) => {
     const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId), {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         [goalType]: goalValue,
@@ -57,7 +57,7 @@ export const GoalsAPI = {
 
     if (!response.ok) {
       const data = await response.json();
-      alert(`${data.error || "Unable to update goal"}`);
+      alert(`${data.error || 'Unable to update goal'}`);
     }
 
     const data = await response.json();
@@ -69,7 +69,7 @@ export const GoalsAPI = {
       CLUELESS_API_ROUTES.goalProgressWithUserId(userId)
     );
     if (!response.ok) {
-      errorLog("Failed to fetch goal progress: " + response.statusText);
+      errorLog('Failed to fetch goal progress: ' + response.statusText);
       return null;
     }
     const data = await response.json();
@@ -81,16 +81,16 @@ export const GoalsAPI = {
     const response = await fetch(
       CLUELESS_API_ROUTES.goalWithUserIdWithCompany(userId),
       {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ companies: companyEnums }),
       }
     );
 
     if (!response.ok) {
-      errorLog("Failed to update goal companies: " + response.statusText);
+      errorLog('Failed to update goal companies: ' + response.statusText);
       return null;
     }
 

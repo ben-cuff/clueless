@@ -1,4 +1,4 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 
 export const interactionAPI = {
   async addEvent(eventName: string, pathname: string, value?: string) {
@@ -12,9 +12,9 @@ export const interactionAPI = {
     }
 
     const response = await fetch(CLUELESS_API_ROUTES.interactions, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });

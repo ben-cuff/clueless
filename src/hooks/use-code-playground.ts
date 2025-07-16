@@ -1,16 +1,16 @@
-import { UserIdContext } from "@/components/providers/user-id-provider";
+import { UserIdContext } from '@/components/providers/user-id-provider';
 import {
   LanguageOption,
   languageOptions,
   PYTHON_INDEX,
-} from "@/constants/language-options";
-import { defineTheme } from "@/lib/define-theme";
-import { Question_Extended } from "@/types/question";
-import { Theme } from "@/types/theme";
-import { Optional } from "@/types/util";
-import { interviewAPI } from "@/utils/interview-api";
-import { useTheme } from "next-themes";
-import { useCallback, useContext, useEffect, useState } from "react";
+} from '@/constants/language-options';
+import { defineTheme } from '@/lib/define-theme';
+import { Question_Extended } from '@/types/question';
+import { Theme } from '@/types/theme';
+import { Optional } from '@/types/util';
+import { interviewAPI } from '@/utils/interview-api';
+import { useTheme } from 'next-themes';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function useCodePlayground(
   question: Question_Extended,
@@ -19,13 +19,13 @@ export default function useCodePlayground(
   const userId = useContext(UserIdContext);
   const { theme: systemTheme } = useTheme();
   const [theme, setTheme] = useState(
-    systemTheme === "dark" ? "vs-dark" : "light"
+    systemTheme === 'dark' ? 'vs-dark' : 'light'
   );
   const [language, setLanguage] = useState<Optional<LanguageOption>>();
-  const [code, setCode] = useState<string>("");
+  const [code, setCode] = useState<string>('');
 
   const handleThemeChange = useCallback((newTheme: Theme) => {
-    if (["light", "vs-dark"].includes(newTheme)) {
+    if (['light', 'vs-dark'].includes(newTheme)) {
       setTheme(newTheme);
     } else {
       defineTheme(newTheme).then(() => setTheme(newTheme));
@@ -40,7 +40,7 @@ export default function useCodePlayground(
       );
       setCode(
         question.starterCode[language as keyof typeof question.starterCode] ||
-          ""
+          ''
       );
     },
     [question]
@@ -62,7 +62,7 @@ export default function useCodePlayground(
         interviewId
       );
       if (!interview.error) {
-        setCode(interview.code || "");
+        setCode(interview.code || '');
         setLanguage(
           languageOptions.find(
             (lang) => lang.value === interview.codeLanguage?.toLowerCase()

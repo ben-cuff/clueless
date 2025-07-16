@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { toastConfigs } from "@/constants/toast-config";
+import { toastConfigs } from '@/constants/toast-config';
 import {
   NotificationData,
   NotificationItem,
   NotificationType,
-} from "@/types/notifications";
-import { NotificationsAPI } from "@/utils/notifications-api";
-import { millisecondsInMinute, millisecondsInSecond } from "date-fns/constants";
-import { useSession } from "next-auth/react";
-import React, { useCallback, useEffect } from "react";
+} from '@/types/notifications';
+import { NotificationsAPI } from '@/utils/notifications-api';
+import { millisecondsInMinute, millisecondsInSecond } from 'date-fns/constants';
+import { useSession } from 'next-auth/react';
+import React, { useCallback, useEffect } from 'react';
 
 export const NotificationProvider = ({
   children,
@@ -20,7 +20,7 @@ export const NotificationProvider = ({
   const { data: session } = useSession();
 
   const fetchAndNotify = useCallback(async () => {
-    if (Notification.permission === "granted" && session?.user.id) {
+    if (Notification.permission === 'granted' && session?.user.id) {
       const data: NotificationData = await NotificationsAPI.getNotification(
         session?.user.id
       );
@@ -32,7 +32,7 @@ export const NotificationProvider = ({
   }, [session?.user.id]);
 
   useEffect(() => {
-    if (Notification.permission !== "granted") {
+    if (Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
   }, []);

@@ -1,9 +1,9 @@
-import { Message } from "@/types/message";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import { Card } from "../ui/card";
-import ChatInput from "./chat-input";
-import ChatMessages from "./chat-messages";
+import { Message } from '@/types/message';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import { Card } from '../ui/card';
+import ChatInput from './chat-input';
+import ChatMessages from './chat-messages';
 
 export default function ChatArea({
   messages,

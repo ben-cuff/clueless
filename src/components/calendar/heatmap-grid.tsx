@@ -1,4 +1,4 @@
-import { Optional } from "@/types/util";
+import { Optional } from '@/types/util';
 
 export default function HeatmapGrid({
   weeks,
@@ -17,12 +17,12 @@ export default function HeatmapGrid({
             return (
               <div
                 key={dayIndex}
-                title={day ? day.toDateString() : ""}
+                title={day ? day.toDateString() : ''}
                 className="w-3.5 h-3.5 m-0.5 rounded"
                 style={{
                   background: day
                     ? getColor(valueMap.get(day.toDateString()))
-                    : "transparent",
+                    : 'transparent',
                 }}
               />
             );
@@ -35,17 +35,17 @@ export default function HeatmapGrid({
 
 function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
   const COLORS = [
-    "#ebedf0",
-    "#c6e48b",
-    "#7bc96f",
-    "#239a3b",
-    "#196127",
-    "#0e4429",
+    '#ebedf0',
+    '#c6e48b',
+    '#7bc96f',
+    '#239a3b',
+    '#196127',
+    '#0e4429',
   ];
 
   // Extract all numeric values from the map and sort them in ascending order
   const values = Array.from(valueMap.values())
-    .filter((v): v is number => typeof v === "number")
+    .filter((v): v is number => typeof v === 'number')
     .sort((a, b) => a - b);
 
   // gets the value at a given percentile
@@ -56,7 +56,7 @@ function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
 
   const thresholds = [20, 40, 60, 80].map(percentile);
 
-  const getColor = (value: Optional<number> ) => {
+  const getColor = (value: Optional<number>) => {
     switch (true) {
       case value === undefined:
         return COLORS[0];

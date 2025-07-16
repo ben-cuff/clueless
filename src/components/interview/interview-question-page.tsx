@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import CodePlayground from "@/components/interview/code-playground";
-import useInterview from "@/hooks/use-interview";
-import { Question_Extended } from "@/types/question";
-import { InterviewType } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
-import { useContext } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import { FeedbackContext } from "../providers/feedback-provider";
-import Timer from "../timer";
-import EndInterviewButton from "./end-interview-button";
-import FeedbackModal from "./feedback/feedback-modal";
-import InterviewLoading from "./interview-loading";
+import CodePlayground from '@/components/interview/code-playground';
+import useInterview from '@/hooks/use-interview';
+import { Question_Extended } from '@/types/question';
+import { InterviewType } from '@prisma/client';
+import { useSearchParams } from 'next/navigation';
+import { useContext } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import { FeedbackContext } from '../providers/feedback-provider';
+import Timer from '../timer';
+import EndInterviewButton from './end-interview-button';
+import FeedbackModal from './feedback/feedback-modal';
+import InterviewLoading from './interview-loading';
 
 export default function InterviewQuestionPage({
   interviewId,
@@ -22,7 +22,7 @@ export default function InterviewQuestionPage({
   question: Question_Extended;
 }) {
   const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+  const type = searchParams.get('type');
 
   const interviewType =
     type === InterviewType.TIMED || type === InterviewType.UNTIMED

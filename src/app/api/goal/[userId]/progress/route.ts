@@ -1,16 +1,16 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
-} from "@/utils/activities-progress";
-import { ActivityAPI } from "@/utils/activity-api";
+} from '@/utils/activities-progress';
+import { ActivityAPI } from '@/utils/activity-api';
 import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { Activity, Goal, GoalType } from "@prisma/client";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { Activity, Goal, GoalType } from '@prisma/client';
 
 export async function GET(
   req: Request,
@@ -20,7 +20,7 @@ export async function GET(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   let goal;
@@ -30,7 +30,7 @@ export async function GET(
     });
   } catch (error) {
     errorLog(
-      "Unexpected error while getting user progress towards goal: " + error
+      'Unexpected error while getting user progress towards goal: ' + error
     );
     return UnknownServerError;
   }

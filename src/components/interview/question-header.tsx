@@ -1,4 +1,4 @@
-import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
+import { READABLE_DIFFICULTIES } from '@/constants/difficulties';
 
 export default function QuestionHeader({
   title,

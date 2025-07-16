@@ -1,11 +1,11 @@
-import { READABLE_TOPICS } from "@/constants/topics";
-import { Question } from "@/types/question";
-import { Badge } from "../ui/badge";
+import { READABLE_TOPICS } from '@/constants/topics';
+import { Question } from '@/types/question';
+import { Badge } from '../ui/badge';
 
 export default function TopicsBadges({
   topics,
 }: {
-  topics: Question["topics"];
+  topics: Question['topics'];
 }) {
   return (
     <div className="flex flex-wrap gap-2 justify-end w-full">

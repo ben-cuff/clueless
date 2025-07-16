@@ -1,9 +1,9 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
+} from '@/utils/api-responses';
 
 export async function GET(
   req: Request,
@@ -13,7 +13,7 @@ export async function GET(
   const interviewId = resolvedParams.interviewId;
 
   if (!interviewId) {
-    return get400Response("Invalid interview ID");
+    return get400Response('Invalid interview ID');
   }
 
   try {
@@ -22,7 +22,7 @@ export async function GET(
     });
 
     if (!feedback) {
-      return get400Response("Feedback not found");
+      return get400Response('Feedback not found');
     }
     return get200Response(feedback);
   } catch {

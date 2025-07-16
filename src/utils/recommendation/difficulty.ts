@@ -1,5 +1,5 @@
-import { DifficultyEnum } from "@/constants/difficulties";
-import { InterviewWithFeedback } from "@/types/interview";
+import { DifficultyEnum } from '@/constants/difficulties';
+import { InterviewWithFeedback } from '@/types/interview';
 
 function getDifficultyWeights(
   interviews: InterviewWithFeedback[]
@@ -12,7 +12,7 @@ function getDifficultyWeights(
   const difficultyWeights = new Map<DifficultyEnum, number>();
 
   if (struggles.length === 0) {
-    applyDifficultyWeights("default", difficultyWeights, struggleScores);
+    applyDifficultyWeights('default', difficultyWeights, struggleScores);
   } else {
     const scale = 1 / struggles.length;
     for (const diff of struggles) {
@@ -119,7 +119,7 @@ const BOOSTS_AND_WEIGHTS = {
     MEDIUM_BOOST: 0.9,
     HARD_BOOST: 1,
   },
-  ["default"]: {
+  ['default']: {
     EASY_WEIGHT: 1,
     MEDIUM_WEIGHT: 1,
     HARD_WEIGHT: 1,
@@ -130,7 +130,7 @@ const BOOSTS_AND_WEIGHTS = {
 };
 
 function applyDifficultyWeights(
-  difficulty: DifficultyEnum | "default",
+  difficulty: DifficultyEnum | 'default',
   difficultyWeights: Map<DifficultyEnum, number>,
   struggleScores: Record<DifficultyEnum, number>,
   scaler: number = 1

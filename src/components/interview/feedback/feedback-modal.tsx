@@ -1,14 +1,14 @@
-import LoadingSpinner from "@/components/loading-spinner";
-import { Button } from "@/components/ui/button";
+import LoadingSpinner from '@/components/loading-spinner';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import useFeedback from "@/hooks/use-feedback";
-import FeedbackContent from "./feedback-content";
-import FeedbackError from "./feedback-error";
+} from '@/components/ui/dialog';
+import useFeedback from '@/hooks/use-feedback';
+import FeedbackContent from './feedback-content';
+import FeedbackError from './feedback-error';
 
 export default function FeedbackModal({
   interviewId,
@@ -32,7 +32,7 @@ export default function FeedbackModal({
             {isLoading && <LoadingSpinner />}
           </div>
           {!isLoading &&
-            (error !== "" ? (
+            (error !== '' ? (
               <FeedbackError message={error} />
             ) : (
               <FeedbackContent feedback={feedbackContent} />

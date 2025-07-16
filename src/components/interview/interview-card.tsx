@@ -1,11 +1,11 @@
-import { Interview } from "@/types/interview";
-import { InterviewType } from "@prisma/client";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import DifficultyBadge from "../difficulty-badge";
-import { Card } from "../ui/card";
-import InterviewCardButton from "./interview-card-button";
-import InterviewCardDeleteButton from "./interview-card-delete-button";
-import InterviewCardTooltip from "./interview-card-tooltip";
+import { Interview } from '@/types/interview';
+import { InterviewType } from '@prisma/client';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import DifficultyBadge from '../difficulty-badge';
+import { Card } from '../ui/card';
+import InterviewCardButton from './interview-card-button';
+import InterviewCardDeleteButton from './interview-card-delete-button';
+import InterviewCardTooltip from './interview-card-tooltip';
 
 export default function InterviewCard({
   interview,
@@ -29,7 +29,7 @@ export default function InterviewCard({
         <InterviewCardTooltip interview={interview} />
       </div>
       <div className="flex justify-center text-red-500">
-        {interview.type === InterviewType.TIMED && "Timed"}
+        {interview.type === InterviewType.TIMED && 'Timed'}
       </div>
       <div className="flex justify-center w-1/5">
         <InterviewCardButton interview={interview} router={router} />

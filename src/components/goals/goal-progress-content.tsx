@@ -1,15 +1,15 @@
-import { GoalProgress } from "@/types/goal-progress";
-import { GoalType } from "@prisma/client";
-import { secondsInHour } from "date-fns/constants";
-import AnimatedProgressBar from "../ui/animated-progress-bar";
-import { CardContent } from "../ui/card";
+import { GoalProgress } from '@/types/goal-progress';
+import { GoalType } from '@prisma/client';
+import { secondsInHour } from 'date-fns/constants';
+import AnimatedProgressBar from '../ui/animated-progress-bar';
+import { CardContent } from '../ui/card';
 
 export default function GoalProgressContent({
   goalProgress,
 }: {
   goalProgress: GoalProgress;
 }) {
-  let progressText = "";
+  let progressText = '';
   if (goalProgress.goalType === GoalType.QUESTION) {
     progressText = `${goalProgress.totalProgress} / ${goalProgress.targetValue} questions`;
   } else if (goalProgress.goalType === GoalType.SECOND) {

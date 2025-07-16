@@ -1,17 +1,17 @@
-import { Message } from "@/types/message";
-import Markdown from "react-markdown";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { CardContent } from "../ui/card";
-import { ScrollArea } from "../ui/scroll-area";
+import { Message } from '@/types/message';
+import Markdown from 'react-markdown';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { CardContent } from '../ui/card';
+import { ScrollArea } from '../ui/scroll-area';
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
   const messagesWithoutOutput = messages.map((message) =>
-    message.parts[0].text.startsWith("Here is the latest code output:")
+    message.parts[0].text.startsWith('Here is the latest code output:')
       ? {
           ...message,
           parts: [
             {
-              text: "The user submitted code, view the code output in the output area",
+              text: 'The user submitted code, view the code output in the output area',
             },
           ],
         }
@@ -27,12 +27,12 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
               key={idx}
               data-testid={`chat-message-${message.role}-${idx}`}
               className={`flex gap-3 ${
-                message.role === "model" ? "" : "flex-row-reverse"
+                message.role === 'model' ? '' : 'flex-row-reverse'
               }`}
             >
               <Avatar>
                 <AvatarFallback>
-                  {message.role === "model" ? "AI" : "ME"}
+                  {message.role === 'model' ? 'AI' : 'ME'}
                 </AvatarFallback>
               </Avatar>
               <div className="rounded-lg p-4 max-w-120 bg-muted">

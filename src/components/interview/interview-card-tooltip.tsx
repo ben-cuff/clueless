@@ -1,5 +1,5 @@
-import { Interview } from "@/types/interview";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Interview } from '@/types/interview';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 export default function InterviewCardTooltip({
   interview,

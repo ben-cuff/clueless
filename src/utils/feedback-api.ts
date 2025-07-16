@@ -1,7 +1,7 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { FEEDBACK_MESSAGE_TEXT } from "@/constants/prompt-fillers";
-import { interviewAPI } from "./interview-api";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { FEEDBACK_MESSAGE_TEXT } from '@/constants/prompt-fillers';
+import { interviewAPI } from './interview-api';
+import { errorLog } from './logger';
 
 export const feedbackAPI = {
   async getFeedback(interviewId: string) {
@@ -13,16 +13,16 @@ export const feedbackAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching feedback: " + error);
+      errorLog('Error fetching feedback: ' + error);
       return null;
     }
   },
   async createFeedback(userId: number, interviewId: string, feedback: string) {
     try {
       const response = await fetch(CLUELESS_API_ROUTES.feedback, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userId, feedback, interviewId }),
       });
@@ -30,13 +30,13 @@ export const feedbackAPI = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error creating feedback: " + error);
+      errorLog('Error creating feedback: ' + error);
       return null;
     }
   },
   getGeminiResponse: async (interviewId: string, userId: number) => {
     const systemMessage = {
-      role: "model",
+      role: 'model',
       parts: [
         {
           text: FEEDBACK_MESSAGE_TEXT,
@@ -47,14 +47,14 @@ export const feedbackAPI = {
     const interview = await interviewAPI.getInterview(userId, interviewId);
 
     if (interview.error) {
-      throw new Error("Interview not found");
+      throw new Error('Interview not found');
     }
 
     const messages = interview?.messages || [];
-    const finalCode = interview?.code || "";
+    const finalCode = interview?.code || '';
 
     const codeMessage = {
-      role: "user",
+      role: 'user',
       parts: [
         {
           text: `This is the state of the users code at the end of the interview: ${finalCode}`,
@@ -69,9 +69,9 @@ export const feedbackAPI = {
     ];
 
     const response = await fetch(CLUELESS_API_ROUTES.chat, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         messages: newMessagesWithSystemAndUser,
@@ -80,7 +80,7 @@ export const feedbackAPI = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch Gemini response");
+      throw new Error('Failed to fetch Gemini response');
     }
 
     return response;

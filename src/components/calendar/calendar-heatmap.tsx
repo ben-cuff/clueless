@@ -1,14 +1,14 @@
-import { ActivityForHeatmap } from "@/types/activity";
-import { Optional } from "@/types/util";
-import { daysInWeek, daysInYear } from "date-fns/constants";
-import HeatmapGrid from "./heatmap-grid";
-import MonthLabels from "./month-labels";
+import { ActivityForHeatmap } from '@/types/activity';
+import { Optional } from '@/types/util';
+import { daysInWeek, daysInYear } from 'date-fns/constants';
+import HeatmapGrid from './heatmap-grid';
+import MonthLabels from './month-labels';
 
 export default function CalendarHeatmap({
   dateValues,
   numDays = daysInYear,
   showMonthLabels = true,
-  title = "Heatmap",
+  title = 'Heatmap',
 }: {
   dateValues: ActivityForHeatmap[];
   numDays?: number;

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { COMPANY_LIST } from "@/constants/companies";
-import useAddCompanyGoal from "@/hooks/use-add-company-goal";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
-import { MultiSelect } from "../ui/multi-select";
+import { COMPANY_LIST } from '@/constants/companies';
+import useAddCompanyGoal from '@/hooks/use-add-company-goal';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { MultiSelect } from '../ui/multi-select';
 
 export default function GoalAddCompany({
   fetchGoal,

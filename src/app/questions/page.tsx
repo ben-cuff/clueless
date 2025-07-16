@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { NotificationProvider } from "@/components/providers/notifications-provider";
-import QuestionsHeader from "@/components/questions/questions-header";
-import QuestionsList from "@/components/questions/questions-list";
-import QuestionsLoading from "@/components/questions/questions-loading";
-import QuestionsPagination from "@/components/questions/questions-pagination";
-import RecommendedQuestions from "@/components/questions/recommended/recommended-questions";
-import useQuestions from "@/hooks/use-questions";
+import { NotificationProvider } from '@/components/providers/notifications-provider';
+import QuestionsHeader from '@/components/questions/questions-header';
+import QuestionsList from '@/components/questions/questions-list';
+import QuestionsLoading from '@/components/questions/questions-loading';
+import QuestionsPagination from '@/components/questions/questions-pagination';
+import RecommendedQuestions from '@/components/questions/recommended/recommended-questions';
+import useQuestions from '@/hooks/use-questions';
 
 export default function QuestionsPage() {
   const {

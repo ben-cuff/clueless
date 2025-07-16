@@ -1,4 +1,4 @@
-import { UserIdContext } from "@/components/providers/user-id-provider";
+import { UserIdContext } from '@/components/providers/user-id-provider';
 import {
   END_INTERVIEW_TEXT,
   INITIAL_MESSAGE_TIMED,
@@ -7,20 +7,20 @@ import {
   NUDGE_MESSAGE,
   OUT_OF_TIME_MESSAGE,
   USER_CODE_INCLUSION_MESSAGE,
-} from "@/constants/prompt-fillers";
-import { Message } from "@/types/message";
-import { Nullable } from "@/types/util";
-import { getMessageObject } from "@/utils/ai-message";
-import { chatAPI } from "@/utils/chat-api";
-import { interviewAPI } from "@/utils/interview-api";
-import { InterviewType } from "@prisma/client";
+} from '@/constants/prompt-fillers';
+import { Message } from '@/types/message';
+import { Nullable } from '@/types/util';
+import { getMessageObject } from '@/utils/ai-message';
+import { chatAPI } from '@/utils/chat-api';
+import { interviewAPI } from '@/utils/interview-api';
+import { InterviewType } from '@prisma/client';
 import {
   millisecondsInMinute,
   millisecondsInSecond,
   secondsInHour,
-} from "date-fns/constants";
-import { useRouter } from "next/navigation";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+} from 'date-fns/constants';
+import { useRouter } from 'next/navigation';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 export default function useInterview(
   interviewId: string,
@@ -32,9 +32,9 @@ export default function useInterview(
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [timer, setTimer] = useState<Nullable<number>>(null);
   const userId = useContext(UserIdContext);
-  const codeRef = useRef("");
+  const codeRef = useRef('');
   const hasMounted = useRef(false);
-  const languageRef = useRef("python");
+  const languageRef = useRef('python');
   const router = useRouter();
 
   const TIME_LIMIT = type === InterviewType.TIMED ? secondsInHour / 2 : null;
@@ -53,7 +53,7 @@ export default function useInterview(
   );
 
   const addUserMessage = useCallback((message: string) => {
-    const userMessage: Message = getMessageObject("user", message);
+    const userMessage: Message = getMessageObject('user', message);
     setMessages((prev) => [...(prev ?? []), userMessage]);
     return userMessage;
   }, []);
@@ -83,7 +83,7 @@ export default function useInterview(
           const updated = [...(prev ?? [])];
 
           const newMessageObject = getMessageObject(
-            "model",
+            'model',
             MODEL_ERROR_MESSAGE
           );
           if (updated.length === 0) {
@@ -97,13 +97,13 @@ export default function useInterview(
       }
 
       if (!response || !response.body) {
-        alert("An unexpected error occurred");
+        alert('An unexpected error occurred');
         return;
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let content = "";
+      let content = '';
 
       setIsStreaming(true);
       let done = false;
@@ -136,7 +136,7 @@ export default function useInterview(
       const userMessage = addUserMessage(message);
 
       // adds a placeholder for the model's response
-      setMessages((prev) => [...(prev ?? []), getMessageObject("model", "")]);
+      setMessages((prev) => [...(prev ?? []), getMessageObject('model', '')]);
 
       await streamModelResponse(userMessage);
     },
@@ -199,8 +199,10 @@ export default function useInterview(
       } else {
         setMessages([
           getMessageObject(
-            "model",
-            type === InterviewType.TIMED ? INITIAL_MESSAGE_TIMED : INITIAL_MESSAGE_UNTIMED
+            'model',
+            type === InterviewType.TIMED
+              ? INITIAL_MESSAGE_TIMED
+              : INITIAL_MESSAGE_UNTIMED
           ),
         ]);
       }
@@ -227,7 +229,7 @@ export default function useInterview(
       if (areCodeAndMessagesUnchanged && !isPreviousMessageNudge) {
         setMessages((prev) => [
           ...(prev ?? []),
-          getMessageObject("model", NUDGE_MESSAGE),
+          getMessageObject('model', NUDGE_MESSAGE),
         ]);
       } else {
         prevCode = codeRef.current;
@@ -249,7 +251,7 @@ export default function useInterview(
     if (timer === 0) {
       setMessages((prev) => [
         ...(prev ?? []),
-        getMessageObject("model", OUT_OF_TIME_MESSAGE),
+        getMessageObject('model', OUT_OF_TIME_MESSAGE),
       ]);
       handleEndInterview();
       return;

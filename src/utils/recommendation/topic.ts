@@ -1,5 +1,5 @@
-import { InterviewWithFeedback } from "@/types/interview";
-import { Topic } from "@prisma/client";
+import { InterviewWithFeedback } from '@/types/interview';
+import { Topic } from '@prisma/client';
 
 /**  ["Arrays", "Trees"] feedbackNumber: 2
  *   ["Dynamic Programming", "Arrays"] feedbackNumber: 3

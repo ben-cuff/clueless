@@ -1,10 +1,10 @@
-import { TAKE_SIZES } from "@/constants/take-sizes";
+import { TAKE_SIZES } from '@/constants/take-sizes';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from '../ui/dropdown-menu';
 
 export default function PaginationDropdown({
   takeSize,
@@ -21,7 +21,7 @@ export default function PaginationDropdown({
           <DropdownMenuItem
             key={size}
             onSelect={() => handleTakeSizeChange(size)}
-            className={takeSize === size ? "font-bold" : ""}
+            className={takeSize === size ? 'font-bold' : ''}
           >
             {size}
           </DropdownMenuItem>

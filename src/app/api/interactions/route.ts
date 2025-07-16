@@ -1,8 +1,8 @@
-import { cluelessInteractionsLib } from "@/lib/interactions";
-import { get200Response, get400Response } from "@/utils/api-responses";
-import type { Prisma as CluelessPrisma } from "clueless-interactions/dist/generated/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
+import { cluelessInteractionsLib } from '@/lib/interactions';
+import { get200Response, get400Response } from '@/utils/api-responses';
+import type { Prisma as CluelessPrisma } from 'clueless-interactions/dist/generated/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -10,11 +10,11 @@ export async function POST(req: Request) {
   const userId = session?.user.id;
 
   const { pathname, eventName, value } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!eventName) {
-    return get400Response("Missing eventName in request body");
+    return get400Response('Missing eventName in request body');
   }
 
   const interaction = await cluelessInteractionsLib.addEvent(eventName, {
@@ -31,31 +31,31 @@ export async function GET(req: Request) {
   const filters: InteractionFilters = {};
 
   // example: ?event=textarea_change+code_editor_change
-  const eventParam = url.searchParams.get("event");
+  const eventParam = url.searchParams.get('event');
   if (eventParam) {
-    filters.event = eventParam.split(" ").map((e) => e.trim());
+    filters.event = eventParam.split(' ').map((e) => e.trim());
   }
 
   // example: ?userId=1
-  const userId = Number(url.searchParams.get("userId"));
+  const userId = Number(url.searchParams.get('userId'));
   if (userId) {
     filters.context = [
       {
-        contextField: "userId",
+        contextField: 'userId',
         contextValue: userId,
       },
     ];
   }
 
   // example: ?contextField=pathname&contextValue=/interview/new&operation=string_starts_with
-  const contextField = url.searchParams.getAll("contextField");
-  const contextValue = url.searchParams.getAll("contextValue");
-  const operation = url.searchParams.getAll("operation");
+  const contextField = url.searchParams.getAll('contextField');
+  const contextValue = url.searchParams.getAll('contextValue');
+  const operation = url.searchParams.getAll('operation');
 
   if (contextField.length > 0 && contextValue.length > 0) {
     if (contextField.length !== contextValue.length) {
       return get400Response(
-        "contextField and contextValue must have the same length"
+        'contextField and contextValue must have the same length'
       );
     }
 

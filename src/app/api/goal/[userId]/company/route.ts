@@ -1,14 +1,14 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { prismaLib } from "@/lib/prisma";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { Company, Prisma } from "@prisma/client";
-import { getServerSession } from "next-auth";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { Company, Prisma } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 
 export async function PATCH(
   req: Request,
@@ -18,7 +18,7 @@ export async function PATCH(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -31,17 +31,17 @@ export async function PATCH(
   try {
     ({ companies } = await req.json());
   } catch {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   }
 
   if (!Array.isArray(companies) || companies.length === 0) {
-    return get400Response("You must provide a non-empty companies array");
+    return get400Response('You must provide a non-empty companies array');
   }
 
   const validCompanies = Object.values(Company);
 
   if (companies.some((company) => !validCompanies.includes(company))) {
-    return get400Response("One or more companies are invalid");
+    return get400Response('One or more companies are invalid');
   }
 
   try {
@@ -54,11 +54,11 @@ export async function PATCH(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
+      error.code === 'P2025'
     ) {
-      return get400Response("No user found for this userId");
+      return get400Response('No user found for this userId');
     } else {
-      errorLog("Unexpected error while updating user companies: " + error);
+      errorLog('Unexpected error while updating user companies: ' + error);
       return UnknownServerError;
     }
   }

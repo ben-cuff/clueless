@@ -1,4 +1,4 @@
-import { Company } from "@prisma/client";
+import { Company } from '@prisma/client';
 
 export const COMPANIES = {
   google: Company.GOOGLE,
@@ -18,20 +18,20 @@ export const COMPANIES = {
 };
 
 export const READABLE_COMPANIES: Record<Company, string> = {
-  GOOGLE: "Google",
-  AMAZON: "Amazon",
-  META: "Meta",
-  MICROSOFT: "Microsoft",
-  BLOOMBERG: "Bloomberg",
-  APPLE: "Apple",
-  UBER: "Uber",
-  ADOBE: "Adobe",
-  TIKTOK: "TikTok",
-  ORACLE: "Oracle",
-  LINKEDIN: "LinkedIn",
-  NVIDIA: "Nvidia",
-  ROBLOX: "Roblox",
-  INTUIT: "Intuit",
+  GOOGLE: 'Google',
+  AMAZON: 'Amazon',
+  META: 'Meta',
+  MICROSOFT: 'Microsoft',
+  BLOOMBERG: 'Bloomberg',
+  APPLE: 'Apple',
+  UBER: 'Uber',
+  ADOBE: 'Adobe',
+  TIKTOK: 'TikTok',
+  ORACLE: 'Oracle',
+  LINKEDIN: 'LinkedIn',
+  NVIDIA: 'Nvidia',
+  ROBLOX: 'Roblox',
+  INTUIT: 'Intuit',
 };
 
 export interface CompanyInfo {

@@ -1,5 +1,5 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { errorLog } from './logger';
 
 export const apiQuestions = {
   async getQuestions(
@@ -14,23 +14,23 @@ export const apiQuestions = {
       const params = new URLSearchParams();
 
       if (topics && topics.length > 0) {
-        params.append("topics", topics.join(" "));
+        params.append('topics', topics.join(' '));
       }
       if (difficulty && difficulty.length > 0) {
-        params.append("difficulty", difficulty.join(" "));
+        params.append('difficulty', difficulty.join(' '));
       }
       if (companies && companies.length > 0) {
-        params.append("companies", companies.join(" "));
+        params.append('companies', companies.join(' '));
       }
       if (cursor) {
-        params.append("cursor", cursor.toString());
+        params.append('cursor', cursor.toString());
       }
-      if (take && typeof take === "number") {
-        params.append("take", take.toString());
+      if (take && typeof take === 'number') {
+        params.append('take', take.toString());
       }
-      if (query && query.trim() !== "") {
-        params.append("query", query);
-        params.append("sortBy", "rank");
+      if (query && query.trim() !== '') {
+        params.append('query', query);
+        params.append('sortBy', 'rank');
       }
 
       const response = await fetch(CLUELESS_API_ROUTES.questionsSearch(params));
@@ -38,19 +38,19 @@ export const apiQuestions = {
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching questions: " + error);
+      errorLog('Error fetching questions: ' + error);
     }
   },
   async getQuestionById(id: number) {
     try {
       const response = await fetch(CLUELESS_API_ROUTES.questionsById(id), {
-        method: "GET",
+        method: 'GET',
       });
 
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching question by ID: " + error);
+      errorLog('Error fetching question by ID: ' + error);
     }
   },
   async getRecommendedQuestions(userId: number) {
@@ -58,14 +58,14 @@ export const apiQuestions = {
       const response = await fetch(
         CLUELESS_API_ROUTES.recommendedQuestions(userId),
         {
-          method: "GET",
+          method: 'GET',
         }
       );
 
       const data = await response.json();
       return data;
     } catch (error) {
-      errorLog("Error fetching recommended questions: " + error);
+      errorLog('Error fetching recommended questions: ' + error);
     }
   },
 };

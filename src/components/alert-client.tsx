@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export default function AlertClient({ message }: { message: string }) {
   useEffect(() => {
-    if (message && message.trim() != "") {
+    if (message && message.trim() != '') {
       alert(message);
     }
   }, [message]);

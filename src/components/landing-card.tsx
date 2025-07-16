@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
+import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
 
 export default function LandingCard() {
   const router = useRouter();
@@ -15,14 +15,14 @@ export default function LandingCard() {
         <div className="flex flex-col space-y-3">
           <Button
             onClick={() => {
-              router.push("/login");
+              router.push('/login');
             }}
           >
             Login
           </Button>
           <Button
             onClick={() => {
-              router.push("/register");
+              router.push('/register');
             }}
           >
             Sign Up

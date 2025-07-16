@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import useChatInput from "@/hooks/use-chat-input";
-import { useContext } from "react";
-import { FeedbackContext } from "../providers/feedback-provider";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
+import useChatInput from '@/hooks/use-chat-input';
+import { useContext } from 'react';
+import { FeedbackContext } from '../providers/feedback-provider';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
 
 export default function ChatInput({
   handleMessageSubmit,

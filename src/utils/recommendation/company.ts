@@ -1,6 +1,6 @@
-import { InterviewWithFeedback } from "@/types/interview";
-import { Nullable } from "@/types/util";
-import { Company, Goal } from "@prisma/client";
+import { InterviewWithFeedback } from '@/types/interview';
+import { Nullable } from '@/types/util';
+import { Company, Goal } from '@prisma/client';
 
 function getCompanyWeights(
   goal: Nullable<Goal>,

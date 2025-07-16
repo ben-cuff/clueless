@@ -1,11 +1,11 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 
 export const AccountAPI = {
   createAccount: async (username: string, password: string) => {
     const response = await fetch(CLUELESS_API_ROUTES.createAccount, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         username: username,
@@ -23,9 +23,9 @@ export const AccountAPI = {
     const response = await fetch(
       CLUELESS_API_ROUTES.accountWithUserId(userId),
       {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );

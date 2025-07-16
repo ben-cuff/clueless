@@ -1,7 +1,7 @@
-import { GoalsAPI } from "@/utils/goals-api";
-import { useSession } from "next-auth/react";
-import { useCallback } from "react";
-import useCompanies from "./use-companies";
+import { GoalsAPI } from '@/utils/goals-api';
+import { useSession } from 'next-auth/react';
+import { useCallback } from 'react';
+import useCompanies from './use-companies';
 
 export default function useAddCompanyGoal(fetchGoal: () => Promise<void>) {
   const { companies, handleCompaniesChange } = useCompanies();

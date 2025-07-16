@@ -1,6 +1,6 @@
-import { Question } from "@/types/question";
-import PaginationDropdown from "./pagination-dropdown";
-import PaginationSelect from "./pagination-select";
+import { Question } from '@/types/question';
+import PaginationDropdown from './pagination-dropdown';
+import PaginationSelect from './pagination-select';
 
 export default function QuestionsPagination({
   currentPage,

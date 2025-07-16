@@ -1,4 +1,4 @@
-import { GoalType } from "@prisma/client";
+import { GoalType } from '@prisma/client';
 
 export type GoalProgress = {
   timeProgressPercentage: number;

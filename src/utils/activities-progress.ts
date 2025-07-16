@@ -1,5 +1,5 @@
-import { Activity } from "@prisma/client";
-import { millisecondsInDay } from "date-fns/constants";
+import { Activity } from '@prisma/client';
+import { millisecondsInDay } from 'date-fns/constants';
 
 function filterActivitiesBeforeBeginAt(
   activities: Activity[],

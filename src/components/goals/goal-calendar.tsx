@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Dispatch, SetStateAction } from "react";
-import { DateRange } from "react-day-picker";
-import { Calendar } from "../ui/calendar";
+import { Dispatch, SetStateAction } from 'react';
+import { DateRange } from 'react-day-picker';
+import { Calendar } from '../ui/calendar';
 
 export default function GoalCalendar({
   dateRange,

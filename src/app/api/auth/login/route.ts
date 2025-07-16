@@ -1,20 +1,20 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   get200Response,
   get400Response,
   get401Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import argon2 from "argon2";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import argon2 from 'argon2';
 
 export async function POST(req: Request) {
   const { username, password } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!username || !password) {
-    return get400Response("Username and password are required");
+    return get400Response('Username and password are required');
   }
 
   try {
@@ -23,21 +23,21 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      return get401Response("Username or password incorrect");
+      return get401Response('Username or password incorrect');
     }
 
     const isValid = await argon2.verify(user.hashedPassword, password);
 
     if (isValid) {
       return get200Response({
-        message: "Login successful",
+        message: 'Login successful',
         user,
       });
     } else {
-      return get401Response("Username or password incorrect");
+      return get401Response('Username or password incorrect');
     }
   } catch (error) {
-    errorLog("Error during user login: " + error);
+    errorLog('Error during user login: ' + error);
     return UnknownServerError;
   }
 }

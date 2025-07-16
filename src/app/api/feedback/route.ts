@@ -1,24 +1,24 @@
-import { prismaLib } from "@/lib/prisma";
-import { ActivityAPI } from "@/utils/activity-api";
+import { prismaLib } from '@/lib/prisma';
+import { ActivityAPI } from '@/utils/activity-api';
 import {
   ForbiddenError,
   get201Response,
   get400Response,
   get409Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { NotificationsAPI } from "@/utils/notifications-api";
-import { Prisma } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
+} from '@/utils/api-responses';
+import { NotificationsAPI } from '@/utils/notifications-api';
+import { Prisma } from '@prisma/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function POST(req: Request) {
   const { userId, interviewId, feedback } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!interviewId || !feedback) {
-    return get400Response("Missing required fields:  interviewId, feedback");
+    return get400Response('Missing required fields:  interviewId, feedback');
   }
 
   const session = await getServerSession(authOptions);
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   });
 
   if (!interview) {
-    return get400Response("Interview not found");
+    return get400Response('Interview not found');
   }
 
   const feedbackNumber = getFeedbackNumberFromFeedback(feedback);
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       },
     });
 
-    ActivityAPI.updateActivity(userId, "questions");
+    ActivityAPI.updateActivity(userId, 'questions');
 
     NotificationsAPI.postNotification(userId);
 
@@ -61,9 +61,9 @@ export async function POST(req: Request) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002" // Unique constraint failed on the feedback entry
+      error.code === 'P2002' // Unique constraint failed on the feedback entry
     ) {
-      return get409Response("Feedback for this interview already exists.");
+      return get409Response('Feedback for this interview already exists.');
     } else {
       return UnknownServerError;
     }
@@ -74,12 +74,12 @@ const getFeedbackNumberFromFeedback = (feedback: string) => {
   const lowerFeedback = feedback.toLowerCase();
 
   const feedbackRatings = [
-    { pattern: "strong hire", value: 5 },
-    { pattern: "strong no-hire", value: 0 },
-    { pattern: "lean hire", value: 3 },
-    { pattern: "lean no-hire", value: 2 },
-    { pattern: "no-hire", value: 1 },
-    { pattern: "hire", value: 4 },
+    { pattern: 'strong hire', value: 5 },
+    { pattern: 'strong no-hire', value: 0 },
+    { pattern: 'lean hire', value: 3 },
+    { pattern: 'lean no-hire', value: 2 },
+    { pattern: 'no-hire', value: 1 },
+    { pattern: 'hire', value: 4 },
   ];
 
   for (const { pattern, value } of feedbackRatings) {

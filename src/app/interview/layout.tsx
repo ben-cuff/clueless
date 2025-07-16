@@ -1,5 +1,5 @@
-import RouteProtector from "@/components/route-protector";
-import React from "react";
+import RouteProtector from '@/components/route-protector';
+import React from 'react';
 
 export default function InterviewLayout({
   children,

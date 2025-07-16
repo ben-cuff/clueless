@@ -1,9 +1,9 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { Nullable } from "@/types/util";
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { Nullable } from '@/types/util';
+import { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id?: number;
@@ -21,16 +21,16 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "username" },
-        password: { label: "Password", type: "password" },
+        username: { label: 'Username', type: 'username' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const res = await fetch(CLUELESS_API_ROUTES.login, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(credentials),
         });
@@ -62,6 +62,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
 };

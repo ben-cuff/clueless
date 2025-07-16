@@ -1,10 +1,10 @@
-import ErrorFallback from "@/components/error-fallback";
-import useRecommended from "@/hooks/use-recommended";
-import { ErrorBoundary } from "react-error-boundary";
-import QuestionsList from "../questions-list";
-import QuestionsLoading from "../questions-loading";
-import RecommendedHeader from "./recommended-header";
-import ToggleRecommendedButton from "./toggle-recommended-button";
+import ErrorFallback from '@/components/error-fallback';
+import useRecommended from '@/hooks/use-recommended';
+import { ErrorBoundary } from 'react-error-boundary';
+import QuestionsList from '../questions-list';
+import QuestionsLoading from '../questions-loading';
+import RecommendedHeader from './recommended-header';
+import ToggleRecommendedButton from './toggle-recommended-button';
 
 export default function RecommendedQuestions() {
   const {

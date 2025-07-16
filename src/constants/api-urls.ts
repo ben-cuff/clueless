@@ -1,5 +1,5 @@
 const judge0_api_url =
-  "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true";
+  'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

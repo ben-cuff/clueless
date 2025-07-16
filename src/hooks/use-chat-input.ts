@@ -1,20 +1,20 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 export default function useChatInput(
   handleMessageSubmit: (message: string) => Promise<void>
 ) {
   const [isDisabled, setIsDisabled] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const handleSubmit = useCallback(async () => {
-    if (!message || message.trim() === "") {
+    if (!message || message.trim() === '') {
       return;
     }
 
     setIsDisabled(true);
     await handleMessageSubmit(message);
     setIsDisabled(false);
-    setMessage("");
+    setMessage('');
   }, [handleMessageSubmit, message]);
 
   return {
