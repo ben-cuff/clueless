@@ -33,8 +33,6 @@ export async function GET(
     });
 
     // if the latest activity is completed, then we know we are on a new day
-    // so we should update the activity for seconds
-    // this will ensure that
     if (activities[0]?.completed) {
       const mostRecentActivity = await ActivityAPI.updateActivity(
         userId,
