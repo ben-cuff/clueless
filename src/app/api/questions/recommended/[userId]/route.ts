@@ -9,8 +9,9 @@ import {
   get200Response,
   get400Response,
 } from "@/utils/api-responses";
+import { debugLog } from "@/utils/logger";
 import { Company, Topic } from "@prisma/client";
-import { millisecondsInWeek, secondsInHour } from "date-fns/constants";
+import { millisecondsInWeek } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 
 type InterviewWithFeedback = {
@@ -31,36 +32,36 @@ type InterviewWithFeedback = {
 
 const BOOSTS_AND_WEIGHTS = {
   [DifficultyEnum.EASY]: {
-    EASY_WEIGHT: 0.5,
-    MEDIUM_WEIGHT: 0.3,
-    HARD_WEIGHT: 0.2,
+    EASY_WEIGHT: 1,
+    MEDIUM_WEIGHT: 0.9,
+    HARD_WEIGHT: 0.5,
     EASY_BOOST: 1,
-    MEDIUM_BOOST: 0.5,
-    HARD_BOOST: 0,
+    MEDIUM_BOOST: 0.8,
+    HARD_BOOST: 0.6,
   },
   [DifficultyEnum.MEDIUM]: {
-    EASY_WEIGHT: 0.3,
-    MEDIUM_WEIGHT: 0.5,
-    HARD_WEIGHT: 0.2,
-    EASY_BOOST: 0.5,
+    EASY_WEIGHT: 0.9,
+    MEDIUM_WEIGHT: 1,
+    HARD_WEIGHT: 0.8,
+    EASY_BOOST: 0.9,
     MEDIUM_BOOST: 1,
-    HARD_BOOST: 0.2,
+    HARD_BOOST: 0.9,
   },
   [DifficultyEnum.HARD]: {
-    EASY_WEIGHT: 0.1,
-    MEDIUM_WEIGHT: 0.2,
-    HARD_WEIGHT: 0.5,
-    EASY_BOOST: 0,
-    MEDIUM_BOOST: 0.5,
+    EASY_WEIGHT: 0.5,
+    MEDIUM_WEIGHT: 0.9,
+    HARD_WEIGHT: 1,
+    EASY_BOOST: 0.8,
+    MEDIUM_BOOST: 0.9,
     HARD_BOOST: 1,
   },
   ["default"]: {
-    EASY_WEIGHT: 0.2,
-    MEDIUM_WEIGHT: 0.3,
-    HARD_WEIGHT: 0.5,
-    EASY_BOOST: 0.5,
-    MEDIUM_BOOST: 0.5,
-    HARD_BOOST: 0.7,
+    EASY_WEIGHT: 1,
+    MEDIUM_WEIGHT: 1,
+    HARD_WEIGHT: 1,
+    EASY_BOOST: 1,
+    MEDIUM_BOOST: 1,
+    HARD_BOOST: 1,
   },
 };
 
@@ -85,7 +86,7 @@ export async function GET(
 
   const cachedData = await redisLib.get(cacheKey);
   if (cachedData) {
-    return get200Response(JSON.parse(cachedData));
+    //return get200Response(JSON.parse(cachedData));
   }
 
   const interviews: InterviewWithFeedback[] =
@@ -107,6 +108,8 @@ export async function GET(
       },
     });
 
+  const NUM_RANDOM_QUESTIONS = 1000;
+
   // prisma does not support random ordering directly, so we use a raw query
   const questions: Question[] = await prismaLib.$queryRawUnsafe(
     `SELECT
@@ -117,14 +120,14 @@ export async function GET(
         "topics",
         "companies",
         "titleSlug" 
-       FROM "Question" ORDER BY RANDOM() LIMIT 500;`
+       FROM "Question" ORDER BY RANDOM() LIMIT ${NUM_RANDOM_QUESTIONS};`
   );
 
   const recommendedQuestions = getRecommendedQuestions(interviews, questions);
 
-  redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
-    EX: secondsInHour / 2, // cache for half an hour
-  });
+  // redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
+  //   EX: secondsInHour / 2, // cache for half an hour
+  // });
 
   return get200Response(recommendedQuestions);
 }
@@ -250,30 +253,27 @@ function getDifficultyWeights(
     }
   }
 
-  const difficultyWeights = new Map<DifficultyEnum, number>();
+  const struggles: DifficultyEnum[] = [];
 
   if (struggleScores[DifficultyEnum.EASY] > EASY_STRUGGLE_THRESHOLD) {
-    applyDifficultyWeights(
-      DifficultyEnum.EASY,
-      difficultyWeights,
-      struggleScores
-    );
-  } else if (
-    struggleScores[DifficultyEnum.MEDIUM] > MEDIUM_STRUGGLE_THRESHOLD
-  ) {
-    applyDifficultyWeights(
-      DifficultyEnum.MEDIUM,
-      difficultyWeights,
-      struggleScores
-    );
-  } else if (struggleScores[DifficultyEnum.HARD] > HARD_STRUGGLE_THRESHOLD) {
-    applyDifficultyWeights(
-      DifficultyEnum.HARD,
-      difficultyWeights,
-      struggleScores
-    );
-  } else {
+    struggles.push(DifficultyEnum.EASY);
+  }
+  if (struggleScores[DifficultyEnum.MEDIUM] > MEDIUM_STRUGGLE_THRESHOLD) {
+    struggles.push(DifficultyEnum.MEDIUM);
+  }
+  if (struggleScores[DifficultyEnum.HARD] > HARD_STRUGGLE_THRESHOLD) {
+    struggles.push(DifficultyEnum.HARD);
+  }
+
+  const difficultyWeights = new Map<DifficultyEnum, number>();
+
+  if (struggles.length === 0) {
     applyDifficultyWeights("default", difficultyWeights, struggleScores);
+  } else {
+    const scale = 1 / struggles.length;
+    for (const diff of struggles) {
+      applyDifficultyWeights(diff, difficultyWeights, struggleScores, scale);
+    }
   }
 
   return difficultyWeights;
@@ -282,23 +282,27 @@ function getDifficultyWeights(
 function applyDifficultyWeights(
   difficulty: DifficultyEnum | "default",
   difficultyWeights: Map<DifficultyEnum, number>,
-  struggleScores: Record<DifficultyEnum, number>
+  struggleScores: Record<DifficultyEnum, number>,
+  scaler: number = 1
 ) {
   difficultyWeights.set(
     DifficultyEnum.EASY,
-    BOOSTS_AND_WEIGHTS[difficulty].EASY_WEIGHT +
+    (difficultyWeights.get(DifficultyEnum.EASY) ?? 0) +
+      scaler * BOOSTS_AND_WEIGHTS[difficulty].EASY_WEIGHT +
       BOOSTS_AND_WEIGHTS[difficulty].EASY_BOOST *
         struggleScores[DifficultyEnum.EASY]
   );
   difficultyWeights.set(
     DifficultyEnum.MEDIUM,
-    BOOSTS_AND_WEIGHTS[difficulty].MEDIUM_WEIGHT +
+    (difficultyWeights.get(DifficultyEnum.MEDIUM) ?? 0) +
+      scaler * BOOSTS_AND_WEIGHTS[difficulty].MEDIUM_WEIGHT +
       BOOSTS_AND_WEIGHTS[difficulty].MEDIUM_BOOST *
         struggleScores[DifficultyEnum.MEDIUM]
   );
   difficultyWeights.set(
     DifficultyEnum.HARD,
-    BOOSTS_AND_WEIGHTS[difficulty].HARD_WEIGHT +
+    (difficultyWeights.get(DifficultyEnum.HARD) ?? 0) +
+      scaler * BOOSTS_AND_WEIGHTS[difficulty].HARD_WEIGHT +
       BOOSTS_AND_WEIGHTS[difficulty].HARD_BOOST *
         struggleScores[DifficultyEnum.HARD]
   );
@@ -315,30 +319,58 @@ function getSortedWeightedQuestions(
   difficultyWeights: Map<number, number>,
   companyWeights: Map<string, number>
 ): Question[] {
-  const TOPICS_SCALER = 1;
+  const TOPICS_SCALER = 3;
   const DIFFICULTY_SCALER = 1;
   const COMPANY_SCALER = 1;
+  const NOISE_SCALER = 2;
 
   // sum up the weights for each question based on its topics
+  let totalTopicWeight = 0;
+  let totalDifficultyWeight = 0;
+  let totalCompanyWeight = 0;
+  let noiseWeight = 0;
+
   const weightedQuestions = questions.map((question) => {
     let totalWeight = 0;
 
+    const numTopics = question.topics.length || 1;
+    let topicWeight = 0;
     question.topics.forEach((topic) => {
-      totalWeight += (topicWeights.get(topic) ?? 0) * TOPICS_SCALER;
+      topicWeight +=
+        ((topicWeights.get(topic) ?? 0) * TOPICS_SCALER) / numTopics;
     });
+    totalTopicWeight += topicWeight;
+    totalWeight += topicWeight;
 
-    totalWeight +=
+    const difficultyWeight =
       (difficultyWeights.get(question.difficulty) ?? 0) * DIFFICULTY_SCALER;
+    totalDifficultyWeight += difficultyWeight;
+    totalWeight += difficultyWeight;
 
+    let companyWeight = 0;
     question.companies.forEach((company) => {
-      totalWeight += (companyWeights.get(company) ?? 0) * COMPANY_SCALER;
+      companyWeight += (companyWeights.get(company) ?? 0) * COMPANY_SCALER;
     });
+    totalCompanyWeight += companyWeight;
+    totalWeight += companyWeight;
+
+    noiseWeight += Math.random() * NOISE_SCALER;
+    totalWeight += noiseWeight;
 
     return {
       ...question,
       weight: totalWeight,
     };
   });
+
+  const numQuestions = questions.length || 1;
+  debugLog("Average topic weight added: " + totalTopicWeight / numQuestions);
+  debugLog(
+    "Average difficulty weight added: " + totalDifficultyWeight / numQuestions
+  );
+  debugLog(
+    "Average company weight added: " + totalCompanyWeight / numQuestions
+  );
 
   weightedQuestions.sort((a, b) => b.weight - a.weight);
   return weightedQuestions;
