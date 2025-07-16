@@ -1,20 +1,19 @@
-import { ACTIVITY_FIELD_MAP, GOAL_TYPES_ARRAY } from "@/constants/goals";
-import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
-import { Nullable, Optional } from "@/types/util";
-import {
-  filterActivitiesBeforeBeginAt,
-  getTimeProgressPercentage,
-} from "@/utils/activities-progress";
+import { NotificationItem } from "@/types/notifications";
 import {
   ForbiddenError,
   get200Response,
   get400Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { checkIfGoalProgressNotification } from "@/utils/goal-progress";
 import { errorLog } from "@/utils/logger";
-import { Activity, Goal, GoalType } from "@prisma/client";
-import { minutesInHour, secondsInDay } from "date-fns/constants";
+import {
+  checkIfStreakNotification,
+  handleGlobalNotifications,
+  handleUserNotifications,
+} from "@/utils/notification-helpers";
+import { secondsInDay, secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -22,7 +21,80 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
-  const MAX_NOTIFICATIONS_IN_PERIOD = 3;
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response("Invalid user ID");
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  const cacheKeyUser = `notifications:${userId}`;
+  const cacheKeyGlobal = `notifications:global`;
+  const cacheKeyViewed = `notifications:viewed:${userId}`;
+
+  let userNotifications: string[] = [];
+  let globalNotifications: string[] = [];
+
+  try {
+    userNotifications = await redisLib.lRange(cacheKeyUser, 0, -1); // Fetch user notifications
+  } catch (error) {
+    errorLog("Error fetching user notifications: " + error);
+    return UnknownServerError;
+  }
+
+  try {
+    globalNotifications = await redisLib.lRange(cacheKeyGlobal, 0, -1); // Fetch global notifications
+  } catch (error) {
+    errorLog("Error fetching global notifications: " + error);
+    return UnknownServerError;
+  }
+
+  let allNotifications: NotificationItem[] = [];
+
+  try {
+    allNotifications = allNotifications.concat(
+      await handleUserNotifications(userNotifications, cacheKeyUser) // parse user notifications and delete
+    );
+  } catch (error) {
+    errorLog("Error handling user notifications: " + error);
+    return UnknownServerError;
+  }
+
+  try {
+    allNotifications = allNotifications.concat(
+      await handleGlobalNotifications(
+        globalNotifications,
+        userId,
+        cacheKeyViewed
+      ) // parse global notifications and mark as viewed
+    );
+  } catch (error) {
+    errorLog("Error handling global notifications: " + error);
+    return UnknownServerError;
+  }
+
+  if (allNotifications.length > 0) {
+    return get200Response({
+      notify: true,
+      notifications: allNotifications,
+    });
+  }
+
+  return get200Response({ notify: false });
+}
+
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD = 3;
+  let notificationsAdded = 0;
 
   const resolvedParams = await params;
   const userId = Number(resolvedParams.userId);
@@ -37,148 +109,88 @@ export async function GET(
     return ForbiddenError;
   }
 
-  const cacheKey = `notification_${userId}`;
+  const cacheKeyProgress = `notification_progress_${userId}`;
+  const cacheKeyProgressLastSent = `notification_progress_last_sent_${userId}`;
 
-  const cachedNotificationCount = await redisLib.get(cacheKey);
-  if (
+  let cachedNotificationCount;
+  try {
+    cachedNotificationCount = (await redisLib.get(cacheKeyProgress)) as string;
+  } catch {
+    return UnknownServerError;
+  }
+
+  // Is there a notification in the last 2 hours?
+  let lastSentProgressNotification;
+  try {
+    lastSentProgressNotification = await redisLib.get(cacheKeyProgressLastSent);
+  } catch {
+    return UnknownServerError;
+  }
+
+  // Check if we have already sent the max number of progress notifications in a period
+  const hasSentMaxProgressNotification =
     cachedNotificationCount &&
-    parseInt(cachedNotificationCount) >= MAX_NOTIFICATIONS_IN_PERIOD
-  ) {
-    return get200Response({ notify: false });
-  }
+    parseInt(cachedNotificationCount) >=
+      MAX_GOAL_PROGRESS_NOTIFICATIONS_IN_PERIOD;
 
-  let goal;
-  try {
-    goal = await prismaLib.goal.findUnique({
-      where: { userId },
-    });
-  } catch (error) {
-    errorLog("Unexpected error: " + error);
-    return UnknownServerError;
-  }
-
-  if (!goal) {
-    return get200Response({ notify: false });
-  }
-
-  const endDate = new Date(goal.endDate);
-
-  let activityArray;
-
-  try {
-    activityArray = await prismaLib.activity.findMany({
-      where: {
+  if (!hasSentMaxProgressNotification && !lastSentProgressNotification) {
+    let notificationResult;
+    try {
+      notificationResult = await checkIfGoalProgressNotification(
         userId,
-      },
-      orderBy: {
-        date: "desc",
-      },
-    });
+        cacheKeyProgress,
+        cachedNotificationCount
+      );
+    } catch (error) {
+      errorLog("Error checking goal progress notification: " + error);
+      return UnknownServerError;
+    }
+    if (notificationResult) {
+      notificationsAdded += 1;
+      try {
+        await redisLib.set(cacheKeyProgressLastSent, "1", {
+          EX: secondsInHour * 2, // Only allow progress notifications every 2 hours
+        });
+      } catch (error) {
+        errorLog("Error setting progress notification last sent: " + error);
+        return UnknownServerError;
+      }
+    }
+  }
+
+  const cacheKeyStreak = `notification_streak_${userId}`;
+  let cachedStreakNotification;
+  try {
+    cachedStreakNotification = await redisLib.get(cacheKeyStreak);
   } catch (error) {
-    errorLog("Unexpected error: " + error);
+    errorLog("Error fetching cached streak notification: " + error);
     return UnknownServerError;
   }
 
-  const filteredActivities = filterActivitiesBeforeBeginAt(
-    activityArray,
-    new Date(goal.beginAt)
-  );
-
-  const timeProgressPercentage = getTimeProgressPercentage(
-    new Date(goal.beginAt),
-    endDate
-  );
-
-  const notification = getNotification(
-    goal,
-    filteredActivities,
-    timeProgressPercentage
-  );
-
-  if (notification) {
-    if (cachedNotificationCount) {
-      await redisLib.incr(cacheKey);
-    } else {
-      await redisLib.set(cacheKey, "1", {
-        EX: secondsInDay,
-      });
+  // Check if we have already sent a streak notification today
+  if (!cachedStreakNotification) {
+    let notificationStreak;
+    try {
+      notificationStreak = await checkIfStreakNotification(userId);
+    } catch (error) {
+      errorLog("Error checking streak notification: " + error);
+      return UnknownServerError;
     }
-    return notification;
-  } else {
-    return get200Response({ notify: false });
-  }
-}
 
-function getNotification(
-  goal: Goal,
-  filteredActivities: Activity[],
-  timeProgressPercentage: number
-): Optional<Response> {
-  for (const type of GOAL_TYPES_ARRAY) {
-    if (goal.goalType === type && goal.value > 0) {
-      const field = ACTIVITY_FIELD_MAP[type];
-      const totalProgress = filteredActivities.reduce(
-        (acc, activity) => acc + Number(activity[field]),
-        0
-      );
-      return getNotificationForGoalType(
-        goal,
-        totalProgress,
-        timeProgressPercentage,
-        type
-      );
+    if (notificationStreak) {
+      notificationsAdded += 1;
+    }
+
+    try {
+      await redisLib.set(cacheKeyStreak, "1", { EX: secondsInDay });
+    } catch (error) {
+      errorLog("Error setting streak notification cache: " + error);
+      return UnknownServerError;
     }
   }
-}
 
-function getNotificationForGoalType(
-  goal: Goal,
-  totalProgress: number,
-  timeProgressPercentage: number,
-  type: GoalType
-): Optional<Response> {
-  const targetValue = goal.value;
-  const MAX_AMOUNT_BEHIND = 10;
-
-  if (targetValue == null) {
-    return get400Response(`${type} must be provided`);
-  }
-
-  const progressPercentage = (totalProgress / targetValue) * 100;
-
-  if (totalProgress >= targetValue) {
-    return get200Response({
-      notify: true,
-      message: "Goal completed! Update it to get a new one.",
-    });
-  }
-
-  // if the user is 10% or more behind the time progress percentage, notify them
-  if (progressPercentage < timeProgressPercentage - MAX_AMOUNT_BEHIND) {
-    const deficit = Math.round(timeProgressPercentage - progressPercentage);
-
-    const progressString = getProgressString(type, totalProgress, targetValue);
-
-    const message =
-      `You're falling behind on your goal by ${deficit}%!` +
-      "\n" +
-      progressString;
-    return get200Response({ notify: true, message });
-  }
-}
-
-function getProgressString(
-  type: GoalType,
-  totalProgress: number,
-  targetValue: Nullable<number>
-): string {
-  if (type === "SECOND") {
-    const minutes = Math.floor(totalProgress / minutesInHour);
-    const targetMinutes = Math.floor((targetValue ?? 0) / minutesInHour);
-    return `Current progress: ${minutes}/${targetMinutes} minutes completed`;
-  } else if (type === "QUESTION") {
-    return `Current progress: ${totalProgress}/${targetValue} questions completed`;
-  } else {
-    return `Current progress: ${totalProgress}/${targetValue} completed`;
-  }
+  return get200Response({
+    notify: notificationsAdded > 0,
+    notificationsAdded,
+  });
 }

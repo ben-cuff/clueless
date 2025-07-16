@@ -7,6 +7,7 @@ import {
   get409Response,
   UnknownServerError,
 } from "@/utils/api-responses";
+import { NotificationsAPI } from "@/utils/notifications-api";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
     });
 
     ActivityAPI.updateActivity(userId, "questions");
+
+    NotificationsAPI.postNotification(userId);
 
     return get201Response(feedbackEntry);
   } catch (error) {

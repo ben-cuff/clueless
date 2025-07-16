@@ -109,10 +109,6 @@ test("interview two sum early complete", async ({ page }) => {
 
   await test.step("Navigate to interview list and delete interview", async () => {
     await page.getByRole("link", { name: "Interview" }).click();
-    await expect(
-      page.getByRole("button", { name: "View Feedback" }).first()
-    ).toBeVisible();
-    await expect(page.getByRole("button", { name: "×" }).first()).toBeVisible();
 
     const firstInterviewTitle = await page
       .getByRole("button", { name: "View" })

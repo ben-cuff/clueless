@@ -60,7 +60,9 @@ test("questions-filter-by-topics", async ({ page }) => {
 test("questions-filter-by-difficulty", async ({ page }) => {
   await test.step("press filter by difficulty", async () => {
     await page.goto("http://localhost:3000/questions");
+    await page.waitForTimeout(1000);
     await page.getByRole("combobox").click();
+    await page.waitForTimeout(1000);
     await page.getByRole("option", { name: "Medium" }).click();
     await page.waitForTimeout(1000);
   });

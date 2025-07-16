@@ -9,6 +9,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
+import { NotificationsAPI } from "@/utils/notifications-api";
 import { GoalType, Prisma } from "@prisma/client";
 import { secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
@@ -62,6 +63,8 @@ export async function POST(
         endDate: parsedEndDate,
       },
     });
+
+    NotificationsAPI.postNotification(userId);
 
     return get201Response(goal);
   } catch (error) {
@@ -149,6 +152,8 @@ export async function PUT(
       },
     });
 
+    NotificationsAPI.postNotification(userId);
+
     return get200Response(goal);
   } catch (error) {
     if (
@@ -204,10 +209,10 @@ function getGoalTypeAndValue(hours?: number, questions?: number) {
   let value: number;
 
   if (hours) {
-    goalType = "SECOND";
+    goalType = GoalType.SECOND;
     value = hours * secondsInHour;
   } else {
-    goalType = "QUESTION";
+    goalType = GoalType.QUESTION;
     value = questions!;
   }
 

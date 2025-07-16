@@ -1,5 +1,6 @@
 "use client";
 
+import { NotificationProvider } from "@/components/providers/notifications-provider";
 import QuestionsHeader from "@/components/questions/questions-header";
 import QuestionsList from "@/components/questions/questions-list";
 import QuestionsLoading from "@/components/questions/questions-loading";
@@ -25,35 +26,37 @@ export default function QuestionsPage() {
   } = useQuestions();
 
   return (
-    <div className="w-full mx-auto p-8">
-      <RecommendedQuestions />
-      <QuestionsHeader
-        handleCompaniesChange={handleCompaniesChange}
-        handleDifficultySelectChange={handleDifficultySelectChange}
-        handleSearchInputChange={handleSearchInputChange}
-        handleTopicsChange={handleTopicsChange}
-        topics={topics}
-        companies={companies}
-      />
-      {isLoading ? (
-        <QuestionsLoading takeSize={takeSize} />
-      ) : Array.isArray(questionsData) && questionsData.length > 0 ? (
-        <div className="flex flex-col w-full space-y-2">
-          <QuestionsList questionsData={questionsData} />
-          <QuestionsPagination
-            currentPage={currentPage}
-            handlePreviousPage={handlePreviousPage}
-            handleNextPage={handleNextPage}
-            questionsData={questionsData}
-            takeSize={takeSize}
-            handleTakeSizeChange={handleTakeSizeChange}
-          />
-        </div>
-      ) : (
-        <div className="flex justify-center text-3xl mt-12">
-          No questions found.
-        </div>
-      )}
-    </div>
+    <NotificationProvider>
+      <div className="w-full mx-auto p-8">
+        <RecommendedQuestions />
+        <QuestionsHeader
+          handleCompaniesChange={handleCompaniesChange}
+          handleDifficultySelectChange={handleDifficultySelectChange}
+          handleSearchInputChange={handleSearchInputChange}
+          handleTopicsChange={handleTopicsChange}
+          topics={topics}
+          companies={companies}
+        />
+        {isLoading ? (
+          <QuestionsLoading takeSize={takeSize} />
+        ) : Array.isArray(questionsData) && questionsData.length > 0 ? (
+          <div className="flex flex-col w-full space-y-2">
+            <QuestionsList questionsData={questionsData} />
+            <QuestionsPagination
+              currentPage={currentPage}
+              handlePreviousPage={handlePreviousPage}
+              handleNextPage={handleNextPage}
+              questionsData={questionsData}
+              takeSize={takeSize}
+              handleTakeSizeChange={handleTakeSizeChange}
+            />
+          </div>
+        ) : (
+          <div className="flex justify-center text-3xl mt-12">
+            No questions found.
+          </div>
+        )}
+      </div>
+    </NotificationProvider>
   );
 }

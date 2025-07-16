@@ -10,7 +10,7 @@ import {
   UnknownServerError,
 } from "@/utils/api-responses";
 import { errorLog } from "@/utils/logger";
-import { Activity, Goal } from "@prisma/client";
+import { Activity, Goal, GoalType } from "@prisma/client";
 
 export async function GET(
   req: Request,
@@ -73,7 +73,7 @@ function getProgressData(
     goalType: goal.goalType,
   };
 
-  if (goal.goalType === "QUESTION" && goal.value > 0) {
+  if (goal.goalType === GoalType.QUESTION && goal.value > 0) {
     const totalQuestions = filteredActivities.reduce(
       (acc, activity) => acc + (activity.questions ?? 0),
       0
@@ -81,7 +81,7 @@ function getProgressData(
     progressData.totalProgress = totalQuestions;
     progressData.targetValue = goal.value;
     progressData.progressPercentage = (totalQuestions / goal.value) * 100;
-  } else if (goal.goalType === "SECOND" && goal.value > 0) {
+  } else if (goal.goalType === GoalType.SECOND && goal.value > 0) {
     const totalSeconds = filteredActivities.reduce(
       (acc, activity) => acc + (activity.seconds ?? 0),
       0
