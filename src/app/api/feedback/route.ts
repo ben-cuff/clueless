@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import { ActivityAPI } from '@/utils/activity-api';
 import {
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002' // Unique constraint failed on the feedback entry
+      error.code === PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAILED // Unique constraint failed on the feedback entry
     ) {
       return get409Response('Feedback for this interview already exists.');
     } else {

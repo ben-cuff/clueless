@@ -1,4 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
@@ -54,7 +55,7 @@ export async function PATCH(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND
     ) {
       return get400Response('No user found for this userId');
     } else {

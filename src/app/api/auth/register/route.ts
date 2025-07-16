@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   get201Response,
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002' // Unique constraint failed on the username field
+      error.code === PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAILED // Unique constraint failed on the username field
     ) {
       return get409Response(
         'Username already exists. Please choose a different username.'

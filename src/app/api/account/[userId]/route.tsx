@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
@@ -36,7 +37,7 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025' // User not found
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND // User not found
     ) {
       return get400Response('User with that userId not found');
     }
