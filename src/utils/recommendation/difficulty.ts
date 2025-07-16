@@ -3,11 +3,31 @@ import { InterviewWithFeedback } from "@/types/interview";
 
 function getDifficultyWeights(
   interviews: InterviewWithFeedback[]
-): Map<number, number> {
-  const HARD_STRUGGLE_THRESHOLD = 0.3;
-  const MEDIUM_STRUGGLE_THRESHOLD = 0.3;
-  const EASY_STRUGGLE_THRESHOLD = 0.4;
+): Map<DifficultyEnum, number> {
+  const struggleScores: Record<DifficultyEnum, number> =
+    getStruggleScores(interviews);
 
+  const struggles = getStruggles(struggleScores);
+
+  const difficultyWeights = new Map<DifficultyEnum, number>();
+
+  if (struggles.length === 0) {
+    applyDifficultyWeights("default", difficultyWeights, struggleScores);
+  } else {
+    const scale = 1 / struggles.length;
+    for (const diff of struggles) {
+      applyDifficultyWeights(diff, difficultyWeights, struggleScores, scale);
+    }
+  }
+
+  return difficultyWeights;
+}
+
+/**
+ * Gets the struggle scores for each difficulty level based on the interviews.
+ * If a user has performed poorly on a question, the struggle score for that difficulty increases.
+ */
+function getStruggleScores(interviews: InterviewWithFeedback[]) {
   const DIFFICULTIES = [
     DifficultyEnum.EASY,
     DifficultyEnum.MEDIUM,
@@ -29,18 +49,32 @@ function getDifficultyWeights(
     const weight = 1 / ((interview?.feedback?.feedbackNumber ?? 0) + 1);
     const difficulty = interview.question.difficulty;
 
-    if (difficulty && DIFFICULTIES.includes(difficulty)) {
+    const isValidDifficulty = DIFFICULTIES.includes(difficulty);
+    if (isValidDifficulty) {
       struggleScores[difficulty] += weight;
       counts[difficulty]++;
     }
   });
 
+  // Normalize struggle scores
   for (const diff of DIFFICULTIES) {
     if (counts[diff] > 0) {
       struggleScores[diff] /= counts[diff];
     }
   }
 
+  return struggleScores;
+}
+
+/**
+ * Gets struggles based on the struggle scores.
+ * If a user has a struggle score above a certain threshold for a difficulty,
+ * then that difficulty is considered a struggle.
+ */
+function getStruggles(struggleScores: Record<DifficultyEnum, number>) {
+  const EASY_STRUGGLE_THRESHOLD = 0.4;
+  const MEDIUM_STRUGGLE_THRESHOLD = 0.3;
+  const HARD_STRUGGLE_THRESHOLD = 0.3;
   const struggles: DifficultyEnum[] = [];
 
   if (struggleScores[DifficultyEnum.EASY] > EASY_STRUGGLE_THRESHOLD) {
@@ -52,21 +86,14 @@ function getDifficultyWeights(
   if (struggleScores[DifficultyEnum.HARD] > HARD_STRUGGLE_THRESHOLD) {
     struggles.push(DifficultyEnum.HARD);
   }
-
-  const difficultyWeights = new Map<DifficultyEnum, number>();
-
-  if (struggles.length === 0) {
-    applyDifficultyWeights("default", difficultyWeights, struggleScores);
-  } else {
-    const scale = 1 / struggles.length;
-    for (const diff of struggles) {
-      applyDifficultyWeights(diff, difficultyWeights, struggleScores, scale);
-    }
-  }
-
-  return difficultyWeights;
+  return struggles;
 }
 
+/**
+ * Each difficulty level has associated weights and boosts:
+ * - EASY_WEIGHT, MEDIUM_WEIGHT, HARD_WEIGHT: Base weights for easy, medium, and hard questions.
+ * - EASY_BOOST, MEDIUM_BOOST, HARD_BOOST: Boosts for each difficulty based on the user's struggle score.
+ */
 const BOOSTS_AND_WEIGHTS = {
   [DifficultyEnum.EASY]: {
     EASY_WEIGHT: 1,

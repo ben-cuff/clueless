@@ -1,4 +1,5 @@
 import { InterviewWithFeedback } from "@/types/interview";
+import { Topic } from "@prisma/client";
 
 /**  ["Arrays", "Trees"] feedbackNumber: 2
  *   ["Dynamic Programming", "Arrays"] feedbackNumber: 3
@@ -11,9 +12,9 @@ import { InterviewWithFeedback } from "@/types/interview";
  */
 function getTopicWeights(
   interviews: InterviewWithFeedback[]
-): Map<string, number> {
-  const topicWeights = new Map<string, number>();
-  const topicCounts = new Map<string, number>();
+): Map<Topic, number> {
+  const topicWeights = new Map<Topic, number>();
+  const topicCounts = new Map<Topic, number>();
 
   interviews.forEach((interview) => {
     const weight = 1 / ((interview?.feedback?.feedbackNumber ?? 0) + 1);
