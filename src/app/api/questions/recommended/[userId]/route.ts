@@ -122,9 +122,9 @@ export async function GET(
 
   const recommendedQuestions = getRecommendedQuestions(interviews, questions);
 
-  // redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
-  //   EX: secondsInHour / 2, // cache for half an hour
-  // });
+  redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
+    EX: secondsInHour / 2, // cache for half an hour
+  });
 
   return get200Response(recommendedQuestions);
 }
