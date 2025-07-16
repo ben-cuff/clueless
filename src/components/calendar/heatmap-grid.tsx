@@ -34,14 +34,14 @@ export default function HeatmapGrid({
 }
 
 function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
-  const COLORS = [
-    '#ebedf0',
-    '#c6e48b',
-    '#7bc96f',
-    '#239a3b',
-    '#196127',
-    '#0e4429',
-  ];
+  const COLORS = {
+    BRIGHT_GRAY: '#ebedf0',
+    YELLOW_GREEN: '#c6e48b',
+    MANTIS: '#7bc96f',
+    FOREST_GREEN: '#239a3b',
+    CAL_POLY_POMONA_GREEN: '#196127',
+    BRITISH_RACING_GREEN: '#0e4429',
+  };
 
   // Extract all numeric values from the map and sort them in ascending order
   const values = Array.from(valueMap.values())
@@ -59,17 +59,17 @@ function getColorFunctionBasedOnPercentile(valueMap: Map<string, number>) {
   const getColor = (value: Optional<number>) => {
     switch (true) {
       case value === undefined:
-        return COLORS[0];
+        return COLORS.BRIGHT_GRAY;
       case value! <= thresholds[0]:
-        return COLORS[1];
+        return COLORS.YELLOW_GREEN;
       case value! <= thresholds[1]:
-        return COLORS[2];
+        return COLORS.MANTIS;
       case value! <= thresholds[2]:
-        return COLORS[3];
+        return COLORS.FOREST_GREEN;
       case value! <= thresholds[3]:
-        return COLORS[4];
+        return COLORS.CAL_POLY_POMONA_GREEN;
       default:
-        return COLORS[5];
+        return COLORS.BRITISH_RACING_GREEN;
     }
   };
 
