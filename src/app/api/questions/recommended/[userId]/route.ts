@@ -10,7 +10,7 @@ import {
   get400Response,
 } from "@/utils/api-responses";
 import { Company, Topic } from "@prisma/client";
-import { millisecondsInWeek } from "date-fns/constants";
+import { millisecondsInWeek, secondsInHour } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 
 type InterviewWithFeedback = {
