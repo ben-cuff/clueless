@@ -32,6 +32,7 @@ model Goal {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   goalType GoalType @default(QUESTION)
   value    Int      @default(20)
+  companies Company[]
   endDate  DateTime
   beginAt  DateTime @default(now())
 
