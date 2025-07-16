@@ -25,3 +25,9 @@ export const DIFFICULTY_LIST: DifficultyInfo[] = Object.entries(
   db: db as number,
   readable: READABLE_DIFFICULTIES[db as number] ?? db,
 }));
+
+export enum DifficultyEnum {
+  EASY = 1,
+  MEDIUM = 2,
+  HARD = 3,
+}
