@@ -1,12 +1,27 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { DifficultyEnum } from "@/constants/difficulties";
 import { prismaLib } from "@/lib/prisma";
+import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
-import { Nullable } from "@/types/util";
-import { get200Response, get400Response } from "@/utils/api-responses";
-import type { Topic } from "@prisma/client";
+import { ForbiddenError, get200Response, get400Response } from "@/utils/api-responses";
 import { millisecondsInWeek } from "date-fns/constants";
 import { getServerSession } from "next-auth";
+
+type InterviewWithFeedback = {
+  updatedAt: Date;
+  questionNumber: number;
+  question: {
+    topics: Topic[];
+    difficulty: DifficultyEnum;
+    companies: Company[];
+  };
+  feedback: Nullable<{
+    id: string;
+    interviewId: string;
+    feedback: string;
+    feedbackNumber: number;
+  }>;
+};
 
 const BOOSTS_AND_WEIGHTS = {
   [DifficultyEnum.EASY]: {
@@ -57,15 +72,15 @@ export async function GET(
   const session = await getServerSession(authOptions);
 
   if (session?.user.id !== userId) {
-    // return ForbiddenError;
+    return ForbiddenError;
   }
 
-  // const cacheKey = `recommended_questions_${userId}`;
+  const cacheKey = `recommended_questions_${userId}`;
 
-  // const cachedData = await redisLib.get(cacheKey);
-  // if (cachedData) {
-  //   return get200Response(JSON.parse(cachedData));
-  // }
+  const cachedData = await redisLib.get(cacheKey);
+  if (cachedData) {
+    return get200Response(JSON.parse(cachedData));
+  }
 
   const interviews: InterviewWithFeedback[] =
     await prismaLib.interview.findMany({
@@ -125,6 +140,8 @@ function getRecommendedQuestions(
 
   const topicWeights = getTopicWeights(recentInterviews);
   const difficultyWeights = getDifficultyWeights(recentInterviews);
+
+  // TODO: IMPLEMENT COMPANY WEIGHTS
   const companyWeights = new Map<string, number>();
 
   const weightedQuestions = getSortedWeightedQuestions(
@@ -213,7 +230,7 @@ function getDifficultyWeights(
 
   interviews.forEach((interview) => {
     const weight = 1 / ((interview?.feedback?.feedbackNumber ?? 0) + 1);
-    const difficulty = (interview.question as Question).difficulty;
+    const difficulty = interview.question.difficulty;
 
     if (difficulty && DIFFICULTIES.includes(difficulty)) {
       struggleScores[difficulty] += weight;
@@ -281,9 +298,11 @@ function applyDifficultyWeights(
   );
 }
 
-// If we have topicWeights with: {'Arrays': 0.5, 'Dynamic Programming': 0.7, 'Trees': 0.3}
-// And a question with topics ['Arrays', 'Trees'], its weight would be 0.5 + 0.3 = 0.8
-// Then we sort all questions by their weights in descending order
+/**
+ * For example, if the topicWeights map contains {'Arrays': 0.5, 'Dynamic Programming': 0.7, 'Trees': 0.3}
+ * and a question has the topics ['Arrays', 'Trees'], then the question's weight would be calculated as 0.5 + 0.3 = 0.8.
+ * After calculating the weights for all questions, they are sorted in descending order based on their weights.
+ */
 function getSortedWeightedQuestions(
   questions: Question[],
   topicWeights: Map<string, number>,
@@ -318,17 +337,3 @@ function getSortedWeightedQuestions(
   weightedQuestions.sort((a, b) => b.weight - a.weight);
   return weightedQuestions;
 }
-
-type InterviewWithFeedback = {
-  updatedAt: Date;
-  questionNumber: number;
-  question: {
-    topics: Topic[];
-  };
-  feedback: Nullable<{
-    id: string;
-    interviewId: string;
-    feedback: string;
-    feedbackNumber: number;
-  }>;
-};
