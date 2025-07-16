@@ -27,14 +27,14 @@ model User {
 }
 
 model Goal {
-  id       String   @id @default(uuid())
-  userId   Int
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  goalType GoalType @default(QUESTION)
-  value    Int      @default(20)
+  id        String    @id @default(uuid())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalType  GoalType  @default(QUESTION)
+  value     Int       @default(20)
   companies Company[]
-  endDate  DateTime
-  beginAt  DateTime @default(now())
+  endDate   DateTime
+  beginAt   DateTime  @default(now())
 
   @@unique([userId])
 }
@@ -79,18 +79,18 @@ model Question {
 }
 
 model Interview {
-  id             String    @id
+  id             String        @id
   userId         Int
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages       Json
   questionNumber Int
-  question       Question  @relation(fields: [questionNumber], references: [id], onDelete: Cascade)
+  question       Question      @relation(fields: [questionNumber], references: [id], onDelete: Cascade)
   code           String?
   codeLanguage   Language
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  completed      Boolean   @default(false)
-  type InterviewType @default(UNTIMED)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  completed      Boolean       @default(false)
+  type           InterviewType @default(UNTIMED)
   feedback       Feedback?
 }
 
