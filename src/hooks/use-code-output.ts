@@ -1,8 +1,8 @@
-import { LanguageOption } from "@/constants/language-options";
-import { CodeOutput } from "@/types/code-output";
-import { Question_Extended, TestcasesKey } from "@/types/question";
-import { codeExecutionAPI } from "@/utils/code-execution-api";
-import { useCallback, useState } from "react";
+import { LanguageOption } from '@/constants/language-options';
+import { CodeOutput } from '@/types/code-output';
+import { Question_Extended, TestcasesKey } from '@/types/question';
+import { codeExecutionAPI } from '@/utils/code-execution-api';
+import { useCallback, useState } from 'react';
 
 export default function useCodeOutput(
   question: Question_Extended,
@@ -10,9 +10,9 @@ export default function useCodeOutput(
   code: string
 ) {
   const [output, setOutput] = useState<CodeOutput>({
-    stdout: "",
-    stderr: "",
-    status: { id: 0, description: "None" },
+    stdout: '',
+    stderr: '',
+    status: { id: 0, description: 'None' },
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -21,7 +21,7 @@ export default function useCodeOutput(
     try {
       const result = await codeExecutionAPI.runCode(
         code,
-        question.testCases[language.value as TestcasesKey] ?? "",
+        question.testCases[language.value as TestcasesKey] ?? '',
         language
       );
 
@@ -32,11 +32,11 @@ export default function useCodeOutput(
       setOutput(result);
     } catch (error) {
       setOutput({
-        stdout: "",
+        stdout: '',
         stderr: `Error: ${
           error instanceof Error ? error.message : String(error)
         }`,
-        status: { id: -1, description: "Error" },
+        status: { id: -1, description: 'Error' },
       });
     } finally {
       setIsLoading(false);

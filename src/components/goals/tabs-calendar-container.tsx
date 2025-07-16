@@ -1,15 +1,15 @@
-import useCreateUpdateGoal from "@/hooks/use-create-update-goal";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import GoalCalendar from "./goal-calendar";
-import GoalCalendarHeader from "./goal-calendar-header";
-import GoalsTabs from "./goal-tabs";
+import useCreateUpdateGoal from '@/hooks/use-create-update-goal';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import GoalCalendar from './goal-calendar';
+import GoalCalendarHeader from './goal-calendar-header';
+import GoalsTabs from './goal-tabs';
 
 export default function TabsCalendarContainer({
   type,
   fetchGoal,
 }: {
-  type: "create" | "update";
+  type: 'create' | 'update';
   fetchGoal: () => Promise<void>;
 }) {
   const {

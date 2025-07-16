@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import useActivityHeatmap from "@/hooks/use-activity-heatmap";
-import { ErrorBoundary } from "react-error-boundary";
-import CalendarHeatmap from "../calendar/calendar-heatmap";
-import ErrorFallback from "../error-fallback";
-import LoadingSpinner from "../loading-spinner";
+import useActivityHeatmap from '@/hooks/use-activity-heatmap';
+import { ErrorBoundary } from 'react-error-boundary';
+import CalendarHeatmap from '../calendar/calendar-heatmap';
+import ErrorFallback from '../error-fallback';
+import LoadingSpinner from '../loading-spinner';
 
 export default function ActivityHeatmap() {
   const { isLoading, activity } = useActivityHeatmap();

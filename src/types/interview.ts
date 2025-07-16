@@ -1,6 +1,6 @@
-import { DifficultyEnum } from "@/constants/difficulties";
-import { Company, InterviewType, Topic } from "@prisma/client";
-import { Nullable } from "./util";
+import { DifficultyEnum } from '@/constants/difficulties';
+import { Company, InterviewType, Topic } from '@prisma/client';
+import { Nullable } from './util';
 
 export interface Interview {
   code: string;

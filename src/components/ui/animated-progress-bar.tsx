@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function AnimatedProgressBar({
   progress,
@@ -14,7 +14,7 @@ export default function AnimatedProgressBar({
       className="h-full bg-green-500 transition-all duration-700 ease-out"
       style={{
         width: `${width}%`,
-        transitionProperty: "width",
+        transitionProperty: 'width',
       }}
     />
   );

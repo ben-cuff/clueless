@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Editor from "@monaco-editor/react";
-import { useContext } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import { FeedbackContext } from "../providers/feedback-provider";
+import Editor from '@monaco-editor/react';
+import { useContext } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import { FeedbackContext } from '../providers/feedback-provider';
 
 export default function CodeEditor({
   languageValue,
@@ -25,11 +25,11 @@ export default function CodeEditor({
       }
     >
       <Editor
-        height={"700px"}
+        height={'700px'}
         language={languageValue}
         theme={theme}
         value={code}
-        onChange={(value) => setCode(value ?? "")}
+        onChange={(value) => setCode(value ?? '')}
         options={{
           minimap: { enabled: false },
           readOnly: isFeedback,

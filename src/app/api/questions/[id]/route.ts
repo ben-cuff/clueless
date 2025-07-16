@@ -1,12 +1,12 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   get200Response,
   get400Response,
   get404Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { Prisma } from "@prisma/client";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { Prisma } from '@prisma/client';
 
 export async function GET(
   req: Request,
@@ -17,7 +17,7 @@ export async function GET(
     const numId = Number(id);
 
     if (isNaN(numId)) {
-      return get400Response("Invalid question number");
+      return get400Response('Invalid question number');
     }
 
     const question = await prismaLib.question.findUnique({
@@ -25,12 +25,12 @@ export async function GET(
     });
 
     if (!question) {
-      return get404Response("Question not found");
+      return get404Response('Question not found');
     }
 
     return get200Response(question);
   } catch (error) {
-    errorLog("Error during question retrieval: " + error);
+    errorLog('Error during question retrieval: ' + error);
     return UnknownServerError;
   }
 }
@@ -43,7 +43,7 @@ export async function DELETE(
   const numId = Number(id);
 
   if (isNaN(numId)) {
-    return get400Response("Invalid question ID");
+    return get400Response('Invalid question ID');
   }
 
   try {
@@ -55,11 +55,11 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
+      error.code === 'P2025'
     ) {
-      return get404Response("Question not found");
+      return get404Response('Question not found');
     }
-    errorLog("Error deleting question: " + error);
+    errorLog('Error deleting question: ' + error);
     return UnknownServerError;
   }
 }

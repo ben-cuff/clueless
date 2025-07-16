@@ -1,13 +1,13 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 
 export const NotificationsAPI = {
   getNotification: async (userId: number) => {
     const response = await fetch(
       CLUELESS_API_ROUTES.notificationsWithUserId(userId),
       {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );
@@ -22,9 +22,9 @@ export const NotificationsAPI = {
     const response = await fetch(
       CLUELESS_API_ROUTES.notificationsWithUserId(userId),
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );

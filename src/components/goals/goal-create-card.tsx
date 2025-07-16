@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import FormField from "../ui/form-field";
+} from '../ui/card';
+import FormField from '../ui/form-field';
 
 export default function GoalCreateCard({
   title,

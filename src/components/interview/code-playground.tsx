@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import useCodePlayground from "@/hooks/use-code-playground";
-import useDebounce from "@/hooks/use-debouncer";
-import { Message } from "@/types/message";
-import { Question_Extended } from "@/types/question";
-import { interactionAPI } from "@/utils/interaction-api";
-import { RefObject, useEffect } from "react";
-import ChatArea from "./chat-area";
-import CodeEditor from "./code-editor";
-import InterviewLoading from "./interview-loading";
-import LanguagesSelect from "./language-select";
-import OutputArea from "./output-area";
-import QuestionHeader from "./question-header";
-import QuestionPrompt from "./question-prompt";
-import ThemeSelect from "./theme-select";
+import useCodePlayground from '@/hooks/use-code-playground';
+import useDebounce from '@/hooks/use-debouncer';
+import { Message } from '@/types/message';
+import { Question_Extended } from '@/types/question';
+import { interactionAPI } from '@/utils/interaction-api';
+import { RefObject, useEffect } from 'react';
+import ChatArea from './chat-area';
+import CodeEditor from './code-editor';
+import InterviewLoading from './interview-loading';
+import LanguagesSelect from './language-select';
+import OutputArea from './output-area';
+import QuestionHeader from './question-header';
+import QuestionPrompt from './question-prompt';
+import ThemeSelect from './theme-select';
 
 export default function CodePlayground({
   question,
@@ -47,7 +47,7 @@ export default function CodePlayground({
     handleCodeSave(debouncedCode as string);
     const pathname = window.location.pathname;
     interactionAPI.addEvent(
-      "code_editor_change",
+      'code_editor_change',
       pathname,
       debouncedCode as string
     );
@@ -71,7 +71,7 @@ export default function CodePlayground({
   return (
     <div className="flex flex-col">
       <QuestionHeader
-        title={question.title ?? "Error"}
+        title={question.title ?? 'Error'}
         questionNumber={question.id}
         difficulty={question.difficulty}
       />

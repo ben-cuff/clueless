@@ -1,7 +1,7 @@
-import { getDaysLeft } from "@/utils/activities-progress";
-import { Company } from "@prisma/client";
-import CompaniesList from "../companies-list";
-import { CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { getDaysLeft } from '@/utils/activities-progress';
+import { Company } from '@prisma/client';
+import CompaniesList from '../companies-list';
+import { CardDescription, CardHeader, CardTitle } from '../ui/card';
 
 export default function GoalProgressHeader({
   beginAt,

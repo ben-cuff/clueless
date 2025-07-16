@@ -1,4 +1,4 @@
 export type Message = {
-  role: "user" | "model";
+  role: 'user' | 'model';
   parts: Array<{ text: string }>;
 };

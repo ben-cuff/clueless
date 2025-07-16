@@ -1,10 +1,10 @@
-import { DEFAULT_TAKE_SIZE } from "@/constants/take-sizes";
-import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
-import { QuestionWithRowNumber } from "@/types/question";
-import { apiQuestions } from "@/utils/questions-api";
-import { useCallback, useEffect, useState } from "react";
-import useCompanies from "./use-companies";
-import useDebounce from "./use-debouncer";
+import { DEFAULT_TAKE_SIZE } from '@/constants/take-sizes';
+import { TOPIC_LIST, TopicInfo } from '@/constants/topics';
+import { QuestionWithRowNumber } from '@/types/question';
+import { apiQuestions } from '@/utils/questions-api';
+import { useCallback, useEffect, useState } from 'react';
+import useCompanies from './use-companies';
+import useDebounce from './use-debouncer';
 
 export default function useQuestions() {
   const [questionsData, setQuestionsData] = useState<QuestionWithRowNumber[]>();
@@ -12,15 +12,15 @@ export default function useQuestions() {
   const [takeSize, setTakeSize] = useState(DEFAULT_TAKE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
   const [topics, setTopics] = useState<TopicInfo[]>();
-  const [searchInput, setSearchInput] = useState("");
-  const [difficulty, setDifficulty] = useState("none");
+  const [searchInput, setSearchInput] = useState('');
+  const [difficulty, setDifficulty] = useState('none');
   const { companies, handleCompaniesChange } = useCompanies();
 
   const debouncedSearch = useDebounce(searchInput, 500) as string;
 
   const fetchQuestions = useCallback(
     async (
-      direction: "next" | "prev" | "init" = "init",
+      direction: 'next' | 'prev' | 'init' = 'init',
       refRowNum?: number
     ) => {
       setIsLoading(true);
@@ -29,12 +29,12 @@ export default function useQuestions() {
 
       let take = takeSize;
 
-      if (direction === "prev") {
+      if (direction === 'prev') {
         take = -takeSize;
         refRowNum = refRowNum! - 1;
       }
 
-      const parsedDifficulty = difficulty === "none" ? undefined : [difficulty];
+      const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
 
       const data = await apiQuestions.getQuestions(
         topicsIdList,
@@ -52,7 +52,7 @@ export default function useQuestions() {
   );
 
   useEffect(() => {
-    fetchQuestions("init");
+    fetchQuestions('init');
     setCurrentPage(1);
   }, [takeSize, topics, fetchQuestions]);
 
@@ -61,7 +61,7 @@ export default function useQuestions() {
       return;
     }
     const lastQuestionNumber = questionsData[takeSize - 1]?.row_num;
-    fetchQuestions("next", Number(lastQuestionNumber));
+    fetchQuestions('next', Number(lastQuestionNumber));
     setCurrentPage((prev) => prev + 1);
   }
 
@@ -70,7 +70,7 @@ export default function useQuestions() {
       return;
     }
     const firstQuestionNumber = questionsData[0]?.row_num;
-    fetchQuestions("prev", Number(firstQuestionNumber));
+    fetchQuestions('prev', Number(firstQuestionNumber));
     setCurrentPage((prev) => prev - 1);
   }, [fetchQuestions, questionsData]);
 

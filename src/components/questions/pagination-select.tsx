@@ -1,4 +1,4 @@
-import { Question } from "@/types/question";
+import { Question } from '@/types/question';
 import {
   Pagination,
   PaginationContent,
@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination";
+} from '../ui/pagination';
 
 export default function PaginationSelect({
   currentPage,

@@ -1,8 +1,8 @@
 export const NotificationType = {
-  GOAL_PROGRESS: "GOAL_PROGRESS",
-  GENERAL: "GENERAL",
-  STREAK: "STREAK",
-  GLOBAL: "GLOBAL",
+  GOAL_PROGRESS: 'GOAL_PROGRESS',
+  GENERAL: 'GENERAL',
+  STREAK: 'STREAK',
+  GLOBAL: 'GLOBAL',
 } as const;
 
 export type NotificationType =

@@ -1,18 +1,18 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { prismaLib } from "@/lib/prisma";
-import redisLib from "@/lib/redis";
-import { InterviewWithFeedback } from "@/types/interview";
-import { Question } from "@/types/question";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { prismaLib } from '@/lib/prisma';
+import redisLib from '@/lib/redis';
+import { InterviewWithFeedback } from '@/types/interview';
+import { Question } from '@/types/question';
 import {
   ForbiddenError,
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { debugLog } from "@/utils/logger";
-import { getRecommendedQuestions } from "@/utils/recommendation/get-recommendations";
-import { secondsInHour } from "date-fns/constants";
-import { getServerSession } from "next-auth";
+} from '@/utils/api-responses';
+import { debugLog } from '@/utils/logger';
+import { getRecommendedQuestions } from '@/utils/recommendation/get-recommendations';
+import { secondsInHour } from 'date-fns/constants';
+import { getServerSession } from 'next-auth';
 
 export async function GET(
   req: Request,
@@ -22,7 +22,7 @@ export async function GET(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -38,7 +38,7 @@ export async function GET(
       return get200Response(JSON.parse(cachedData));
     }
   } catch (error) {
-    debugLog("Error fetching cached recommended questions: " + error);
+    debugLog('Error fetching cached recommended questions: ' + error);
     // Proceed to fetch from database if cache fails
   }
 
@@ -65,7 +65,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    debugLog("Error fetching user: " + error);
+    debugLog('Error fetching user: ' + error);
     return UnknownServerError;
   }
 
@@ -89,7 +89,7 @@ export async function GET(
          FROM "Question" ORDER BY RANDOM() LIMIT ${NUM_RANDOM_QUESTIONS};`
     );
   } catch (error) {
-    debugLog("Error fetching questions: " + error);
+    debugLog('Error fetching questions: ' + error);
     return UnknownServerError;
   }
 
@@ -104,7 +104,7 @@ export async function GET(
       EX: secondsInHour / 2, // cache for half an hour
     });
   } catch (error) {
-    debugLog("Error caching recommended questions: " + error);
+    debugLog('Error caching recommended questions: ' + error);
     return UnknownServerError;
   }
 

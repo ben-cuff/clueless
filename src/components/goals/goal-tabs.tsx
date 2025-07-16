@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import GoalCreateCard from "./goal-create-card";
+import { Dispatch, SetStateAction } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import GoalCreateCard from './goal-create-card';
 
 export default function GoalsTabs({
   goalValue,
@@ -13,14 +13,14 @@ export default function GoalsTabs({
   goalValue: number;
   setGoalValue: Dispatch<SetStateAction<number>>;
   handleSubmitGoal: () => Promise<void>;
-  setGoalType: Dispatch<SetStateAction<"hours" | "questions">>;
+  setGoalType: Dispatch<SetStateAction<'hours' | 'questions'>>;
   isDisabled: boolean;
   className?: string;
 }) {
   return (
     <Tabs
       defaultValue="hours"
-      onValueChange={(value) => setGoalType(value as "hours" | "questions")}
+      onValueChange={(value) => setGoalType(value as 'hours' | 'questions')}
       className={className}
     >
       <TabsList className="w-full">

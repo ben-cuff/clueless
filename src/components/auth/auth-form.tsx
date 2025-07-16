@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import useAuth from "@/hooks/use-auth";
-import FormField from "../ui/form-field";
-import AuthSwitcher from "./auth-switcher";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import useAuth from '@/hooks/use-auth';
+import FormField from '../ui/form-field';
+import AuthSwitcher from './auth-switcher';
 
-export default function AuthForm({ mode }: { mode: "login" | "register" }) {
+export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const {
     handleSubmit,
     username,
@@ -36,7 +36,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {mode === "register" && (
+            {mode === 'register' && (
               <FormField
                 id="confirmPassword"
                 label="Confirm Password:"
@@ -48,7 +48,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full">
-              {mode === "login" ? "Sign In" : "Register"}
+              {mode === 'login' ? 'Sign In' : 'Register'}
             </Button>
           </CardFooter>
         </form>

@@ -1,12 +1,12 @@
-import { READABLE_COMPANIES } from "@/constants/companies";
-import { Question } from "@/types/question";
+import { READABLE_COMPANIES } from '@/constants/companies';
+import { Question } from '@/types/question';
 
 export default function CompaniesList({
   companies,
   text,
   className,
 }: {
-  companies: Question["companies"];
+  companies: Question['companies'];
   text?: string;
   className?: string;
 }) {
@@ -18,7 +18,7 @@ export default function CompaniesList({
           (company) =>
             READABLE_COMPANIES[company as keyof typeof READABLE_COMPANIES]
         )
-        .join(", ")}
+        .join(', ')}
     </div>
   );
 }

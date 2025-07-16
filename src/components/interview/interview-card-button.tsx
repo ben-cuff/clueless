@@ -1,8 +1,8 @@
-import { Interview } from "@/types/interview";
-import { InterviewType } from "@prisma/client";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useCallback } from "react";
-import { Button } from "../ui/button";
+import { Interview } from '@/types/interview';
+import { InterviewType } from '@prisma/client';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useCallback } from 'react';
+import { Button } from '../ui/button';
 
 export default function InterviewCardButton({
   interview,
@@ -28,7 +28,7 @@ export default function InterviewCardButton({
 
   return (
     <Button variant="outline" onClick={handleClick}>
-      {isInterviewDone ? "View Feedback" : "Resume"}
+      {isInterviewDone ? 'View Feedback' : 'Resume'}
     </Button>
   );
 }

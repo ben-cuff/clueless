@@ -1,10 +1,10 @@
-import useGoalProgress from "@/hooks/use-goal-progress";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import InterviewLoading from "../interview/interview-loading";
-import { Card, CardHeader } from "../ui/card";
-import GoalProgressContent from "./goal-progress-content";
-import GoalProgressHeader from "./goal-progress-header";
+import useGoalProgress from '@/hooks/use-goal-progress';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import InterviewLoading from '../interview/interview-loading';
+import { Card, CardHeader } from '../ui/card';
+import GoalProgressContent from './goal-progress-content';
+import GoalProgressHeader from './goal-progress-header';
 
 export default function GoalProgress() {
   const { isLoading, goalProgress, goal } = useGoalProgress();

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 export default function ToggleRecommendedButton({
   isHidden,
@@ -10,10 +10,10 @@ export default function ToggleRecommendedButton({
   return (
     <Button
       onClick={toggleIsHidden}
-      variant={!isHidden ? "outline" : "default"}
+      variant={!isHidden ? 'outline' : 'default'}
       className="absolute mt-20 top-0 right-0"
     >
-      {isHidden ? "Show Recommended" : "Hide Recommended"}
+      {isHidden ? 'Show Recommended' : 'Hide Recommended'}
     </Button>
   );
 }

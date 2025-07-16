@@ -1,24 +1,24 @@
-import { judge0_api_url } from "@/constants/api-urls";
-import { IMPORTS } from "@/constants/imports";
-import { LanguageValues } from "@/constants/language-options";
+import { judge0_api_url } from '@/constants/api-urls';
+import { IMPORTS } from '@/constants/imports';
+import { LanguageValues } from '@/constants/language-options';
 import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
+} from '@/utils/api-responses';
 
 export async function POST(req: Request) {
   const { code, language, testcases } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!code || !language) {
-    return get400Response("Missing required fields: code, language");
+    return get400Response('Missing required fields: code, language');
   }
 
   // java needs testcases to be at the top of the code
   const finalCode =
-    language.value === "java"
+    language.value === 'java'
       ? `${
           IMPORTS[language.value as LanguageValues]
         }${testcases}\n${code.trim()}`
@@ -29,16 +29,16 @@ export async function POST(req: Request) {
   const encodedCode = btoa(finalCode);
 
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "x-rapidapi-key": process.env.JUDGE0_API_KEY ?? "",
-      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-      "Content-Type": "application/json",
+      'x-rapidapi-key': process.env.JUDGE0_API_KEY ?? '',
+      'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       source_code: encodedCode,
       language_id: language.id,
-      stdin: "",
+      stdin: '',
     }),
   };
 

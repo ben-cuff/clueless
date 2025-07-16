@@ -1,8 +1,8 @@
-import { prismaLib } from "@/lib/prisma";
-import redisLib from "@/lib/redis";
-import { NotificationItem, NotificationType } from "@/types/notifications";
-import { Activity } from "@prisma/client";
-import { secondsInDay } from "date-fns/constants";
+import { prismaLib } from '@/lib/prisma';
+import redisLib from '@/lib/redis';
+import { NotificationItem, NotificationType } from '@/types/notifications';
+import { Activity } from '@prisma/client';
+import { secondsInDay } from 'date-fns/constants';
 
 async function handleGlobalNotifications(
   globalNotifications: string[],
@@ -35,7 +35,7 @@ async function handleGlobalNotifications(
           filtered.map((n) => JSON.stringify(n))
         )
         .catch((error) => {
-          throw new Error("Failed to push viewed notifications: " + error);
+          throw new Error('Failed to push viewed notifications: ' + error);
         });
 
       const ttl = await redisLib.ttl(cacheKeyViewed);
@@ -64,7 +64,7 @@ async function handleUserNotifications(
       .filter((n) => n !== null);
 
     await redisLib.del(cacheKeyUser).catch((error) => {
-      throw new Error("Failed to delete user notifications: " + error);
+      throw new Error('Failed to delete user notifications: ' + error);
     });
 
     if (parsed.length > 0) {
@@ -80,7 +80,7 @@ async function getViewedNotifications(userId: number): Promise<string[]> {
   const viewedNotifications = await redisLib
     .lRange(cacheKeyViewed, 0, -1)
     .catch(() => {
-      throw new Error("Failed to fetch viewed notifications");
+      throw new Error('Failed to fetch viewed notifications');
     });
 
   if (Array.isArray(viewedNotifications)) {
@@ -108,10 +108,10 @@ async function checkIfStreakNotification(userId: number) {
   try {
     activity = await prismaLib.activity.findMany({
       where: { userId },
-      orderBy: { date: "desc" },
+      orderBy: { date: 'desc' },
     });
   } catch (error) {
-    throw new Error("Failed to fetch activity data: " + error);
+    throw new Error('Failed to fetch activity data: ' + error);
   }
 
   if (!activity || activity.length === 0) {
@@ -149,7 +149,7 @@ async function checkIfStreakNotification(userId: number) {
     const progressNotification = `🔥 You're on a ${streak}-day streak! Keep it up!`;
     await redisLib
       .publish(
-        "notifications",
+        'notifications',
         JSON.stringify({
           text: progressNotification,
           type: NotificationType.STREAK,
@@ -157,7 +157,7 @@ async function checkIfStreakNotification(userId: number) {
         })
       )
       .catch((error) => {
-        throw new Error("Failed to publish streak notification: " + error);
+        throw new Error('Failed to publish streak notification: ' + error);
       });
     return true;
   }

@@ -1,4 +1,4 @@
-import { Optional } from "@/types/util";
+import { Optional } from '@/types/util';
 
 export default function MonthLabels({ weeks }: { weeks: Optional<Date>[][] }) {
   const monthLabels = getMonthLabels(weeks);
@@ -7,7 +7,7 @@ export default function MonthLabels({ weeks }: { weeks: Optional<Date>[][] }) {
     <div className="flex flex-row mb-1">
       {weeks.map((_, weekIndex) => {
         const label =
-          monthLabels.find((ml) => ml.index === weekIndex)?.label ?? "";
+          monthLabels.find((ml) => ml.index === weekIndex)?.label ?? '';
         return (
           <div key={weekIndex} className="text-xs w-4.5">
             {label}
@@ -28,7 +28,7 @@ function getMonthLabels(weeks: Optional<Date>[][]) {
       if (month !== lastMonth) {
         monthLabels.push({
           index: i,
-          label: firstDay.toLocaleString("default", { month: "short" }),
+          label: firstDay.toLocaleString('default', { month: 'short' }),
         });
         lastMonth = month;
       }

@@ -1,13 +1,13 @@
-import { COMPANIES } from "@/constants/companies";
-import { prismaLib } from "@/lib/prisma";
-import { Optional } from "@/types/util";
+import { COMPANIES } from '@/constants/companies';
+import { prismaLib } from '@/lib/prisma';
+import { Optional } from '@/types/util';
 import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import type { Company as CompanyEnum } from "@prisma/client";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import type { Company as CompanyEnum } from '@prisma/client';
 
 export async function PATCH(
   req: Request,
@@ -17,15 +17,15 @@ export async function PATCH(
   const numId = Number(id);
 
   if (isNaN(numId)) {
-    return get400Response("Invalid question number");
+    return get400Response('Invalid question number');
   }
 
   const { companies } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!companies || !Array.isArray(companies)) {
-    return get400Response("Invalid or missing companies array");
+    return get400Response('Invalid or missing companies array');
   }
 
   const validCompanies: Optional<string>[] = companies.map(
@@ -33,7 +33,7 @@ export async function PATCH(
   );
 
   if (validCompanies.some((company) => company === undefined)) {
-    return get400Response("Invalid company name provided");
+    return get400Response('Invalid company name provided');
   }
 
   try {
@@ -46,7 +46,7 @@ export async function PATCH(
 
     return get200Response(updatedQuestion);
   } catch (error) {
-    errorLog("Error updating question companies: " + error);
+    errorLog('Error updating question companies: ' + error);
     return UnknownServerError;
   }
 }

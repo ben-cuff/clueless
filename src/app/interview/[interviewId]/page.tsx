@@ -1,9 +1,9 @@
-import InterviewLoading from "@/components/interview/interview-loading";
-import InterviewQuestionPage from "@/components/interview/interview-question-page";
-import { Question_Extended } from "@/types/question";
-import { apiQuestions } from "@/utils/questions-api";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import InterviewLoading from '@/components/interview/interview-loading';
+import InterviewQuestionPage from '@/components/interview/interview-question-page';
+import { Question_Extended } from '@/types/question';
+import { apiQuestions } from '@/utils/questions-api';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function ResumeInterviewPage({
   params,
@@ -15,7 +15,7 @@ export default async function ResumeInterviewPage({
   const { interviewId } = await params;
 
   const resolvedSearchParams = await searchParams;
-  const questionNumberParam = resolvedSearchParams["questionNumber"];
+  const questionNumberParam = resolvedSearchParams['questionNumber'];
   const questionNumber = Array.isArray(questionNumberParam)
     ? questionNumberParam[0]
     : questionNumberParam;
@@ -23,7 +23,7 @@ export default async function ResumeInterviewPage({
   const questionId = questionNumber ?? undefined;
 
   if (questionId === undefined || isNaN(Number(questionId))) {
-    redirect("/interview");
+    redirect('/interview');
   }
 
   const question: Question_Extended = await apiQuestions.getQuestionById(
@@ -31,7 +31,7 @@ export default async function ResumeInterviewPage({
   );
 
   if (question == null) {
-    redirect("/interview");
+    redirect('/interview');
   }
 
   return (

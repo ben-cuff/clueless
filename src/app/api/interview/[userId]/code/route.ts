@@ -1,15 +1,15 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { prismaLib } from "@/lib/prisma";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
   get200Response,
   get400Response,
   get404Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { Language } from "@prisma/client";
-import { getServerSession } from "next-auth";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { Language } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 
 export async function POST(
   req: Request,
@@ -19,7 +19,7 @@ export async function POST(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -29,11 +29,11 @@ export async function POST(
   }
 
   const { id, code, language } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   if (!id || !code || !language) {
-    return get400Response("Missing required fields: id, code, language");
+    return get400Response('Missing required fields: id, code, language');
   }
 
   try {
@@ -42,7 +42,7 @@ export async function POST(
     });
 
     if (!interview) {
-      return get404Response("Interview not found");
+      return get404Response('Interview not found');
     }
 
     const updatedInterview = await prismaLib.interview.update({
@@ -55,7 +55,7 @@ export async function POST(
 
     return get200Response(updatedInterview);
   } catch (error) {
-    errorLog("Error updating interview code: " + error);
+    errorLog('Error updating interview code: ' + error);
     return UnknownServerError;
   }
 }

@@ -1,7 +1,7 @@
-import { UserIdContext } from "@/components/providers/user-id-provider";
-import { Interview } from "@/types/interview";
-import { interviewAPI } from "@/utils/interview-api";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { UserIdContext } from '@/components/providers/user-id-provider';
+import { Interview } from '@/types/interview';
+import { interviewAPI } from '@/utils/interview-api';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function usePastInterviews() {
   const [pastInterviewData, setPastInterviewData] = useState<Interview[]>();

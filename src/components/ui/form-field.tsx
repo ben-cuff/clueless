@@ -1,5 +1,5 @@
-import { Input } from "./input";
-import { Label } from "./label";
+import { Input } from './input';
+import { Label } from './label';
 
 export default function FormField({
   id,

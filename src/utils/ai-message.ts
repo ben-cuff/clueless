@@ -1,6 +1,6 @@
-import { Message } from "@/types/message";
+import { Message } from '@/types/message';
 
-function getMessageObject(role: "user" | "model", text: string): Message {
+function getMessageObject(role: 'user' | 'model', text: string): Message {
   return {
     role,
     parts: [

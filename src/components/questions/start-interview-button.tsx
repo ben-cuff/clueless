@@ -1,7 +1,7 @@
-import { InterviewType } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import { Button } from "../ui/button";
+import { InterviewType } from '@prisma/client';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import { Button } from '../ui/button';
 
 export default function StartInterviewButton({
   questionNumber,
@@ -19,10 +19,10 @@ export default function StartInterviewButton({
       questionNumber: questionNumber.toString(),
     });
     if (type === InterviewType.TIMED) {
-      params.set("type", InterviewType.TIMED);
+      params.set('type', InterviewType.TIMED);
     }
     router.push(`/interview/new?${params.toString()}`);
   }, [questionNumber, router, type]);
 
-  return <Button onClick={handleClick}>{text ?? "Start Interview"}</Button>;
+  return <Button onClick={handleClick}>{text ?? 'Start Interview'}</Button>;
 }

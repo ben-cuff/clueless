@@ -1,13 +1,13 @@
-import { prismaLib } from "@/lib/prisma";
+import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
   get200Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { Prisma } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+} from '@/utils/api-responses';
+import { Prisma } from '@prisma/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/options';
 
 export async function DELETE(
   req: Request,
@@ -18,7 +18,7 @@ export async function DELETE(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const session = await getServerSession(authOptions);
@@ -36,9 +36,9 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025" // User not found
+      error.code === 'P2025' // User not found
     ) {
-      return get400Response("User with that userId not found");
+      return get400Response('User with that userId not found');
     }
     return UnknownServerError;
   }

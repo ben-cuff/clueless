@@ -1,5 +1,5 @@
-import React from "react";
-import DifficultyBadge from "../difficulty-badge";
+import React from 'react';
+import DifficultyBadge from '../difficulty-badge';
 
 export default function QuestionPrompt({
   title,
@@ -38,8 +38,8 @@ export default function QuestionPrompt({
 // Explanation: The triplets are [-1,0,1] and [-1,-1,2].
 // Constraints: 3 <= nums.length <= 3000"
 const formatPromptWithBreaks = (prompt: string) => {
-  return (prompt || "No prompt found")
-    .replace(/(Example \d+:|Explanation:|Constraints:)/g, "\n$1")
+  return (prompt || 'No prompt found')
+    .replace(/(Example \d+:|Explanation:|Constraints:)/g, '\n$1')
     .split(/\n+/)
     .map((line, idx, arr) => (
       <React.Fragment key={idx}>

@@ -1,15 +1,15 @@
-import { cluelessInteractionsLib } from "@/lib/interactions";
-import { prismaLib } from "@/lib/prisma";
-import { ActivityAPI } from "@/utils/activity-api";
+import { cluelessInteractionsLib } from '@/lib/interactions';
+import { prismaLib } from '@/lib/prisma';
+import { ActivityAPI } from '@/utils/activity-api';
 import {
   get200Response,
   get201Response,
   get400Response,
   UnknownServerError,
-} from "@/utils/api-responses";
-import { errorLog } from "@/utils/logger";
-import { Activity, Prisma } from "@prisma/client";
-import { millisecondsInSecond } from "date-fns/constants";
+} from '@/utils/api-responses';
+import { errorLog } from '@/utils/logger';
+import { Activity, Prisma } from '@prisma/client';
+import { millisecondsInSecond } from 'date-fns/constants';
 
 export async function GET(
   req: Request,
@@ -19,7 +19,7 @@ export async function GET(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   try {
@@ -28,17 +28,15 @@ export async function GET(
         userId,
       },
       orderBy: {
-        date: "desc",
+        date: 'desc',
       },
     });
 
     // if the latest activity is completed, then we know we are on a new day
-    // so we should update the activity for seconds
-    // this will ensure that
     if (activities[0]?.completed) {
       const mostRecentActivity = await ActivityAPI.updateActivity(
         userId,
-        "seconds"
+        'seconds'
       );
 
       if (mostRecentActivity) {
@@ -54,7 +52,7 @@ export async function GET(
 
     return get200Response(updatedActivities);
   } catch (error) {
-    errorLog("Unexpected error: " + error);
+    errorLog('Unexpected error: ' + error);
     return UnknownServerError;
   }
 }
@@ -67,11 +65,11 @@ export async function POST(
   const userId = Number(resolvedParams.userId);
 
   if (isNaN(userId)) {
-    return get400Response("Invalid user ID");
+    return get400Response('Invalid user ID');
   }
 
   const { questions } = await req.json().catch(() => {
-    return get400Response("Invalid JSON body");
+    return get400Response('Invalid JSON body');
   });
 
   const currentDate = new Date();
@@ -88,7 +86,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    errorLog("Error fetching existing activity:" + error);
+    errorLog('Error fetching existing activity:' + error);
     return UnknownServerError;
   }
 
@@ -126,7 +124,7 @@ export async function POST(
 
     return isNewRecord ? get201Response(activity) : get200Response(activity);
   } catch (error) {
-    errorLog("Error adding activity: " + error);
+    errorLog('Error adding activity: ' + error);
     return UnknownServerError;
   }
 }
@@ -146,12 +144,12 @@ async function fetchUserInteractions(
   userId: number,
   date: Date
 ): Promise<InteractionEvent[]> {
-  const PATHNAME_PREFIX = "/interview/";
+  const PATHNAME_PREFIX = '/interview/';
   const QUALIFYING_EVENTS = [
-    "textarea_change",
-    "code_editor_change",
-    "run_testcases_button_press",
-    "submit_message_button_press",
+    'textarea_change',
+    'code_editor_change',
+    'run_testcases_button_press',
+    'submit_message_button_press',
   ];
 
   const { from, to } = getDayRange(date);
@@ -160,11 +158,11 @@ async function fetchUserInteractions(
       {
         context: [
           {
-            contextField: "userId",
+            contextField: 'userId',
             contextValue: userId,
           },
           {
-            contextField: "pathname",
+            contextField: 'pathname',
             contextValue: PATHNAME_PREFIX,
             operation: { string_starts_with: PATHNAME_PREFIX },
           },
@@ -173,10 +171,10 @@ async function fetchUserInteractions(
         to,
         event: QUALIFYING_EVENTS,
       },
-      { order: "asc" }
+      { order: 'asc' }
     );
   } catch (error) {
-    errorLog("Error fetching interactions: " + error);
+    errorLog('Error fetching interactions: ' + error);
     return [];
   }
 }
@@ -222,7 +220,7 @@ async function getUpdatedActivity(activity: Activity): Promise<Activity> {
     }
 
     updateActivity(activity).catch((error) => {
-      errorLog("Error updating activity: " + error);
+      errorLog('Error updating activity: ' + error);
     });
   }
   return activity;

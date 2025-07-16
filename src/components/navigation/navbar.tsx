@@ -1,7 +1,7 @@
-import Link from "next/link";
-import ThemeToggle from "../theme/theme-toggle";
-import AvatarDropdown from "./avatar-dropdown";
-import NavbarContainer from "./navbar-container";
+import Link from 'next/link';
+import ThemeToggle from '../theme/theme-toggle';
+import AvatarDropdown from './avatar-dropdown';
+import NavbarContainer from './navbar-container';
 
 export default function Navbar() {
   return (

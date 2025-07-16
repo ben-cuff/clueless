@@ -1,12 +1,12 @@
-import { DifficultyEnum } from "@/constants/difficulties";
-import { InterviewWithFeedback } from "@/types/interview";
-import { Question } from "@/types/question";
-import { Nullable } from "@/types/util";
-import { Company, Goal, Topic } from "@prisma/client";
-import { millisecondsInDay } from "date-fns/constants";
-import { getCompanyWeights } from "./company";
-import { getDifficultyWeights } from "./difficulty";
-import { getTopicWeights } from "./topic";
+import { DifficultyEnum } from '@/constants/difficulties';
+import { InterviewWithFeedback } from '@/types/interview';
+import { Question } from '@/types/question';
+import { Nullable } from '@/types/util';
+import { Company, Goal, Topic } from '@prisma/client';
+import { millisecondsInDay } from 'date-fns/constants';
+import { getCompanyWeights } from './company';
+import { getDifficultyWeights } from './difficulty';
+import { getTopicWeights } from './topic';
 
 const TOPICS_SCALER = 5;
 const DIFFICULTY_SCALER = 1;

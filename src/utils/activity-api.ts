@@ -1,21 +1,21 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { Activity } from "@prisma/client";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { Activity } from '@prisma/client';
+import { errorLog } from './logger';
 
 export const ActivityAPI = {
-  updateActivity: async (userId: number, type: "seconds" | "questions") => {
+  updateActivity: async (userId: number, type: 'seconds' | 'questions') => {
     const body: { questions?: boolean } = {};
 
-    if (type === "questions") {
+    if (type === 'questions') {
       body.questions = true;
     }
 
     const response = await fetch(
       CLUELESS_API_ROUTES.activityWithUserId(userId),
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...body,
@@ -24,7 +24,7 @@ export const ActivityAPI = {
     );
 
     if (!response.ok) {
-      errorLog("Failed to update activity: " + response.statusText);
+      errorLog('Failed to update activity: ' + response.statusText);
       return;
     }
 
@@ -36,12 +36,12 @@ export const ActivityAPI = {
     const response = await fetch(
       CLUELESS_API_ROUTES.activityWithUserId(userId),
       {
-        method: "GET",
+        method: 'GET',
       }
     );
 
     if (!response.ok) {
-      errorLog("Failed to fetch activity: " + response.statusText);
+      errorLog('Failed to fetch activity: ' + response.statusText);
       return;
     }
 

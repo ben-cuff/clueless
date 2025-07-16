@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { LanguageOption } from "@/constants/language-options";
-import useCodeOutput from "@/hooks/use-code-output";
-import { Question_Extended } from "@/types/question";
-import { useContext, useEffect } from "react";
-import { FeedbackContext } from "../providers/feedback-provider";
-import { Button } from "../ui/button";
+import { LanguageOption } from '@/constants/language-options';
+import useCodeOutput from '@/hooks/use-code-output';
+import { Question_Extended } from '@/types/question';
+import { useContext, useEffect } from 'react';
+import { FeedbackContext } from '../providers/feedback-provider';
+import { Button } from '../ui/button';
 
 export default function OutputArea({
   question,
@@ -27,8 +27,8 @@ export default function OutputArea({
 
   useEffect(() => {
     const outputMessage = `Here is the latest code output:\n\n${
-      output.stdout ? `Output:\n${output.stdout}\n` : ""
-    }${output.stderr ? `Errors:\n${output.stderr}\n` : ""}`;
+      output.stdout ? `Output:\n${output.stdout}\n` : ''
+    }${output.stderr ? `Errors:\n${output.stderr}\n` : ''}`;
 
     if (output.status.id !== 0) {
       handleOutputChange(outputMessage);
@@ -46,7 +46,7 @@ export default function OutputArea({
           onClick={handleSubmitCode}
           disabled={isLoading || isFeedback}
         >
-          {isLoading ? "Submitting..." : "Run Testcases"}
+          {isLoading ? 'Submitting...' : 'Run Testcases'}
         </Button>
       </div>
       <pre className="p-4 w-full">
@@ -57,7 +57,7 @@ export default function OutputArea({
             {output.stderr && <div>Errors: {output.stderr}</div>}
           </div>
         ) : (
-          "Your testcase output will appear here"
+          'Your testcase output will appear here'
         )}
       </pre>
     </div>

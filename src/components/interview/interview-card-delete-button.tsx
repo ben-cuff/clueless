@@ -1,5 +1,5 @@
-import { Interview } from "@/types/interview";
-import { Button } from "../ui/button";
+import { Interview } from '@/types/interview';
+import { Button } from '../ui/button';
 
 export default function InterviewCardDeleteButton({
   interview,

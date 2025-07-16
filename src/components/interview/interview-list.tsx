@@ -1,8 +1,8 @@
-import { Interview } from "@/types/interview";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../error-fallback";
-import InterviewCard from "./interview-card";
+import { Interview } from '@/types/interview';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
+import InterviewCard from './interview-card';
 
 export default function InterviewList({
   pastInterviewData,

@@ -1,9 +1,9 @@
-import AlertClient from "@/components/alert-client";
-import ActivityHeatmap from "@/components/home/activity-heatmap";
-import LandingCard from "@/components/landing-card";
-import { NotificationProvider } from "@/components/providers/notifications-provider";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/options";
+import AlertClient from '@/components/alert-client';
+import ActivityHeatmap from '@/components/home/activity-heatmap';
+import LandingCard from '@/components/landing-card';
+import { NotificationProvider } from '@/components/providers/notifications-provider';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/options';
 
 export default async function Home({
   searchParams,

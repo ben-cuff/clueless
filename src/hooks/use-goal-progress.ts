@@ -1,9 +1,9 @@
-import { UserIdContext } from "@/components/providers/user-id-provider";
-import { GoalProgress } from "@/types/goal-progress";
-import { Nullable } from "@/types/util";
-import { GoalsAPI } from "@/utils/goals-api";
-import { Goal } from "@prisma/client";
-import { useContext, useEffect, useState } from "react";
+import { UserIdContext } from '@/components/providers/user-id-provider';
+import { GoalProgress } from '@/types/goal-progress';
+import { Nullable } from '@/types/util';
+import { GoalsAPI } from '@/utils/goals-api';
+import { Goal } from '@prisma/client';
+import { useContext, useEffect, useState } from 'react';
 
 export default function useGoalProgress() {
   const [goalProgress, setGoalProgress] =

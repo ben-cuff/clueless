@@ -1,10 +1,10 @@
-import { COMPANY_LIST, CompanyInfo } from "@/constants/companies";
-import { TOPIC_LIST, TopicInfo } from "@/constants/topics";
-import { Optional } from "@/types/util";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { MultiSelect } from "../ui/multi-select";
-import DifficultySelect from "./difficulty-select";
+import { COMPANY_LIST, CompanyInfo } from '@/constants/companies';
+import { TOPIC_LIST, TopicInfo } from '@/constants/topics';
+import { Optional } from '@/types/util';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { MultiSelect } from '../ui/multi-select';
+import DifficultySelect from './difficulty-select';
 
 export default function QuestionsHeader({
   handleSearchInputChange,

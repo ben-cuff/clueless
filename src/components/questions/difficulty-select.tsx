@@ -1,11 +1,11 @@
-import { DIFFICULTY_LIST } from "@/constants/difficulties";
+import { DIFFICULTY_LIST } from '@/constants/difficulties';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from '../ui/select';
 
 export default function DifficultySelect({
   handleDifficultySelectChange,
@@ -18,7 +18,7 @@ export default function DifficultySelect({
         <SelectValue placeholder="Select Difficulty" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={"none"}>All</SelectItem>
+        <SelectItem value={'none'}>All</SelectItem>
         {DIFFICULTY_LIST.map((difficulty) => (
           <SelectItem key={difficulty.id} value={difficulty.id}>
             {difficulty.readable}

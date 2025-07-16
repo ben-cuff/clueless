@@ -1,7 +1,7 @@
-import { CLUELESS_API_ROUTES } from "@/constants/api-urls";
-import { SYSTEM_MESSAGE_TEXT } from "@/constants/prompt-fillers";
-import { Message } from "@/types/message";
-import { errorLog } from "./logger";
+import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { SYSTEM_MESSAGE_TEXT } from '@/constants/prompt-fillers';
+import { Message } from '@/types/message';
+import { errorLog } from './logger';
 
 export const chatAPI = {
   getGeminiResponse: async (
@@ -11,7 +11,7 @@ export const chatAPI = {
   ) => {
     try {
       const systemMessage = {
-        role: "model",
+        role: 'model',
         parts: [
           {
             text: SYSTEM_MESSAGE_TEXT,
@@ -26,9 +26,9 @@ export const chatAPI = {
       ];
 
       const response = await fetch(CLUELESS_API_ROUTES.chat, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messages: newMessagesWithSystemAndUser,
@@ -38,16 +38,16 @@ export const chatAPI = {
 
       if (!response.ok) {
         const errorData = await response.json();
-        errorLog("Chat API error: " + errorData.error);
+        errorLog('Chat API error: ' + errorData.error);
       }
 
       if (!response.body) {
-        errorLog("No response body");
+        errorLog('No response body');
       }
 
       return response;
     } catch {
-      alert("An unexpected error occurred");
+      alert('An unexpected error occurred');
     }
   },
 };

@@ -1,7 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import UserIdProvider from "./providers/user-id-provider";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import UserIdProvider from './providers/user-id-provider';
 
 export default async function RouteProtector({
   children,
@@ -11,7 +11,7 @@ export default async function RouteProtector({
   const session = await getServerSession(authOptions);
 
   if (!session?.user.id) {
-    redirect("/?error=unauthenticated");
+    redirect('/?error=unauthenticated');
   }
 
   return <UserIdProvider value={session.user.id}>{children}</UserIdProvider>;

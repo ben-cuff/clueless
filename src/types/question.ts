@@ -1,4 +1,4 @@
-import { Company, Topic } from "@prisma/client";
+import { Company, Topic } from '@prisma/client';
 
 export interface Question {
   accuracy: number;
@@ -42,4 +42,4 @@ export interface QuestionWithRowNumber extends Question {
   row_num?: bigint | number;
 }
 
-export type TestcasesKey = keyof Question_Extended["testCases"];
+export type TestcasesKey = keyof Question_Extended['testCases'];

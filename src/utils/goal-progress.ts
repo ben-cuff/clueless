@@ -1,14 +1,14 @@
-import { ACTIVITY_FIELD_MAP } from "@/constants/goals";
-import { prismaLib } from "@/lib/prisma";
-import redisLib from "@/lib/redis";
-import { NotificationType } from "@/types/notifications";
-import { Nullable, Optional } from "@/types/util";
-import { Activity, Goal, GoalType } from "@prisma/client";
-import { minutesInHour, secondsInDay } from "date-fns/constants";
+import { ACTIVITY_FIELD_MAP } from '@/constants/goals';
+import { prismaLib } from '@/lib/prisma';
+import redisLib from '@/lib/redis';
+import { NotificationType } from '@/types/notifications';
+import { Nullable, Optional } from '@/types/util';
+import { Activity, Goal, GoalType } from '@prisma/client';
+import { minutesInHour, secondsInDay } from 'date-fns/constants';
 import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
-} from "./activities-progress";
+} from './activities-progress';
 
 async function checkIfGoalProgressNotification(
   userId: number,
@@ -21,7 +21,7 @@ async function checkIfGoalProgressNotification(
       where: { userId },
     });
   } catch (error) {
-    throw new Error("Unexpected error during goal retrieval: " + error);
+    throw new Error('Unexpected error during goal retrieval: ' + error);
   }
 
   if (!goal) {
@@ -38,11 +38,11 @@ async function checkIfGoalProgressNotification(
         userId,
       },
       orderBy: {
-        date: "desc",
+        date: 'desc',
       },
     });
   } catch (error) {
-    throw new Error("Unexpected error during activity retrieval: " + error);
+    throw new Error('Unexpected error during activity retrieval: ' + error);
   }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
@@ -66,19 +66,19 @@ async function checkIfGoalProgressNotification(
       if (cachedNotificationCount) {
         await redisLib.incr(cacheKey);
       } else {
-        await redisLib.set(cacheKey, "1", {
+        await redisLib.set(cacheKey, '1', {
           EX: secondsInDay,
         });
       }
     } catch (error) {
       throw new Error(
-        "Failed to set cache key for goal progress notification: " + error
+        'Failed to set cache key for goal progress notification: ' + error
       );
     }
 
     await redisLib
       .publish(
-        "notifications",
+        'notifications',
         JSON.stringify({
           text: progressNotification,
           type: NotificationType.GOAL_PROGRESS,
@@ -87,7 +87,7 @@ async function checkIfGoalProgressNotification(
       )
       .catch((error) => {
         throw new Error(
-          "Failed to publish goal progress notification: " + error
+          'Failed to publish goal progress notification: ' + error
         );
       });
 
@@ -135,7 +135,7 @@ function getProgressNotificationForGoalType(
   const progressPercentage = (totalProgress / targetValue) * 100;
 
   if (totalProgress >= targetValue) {
-    return "Goal completed! Update it to get a new one.";
+    return 'Goal completed! Update it to get a new one.';
   }
 
   // if the user is 10% or more behind the time progress percentage, notify them
@@ -146,7 +146,7 @@ function getProgressNotificationForGoalType(
 
     const message =
       `You're falling behind on your goal by ${deficit}%!` +
-      "\n" +
+      '\n' +
       progressString;
     return message;
   }

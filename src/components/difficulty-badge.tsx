@@ -1,4 +1,4 @@
-import { READABLE_DIFFICULTIES } from "@/constants/difficulties";
+import { READABLE_DIFFICULTIES } from '@/constants/difficulties';
 
 export default function DifficultyBadge({
   difficulty,
@@ -7,10 +7,10 @@ export default function DifficultyBadge({
 }) {
   const difficultyStyledColors =
     difficulty === 1
-      ? "bg-green-300 text-green-800"
+      ? 'bg-green-300 text-green-800'
       : difficulty === 2
-      ? "bg-yellow-300 text-yellow-800"
-      : "bg-red-300 text-red-800";
+      ? 'bg-yellow-300 text-yellow-800'
+      : 'bg-red-300 text-red-800';
 
   return (
     <div
