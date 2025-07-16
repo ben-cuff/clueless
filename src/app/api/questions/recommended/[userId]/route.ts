@@ -3,7 +3,13 @@ import { DifficultyEnum } from "@/constants/difficulties";
 import { prismaLib } from "@/lib/prisma";
 import redisLib from "@/lib/redis";
 import { Question } from "@/types/question";
-import { ForbiddenError, get200Response, get400Response } from "@/utils/api-responses";
+import { Nullable } from "@/types/util";
+import {
+  ForbiddenError,
+  get200Response,
+  get400Response,
+} from "@/utils/api-responses";
+import { Company, Topic } from "@prisma/client";
 import { millisecondsInWeek } from "date-fns/constants";
 import { getServerSession } from "next-auth";
 
