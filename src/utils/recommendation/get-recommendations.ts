@@ -9,7 +9,7 @@ import {
 import { InterviewWithFeedback } from '@/types/interview';
 import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
-import { Company, Goal, Topic } from '@prisma/client';
+import { Company, Topic } from '@prisma/client';
 import { millisecondsInDay } from 'date-fns/constants';
 import { getCompanyWeights } from './company';
 import { getDifficultyWeights } from './difficulty';
@@ -18,7 +18,7 @@ import { getTopicWeights } from './topic';
 function getRecommendedQuestions(
   interviews: InterviewWithFeedback[],
   questions: QuestionPartial[],
-  goal: Nullable<Goal>
+  companies: Nullable<Company[]>
 ): QuestionPartial[] {
   // Filter interviews to only include those with feedback given in the last 30 days
   const recentInterviews = getRecentValidInterviews(interviews);
@@ -28,7 +28,7 @@ function getRecommendedQuestions(
 
   const topicWeights = getTopicWeights(recentInterviews);
   const difficultyWeights = getDifficultyWeights(recentInterviews);
-  const companyWeights = getCompanyWeights(goal, recentInterviews);
+  const companyWeights = getCompanyWeights(companies, recentInterviews);
 
   if (difficultyWeights == null) {
     return CORE_QUESTIONS as QuestionPartial[];
@@ -55,6 +55,7 @@ function getRecentValidInterviews(
 
   return interviews.filter(
     (interview) =>
+      interview.feedback != null &&
       interview.feedback?.feedbackNumber !== NO_FEEDBACK_NUMBER &&
       interview.updatedAt >
         new Date(Date.now() - millisecondsInDay * LONGEST_VALID_INTERVIEW_DAYS) // within the last 30 days

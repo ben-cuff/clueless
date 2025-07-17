@@ -1,18 +1,18 @@
 import { InterviewWithFeedback } from '@/types/interview';
 import { Nullable } from '@/types/util';
-import { Company, Goal } from '@prisma/client';
+import { Company } from '@prisma/client';
 
 function getCompanyWeights(
-  goal: Nullable<Goal>,
+  companies: Nullable<Company[]>,
   interviews: InterviewWithFeedback[]
 ): Map<Company, number> {
   const companyWeights = new Map<Company, number>();
 
-  if (goal == null || goal?.companies.length === 0) {
+  if (companies == null || companies.length === 0) {
     return companyWeights;
   }
 
-  goal.companies.forEach((company) => {
+  companies.forEach((company) => {
     companyWeights.set(company, 1);
   });
 

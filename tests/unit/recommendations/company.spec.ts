@@ -5,7 +5,7 @@ import {
   getRecentInterviewsWithCompaniesCount,
   reduceCompanyWeightsBasedOnCompanyCounts,
 } from '@/utils/recommendation/company';
-import { Company, Goal, GoalType } from '@prisma/client';
+import { Company } from '@prisma/client';
 
 describe('getRecentInterviewsWithCompaniesCount', () => {
   it('counts companies across all interviews', () => {
@@ -122,31 +122,18 @@ describe('reduceCompanyWeightsBasedOnCompanyCounts', () => {
 });
 
 describe('getCompanyWeights', () => {
-  const mockGoal = (companies: Company[]): Goal => ({
-    companies,
-    id: '',
-    userId: 0,
-    goalType: GoalType.QUESTION,
-    value: 0,
-    endDate: new Date(),
-    beginAt: new Date(),
-  });
-
   it('returns empty map if goal is null', () => {
     const result = getCompanyWeights(null, []);
     expect(result.size).toBe(0);
   });
 
   it('returns empty map if goal.companies is empty', () => {
-    const result = getCompanyWeights(mockGoal([]), []);
+    const result = getCompanyWeights([], []);
     expect(result.size).toBe(0);
   });
 
   it('returns map with weight 1 for each company in goal', () => {
-    const result = getCompanyWeights(
-      mockGoal([Company.AMAZON, Company.GOOGLE]),
-      []
-    );
+    const result = getCompanyWeights([Company.AMAZON, Company.GOOGLE], []);
     expect(result.get(Company.AMAZON)).toBe(1);
     expect(result.get(Company.GOOGLE)).toBe(1);
   });
@@ -175,7 +162,7 @@ describe('getCompanyWeights', () => {
       },
     ];
     const result = getCompanyWeights(
-      mockGoal([Company.AMAZON, Company.GOOGLE]),
+      [Company.AMAZON, Company.GOOGLE],
       interviews
     );
     expect(result.get(Company.AMAZON)).toBe(Math.pow(0.75, 1));

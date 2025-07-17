@@ -489,6 +489,22 @@ describe('getRecentValidInterviews', () => {
     ]);
     expect(result).toEqual([validRecent]);
   });
+
+  it('filters out interviews with null feedback', () => {
+    const now = new Date();
+    const interviewWithNullFeedback: InterviewWithFeedback = {
+      questionNumber: 17,
+      updatedAt: now,
+      feedback: null,
+      question: {
+        topics: [],
+        difficulty: DifficultyEnum.EASY,
+        companies: [],
+      },
+    };
+    const result = getRecentValidInterviews([interviewWithNullFeedback]);
+    expect(result).toEqual([]);
+  });
 });
 
 describe('removeRecentQuestions', () => {

@@ -61,7 +61,7 @@ export async function GET(
             feedback: true,
           },
         },
-        goal: true,
+        companies: true,
       },
     });
   } catch (error) {
@@ -70,7 +70,7 @@ export async function GET(
   }
 
   const interviews: InterviewWithFeedback[] = user?.interview ?? [];
-  const goal = user?.goal ?? null;
+  const companies = user?.companies ?? null;
 
   const NUM_RANDOM_QUESTIONS = 1000;
 
@@ -99,7 +99,7 @@ export async function GET(
   const recommendedQuestions = getRecommendedQuestions(
     interviews,
     questions,
-    goal
+    companies
   );
 
   try {
