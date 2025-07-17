@@ -13,7 +13,7 @@ const INITIAL_MESSAGE_UNTIMED =
   'If you get stuck, you can ask for hints or clarifications at any time.';
 
 const INITIAL_MESSAGE_TIMED =
-  'Welcome to the interview! You have a limited time to complete this interview. ' +
+  'Welcome to the timed interview! You have a limited time to complete this interview. ' +
   'You cannot resume this interview if you happen to leave the page. ' +
   'Please talk through your approach to the problem before you start coding. ' +
   'Explaining your thought process and communication skills are an important part of the interview. ' +
