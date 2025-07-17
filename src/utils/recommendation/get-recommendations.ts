@@ -1,5 +1,11 @@
 import { CORE_QUESTIONS } from '@/constants/core-questions';
 import { DifficultyEnum } from '@/constants/difficulties';
+import {
+  COMPANY_SCALER,
+  DIFFICULTY_SCALER,
+  NOISE_SCALER,
+  TOPICS_SCALER,
+} from '@/constants/recommendation-scalers';
 import { InterviewWithFeedback } from '@/types/interview';
 import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
@@ -8,11 +14,6 @@ import { millisecondsInDay } from 'date-fns/constants';
 import { getCompanyWeights } from './company';
 import { getDifficultyWeights } from './difficulty';
 import { getTopicWeights } from './topic';
-
-const TOPICS_SCALER = 5;
-const DIFFICULTY_SCALER = 1;
-const COMPANY_SCALER = 10;
-const NOISE_SCALER = 1;
 
 function getRecommendedQuestions(
   interviews: InterviewWithFeedback[],
@@ -85,7 +86,7 @@ function getSortedWeightedQuestions(
   topicWeights: Map<Topic, number>,
   difficultyWeights: Map<DifficultyEnum, number>,
   companyWeights: Map<Company, number>
-): QuestionPartial[] {
+): QuestionPartial[] & { weight: number }[] {
   const weightedQuestions = questions.map((question) => {
     return getTotalWeightForQuestion(
       question,
@@ -129,4 +130,11 @@ function getTotalWeightForQuestion(
   };
 }
 
-export { getRecommendedQuestions };
+export {
+  getRecentValidInterviews,
+  getRecommendedQuestions,
+  getSortedWeightedQuestions,
+  getTotalWeightForQuestion,
+  NOISE_SCALER,
+  removeRecentQuestions,
+};

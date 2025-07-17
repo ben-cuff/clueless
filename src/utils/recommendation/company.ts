@@ -57,13 +57,21 @@ function reduceCompanyWeightsBasedOnCompanyCounts(
   const COMPANY_INTERVIEW_THRESHOLD = 1;
 
   for (const [company, count] of recentCompanyCounts.entries()) {
-    if (count >= COMPANY_INTERVIEW_THRESHOLD && companyWeights.has(company)) {
+    if (count > COMPANY_INTERVIEW_THRESHOLD && companyWeights.has(company)) {
       companyWeights.set(
         company,
-        companyWeights.get(company)! * INTERVIEW_COMPANY_PENALTY
+        companyWeights.get(company)! *
+          Math.pow(
+            INTERVIEW_COMPANY_PENALTY,
+            count - COMPANY_INTERVIEW_THRESHOLD
+          )
       );
     }
   }
 }
 
-export { getCompanyWeights };
+export {
+  getCompanyWeights,
+  getRecentInterviewsWithCompaniesCount,
+  reduceCompanyWeightsBasedOnCompanyCounts,
+};
