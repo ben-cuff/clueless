@@ -34,12 +34,12 @@ export default function OutputArea({
     if (output.status.id !== 0) {
       handleOutputChange(outputMessage);
     }
-    // This is a workaround for now to stop and infinite loop
+    // This is a workaround to stop infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[100px]">
+    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[200px]">
       <div>
         <Button
           className="mt-2"

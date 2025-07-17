@@ -25,7 +25,7 @@ export default function CodeEditor({
       }
     >
       <Editor
-        height={'700px'}
+        height={'600px'}
         language={languageValue}
         theme={theme}
         value={code}
