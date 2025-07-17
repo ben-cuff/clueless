@@ -1,5 +1,5 @@
 import { READABLE_TOPICS } from '@/constants/topics';
-import { Question } from '@/types/question';
+import { Question } from '@prisma/client';
 import { Badge } from '../ui/badge';
 
 export default function TopicsBadges({

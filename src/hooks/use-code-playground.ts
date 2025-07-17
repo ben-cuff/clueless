@@ -5,15 +5,15 @@ import {
   PYTHON_INDEX,
 } from '@/constants/language-options';
 import { defineTheme } from '@/lib/define-theme';
-import { Question_Extended } from '@/types/question';
 import { Theme } from '@/types/theme';
 import { Optional } from '@/types/util';
 import { interviewAPI } from '@/utils/interview-api';
+import { Question } from '@prisma/client';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function useCodePlayground(
-  question: Question_Extended,
+  question: Question,
   interviewId: string
 ) {
   const userId = useContext(UserIdContext);
@@ -39,7 +39,7 @@ export default function useCodePlayground(
           languageOptions[PYTHON_INDEX] // Default to Python if not found
       );
       setCode(
-        question.starterCode[language as keyof typeof question.starterCode] ||
+        question.starterCode?.[language as keyof typeof question.starterCode] ||
           ''
       );
     },

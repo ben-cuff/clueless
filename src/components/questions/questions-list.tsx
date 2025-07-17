@@ -1,4 +1,4 @@
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
 import QuestionCard from './question-card';
@@ -6,7 +6,7 @@ import QuestionCard from './question-card';
 export default function QuestionsList({
   questionsData,
 }: {
-  questionsData: Question[];
+  questionsData: QuestionPartial[];
 }) {
   return (
     <ErrorBoundary

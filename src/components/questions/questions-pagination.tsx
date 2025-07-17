@@ -1,4 +1,4 @@
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import PaginationDropdown from './pagination-dropdown';
 import PaginationSelect from './pagination-select';
 
@@ -13,7 +13,7 @@ export default function QuestionsPagination({
   currentPage: number;
   handlePreviousPage: () => void;
   handleNextPage: () => void;
-  questionsData: Question[];
+  questionsData: QuestionPartial[];
   takeSize: number;
   handleTakeSizeChange: (size: number) => void;
 }) {

@@ -1,6 +1,7 @@
+import { CORE_QUESTIONS } from '@/constants/core-questions';
 import { DifficultyEnum } from '@/constants/difficulties';
 import { InterviewWithFeedback } from '@/types/interview';
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
 import { Company, Goal, Topic } from '@prisma/client';
 import { millisecondsInDay } from 'date-fns/constants';
@@ -15,9 +16,9 @@ const NOISE_SCALER = 1;
 
 function getRecommendedQuestions(
   interviews: InterviewWithFeedback[],
-  questions: Question[],
+  questions: QuestionPartial[],
   goal: Nullable<Goal>
-): Question[] {
+): QuestionPartial[] {
   // Filter interviews to only include those with feedback given in the last 30 days
   const recentInterviews = getRecentValidInterviews(interviews);
 
@@ -27,6 +28,10 @@ function getRecommendedQuestions(
   const topicWeights = getTopicWeights(recentInterviews);
   const difficultyWeights = getDifficultyWeights(recentInterviews);
   const companyWeights = getCompanyWeights(goal, recentInterviews);
+
+  if (difficultyWeights == null) {
+    return CORE_QUESTIONS as QuestionPartial[];
+  }
 
   const weightedQuestions = getSortedWeightedQuestions(
     filteredQuestions,
@@ -57,7 +62,7 @@ function getRecentValidInterviews(
 
 function removeRecentQuestions(
   interviews: InterviewWithFeedback[],
-  questions: Question[]
+  questions: QuestionPartial[]
 ) {
   return questions.filter(
     (question) =>
@@ -76,11 +81,11 @@ function removeRecentQuestions(
  * After calculating the weights for all questions, they are sorted in descending order based on their weights.
  */
 function getSortedWeightedQuestions(
-  questions: Question[],
+  questions: QuestionPartial[],
   topicWeights: Map<Topic, number>,
   difficultyWeights: Map<DifficultyEnum, number>,
   companyWeights: Map<Company, number>
-): Question[] {
+): QuestionPartial[] {
   const weightedQuestions = questions.map((question) => {
     return getTotalWeightForQuestion(
       question,
@@ -96,11 +101,11 @@ function getSortedWeightedQuestions(
 
 // Calculates the total weight for a question based on its topics, difficulty, companies and scalers.
 function getTotalWeightForQuestion(
-  question: Question,
+  question: QuestionPartial,
   topicWeights: Map<Topic, number>,
   difficultyWeights: Map<DifficultyEnum, number>,
   companyWeights: Map<Company, number>
-): Question & { weight: number } {
+): QuestionPartial & { weight: number } {
   let totalWeight = 0;
 
   const numTopics = question.topics.length || 1;

@@ -1,11 +1,12 @@
 import { LanguageOption } from '@/constants/language-options';
 import { CodeOutput } from '@/types/code-output';
-import { Question_Extended, TestcasesKey } from '@/types/question';
+import { TestcasesKey } from '@/types/question';
 import { codeExecutionAPI } from '@/utils/code-execution-api';
+import { Question } from '@prisma/client';
 import { useCallback, useState } from 'react';
 
 export default function useCodeOutput(
-  question: Question_Extended,
+  question: Question,
   language: LanguageOption,
   code: string
 ) {
@@ -21,7 +22,7 @@ export default function useCodeOutput(
     try {
       const result = await codeExecutionAPI.runCode(
         code,
-        question.testCases[language.value as TestcasesKey] ?? '',
+        question.testCases?.[language.value as TestcasesKey] ?? '',
         language
       );
 

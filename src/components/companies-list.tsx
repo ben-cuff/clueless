@@ -1,5 +1,5 @@
 import { READABLE_COMPANIES } from '@/constants/companies';
-import { Question } from '@/types/question';
+import { Question } from '@prisma/client';
 
 export default function CompaniesList({
   companies,

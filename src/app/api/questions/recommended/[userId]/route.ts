@@ -2,7 +2,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { prismaLib } from '@/lib/prisma';
 import redisLib from '@/lib/redis';
 import { InterviewWithFeedback } from '@/types/interview';
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import {
   ForbiddenError,
   get200Response,
@@ -74,7 +74,7 @@ export async function GET(
 
   const NUM_RANDOM_QUESTIONS = 1000;
 
-  let questions: Question[] = [];
+  let questions: QuestionPartial[] = [];
   try {
     // prisma does not support random ordering directly, so we use a raw query
     questions = await prismaLib.$queryRawUnsafe(
@@ -85,7 +85,10 @@ export async function GET(
           "difficulty",
           "topics",
           "companies",
-          "titleSlug" 
+          "titleSlug",
+          "prompt",
+          "createdAt",
+          "updatedAt"
          FROM "Question" ORDER BY RANDOM() LIMIT ${NUM_RANDOM_QUESTIONS};`
     );
   } catch (error) {

@@ -3,7 +3,7 @@
 import { LanguageOption } from '@/constants/language-options';
 import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
 import useCodeOutput from '@/hooks/use-code-output';
-import { Question_Extended } from '@/types/question';
+import { Question } from '@prisma/client';
 import { useContext, useEffect } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
@@ -14,7 +14,7 @@ export default function OutputArea({
   code,
   handleOutputChange,
 }: {
-  question: Question_Extended;
+  question: Question;
   language: LanguageOption;
   code: string;
   handleOutputChange: (outputMessage: string) => Promise<void>;

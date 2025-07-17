@@ -1,13 +1,23 @@
 import { DifficultyEnum } from '@/constants/difficulties';
 import { InterviewWithFeedback } from '@/types/interview';
+import { Nullable } from '@/types/util';
+
+const CORE_QUESTION_THRESHOLD = 0.6;
 
 function getDifficultyWeights(
   interviews: InterviewWithFeedback[]
-): Map<DifficultyEnum, number> {
+): Nullable<Map<DifficultyEnum, number>> {
   const struggleScores: Record<DifficultyEnum, number> =
     getStruggleScores(interviews);
 
   const struggles = getStruggles(struggleScores);
+
+  if (
+    struggles.length > 1 &&
+    struggleScores[DifficultyEnum.EASY] > CORE_QUESTION_THRESHOLD
+  ) {
+    return null;
+  }
 
   const difficultyWeights = new Map<DifficultyEnum, number>();
 
