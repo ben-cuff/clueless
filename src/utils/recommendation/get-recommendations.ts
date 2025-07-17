@@ -20,6 +20,8 @@ function getRecommendedQuestions(
   questions: QuestionPartial[],
   companies: Nullable<Company[]>
 ): QuestionPartial[] {
+  const NUM_OF_RECOMMENDED_QUESTIONS = 5;
+
   // Filter interviews to only include those with feedback given in the last 30 days
   const recentInterviews = getRecentValidInterviews(interviews);
 
@@ -42,7 +44,10 @@ function getRecommendedQuestions(
   );
 
   // get the top 5 questions based on the highest weights
-  const recommendedQuestions = weightedQuestions.slice(0, 5);
+  const recommendedQuestions = weightedQuestions.slice(
+    0,
+    NUM_OF_RECOMMENDED_QUESTIONS
+  );
 
   return recommendedQuestions;
 }

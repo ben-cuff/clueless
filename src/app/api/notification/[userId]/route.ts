@@ -1,3 +1,27 @@
+/**
+ * This file contains the API route for handling notifications for a specific user.
+ * There are two main types of notifications:
+ * 1. User-specific notifications
+ * 2. Global notifications
+ * 
+ * There are further 2 major user specific notifications:
+ * 1. Goal progress notifications
+ * 2. Streak notifications
+ * 
+ * Goal progress notifications are designed to be send at most 3 times per day, and no more than once every 2 hours.
+ * Streak notifications are designed to be sent once per day, if the user has a streak.
+ * 
+ * For global notifications, they are sent to all users and are not user-specific.
+ * 
+ * The GET method retrieves the notifications for a user as well as checking if there are any global notifications.
+ * It also checks if the user has already viewed the global notification, as these cannot be deleted after being viewed.
+ * Global notifications are stored for 1 day and if the user has not viewed them after they expire, they will never see them.
+ * 
+ * The POST method is used to trigger the notifications based on the user's progress and streak.
+ * It checks if the user has made progress on their goals or if they have a streak, and publishes the notifications to the notification worker.
+ */
+
+
 import redisLib from '@/lib/redis';
 import { NotificationItem } from '@/types/notifications';
 import {
