@@ -1,6 +1,6 @@
 import { ErrorBoundary } from 'react-error-boundary';
+import GoalAddCompany from '../add-company';
 import ErrorFallback from '../error-fallback';
-import GoalAddCompany from './add-company';
 import GoalProgress from './goal-progress';
 import UpdateGoal from './update-goal';
 

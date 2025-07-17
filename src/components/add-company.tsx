@@ -3,11 +3,11 @@
 import { COMPANY_LIST } from '@/constants/companies';
 import useAddCompany from '@/hooks/use-add-company';
 import { ErrorBoundary } from 'react-error-boundary';
-import CompaniesList from '../companies-list';
-import ErrorFallback from '../error-fallback';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader } from '../ui/card';
-import { MultiSelect } from '../ui/multi-select';
+import CompaniesList from './companies-list';
+import ErrorFallback from './error-fallback';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader } from './ui/card';
+import { MultiSelect } from './ui/multi-select';
 
 export default function AddCompany() {
   const {
