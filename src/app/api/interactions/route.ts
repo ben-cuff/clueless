@@ -9,9 +9,14 @@ export async function POST(req: Request) {
 
   const userId = session?.user.id;
 
-  const { pathname, eventName, value } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { pathname, eventName, value } = body;
 
   if (!eventName) {
     return get400Response('Missing eventName in request body');

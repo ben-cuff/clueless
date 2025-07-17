@@ -68,9 +68,13 @@ export async function POST(
     return get400Response('Invalid user ID');
   }
 
-  const { questions } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+  const { questions } = body;
 
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);

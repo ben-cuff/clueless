@@ -14,9 +14,14 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function POST(req: Request) {
-  const { userId, interviewId, feedback } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { userId, interviewId, feedback } = body;
 
   if (!interviewId || !feedback) {
     return get400Response('Missing required fields:  interviewId, feedback');

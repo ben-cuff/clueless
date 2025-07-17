@@ -28,12 +28,14 @@ export async function PATCH(
     return ForbiddenError;
   }
 
-  let companies;
+  let body;
   try {
-    ({ companies } = await req.json());
+    body = await req.json();
   } catch {
     return get400Response('Invalid JSON body');
   }
+
+  const { companies } = body;
 
   if (!Array.isArray(companies) || companies.length === 0) {
     return get400Response('You must provide a non-empty companies array');

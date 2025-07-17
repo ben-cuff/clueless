@@ -9,9 +9,14 @@ import { errorLog } from '@/utils/logger';
 import argon2 from 'argon2';
 
 export async function POST(req: Request) {
-  const { username, password } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { username, password } = body;
 
   if (!username || !password) {
     return get400Response('Username and password are required');

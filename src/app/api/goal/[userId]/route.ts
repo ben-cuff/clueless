@@ -33,9 +33,14 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { hours, questions, endDate } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { hours, questions, endDate } = body;
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
@@ -121,9 +126,14 @@ export async function PUT(
     return ForbiddenError;
   }
 
-  const { hours, questions, endDate } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { hours, questions, endDate } = body;
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(

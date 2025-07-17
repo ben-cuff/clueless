@@ -51,11 +51,14 @@ class StreamingTextResponse extends Response {
 }
 
 export async function POST(req: Request) {
-  const { messages, questionNumber, interviewId } = await req
-    .json()
-    .catch(() => {
-      return get400Response('Invalid JSON body');
-    });
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
+  const { messages, questionNumber, interviewId } = body;
 
   if (questionNumber && interviewId) {
     return get400Response(

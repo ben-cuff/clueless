@@ -20,6 +20,13 @@ import {
 } from '@prisma/client';
 
 export async function POST(req: Request) {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
   const {
     id,
     title,
@@ -33,9 +40,7 @@ export async function POST(req: Request) {
     difficulty,
     article,
     titleSlug,
-  } = await req.json().catch(() => {
-    return get400Response('Invalid JSON body');
-  });
+  } = body;
 
   const isValid =
     typeof id === 'number' &&
