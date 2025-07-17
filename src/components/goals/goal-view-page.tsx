@@ -1,3 +1,5 @@
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../error-fallback';
 import GoalAddCompany from './add-company';
 import GoalProgress from './goal-progress';
 import UpdateGoal from './update-goal';
@@ -8,12 +10,16 @@ export default function GoalViewPage({
   fetchGoal: () => Promise<void>;
 }) {
   return (
-    <div className="flex flex-row gap-6 m-6">
-      <div className="flex flex-col w-full">
-        <GoalProgress />
-        <GoalAddCompany />
+    <ErrorBoundary
+      fallback={<ErrorFallback text="An unexpected error occurred" />}
+    >
+      <div className="flex flex-row gap-6 m-6">
+        <div className="flex flex-col w-full">
+          <GoalProgress />
+          <GoalAddCompany />
+        </div>
+        <UpdateGoal fetchGoal={fetchGoal} />
       </div>
-      <UpdateGoal fetchGoal={fetchGoal} />
-    </div>
+    </ErrorBoundary>
   );
 }
