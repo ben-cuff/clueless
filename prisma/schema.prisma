@@ -21,20 +21,20 @@ model User {
   updatedAt      DateTime    @updatedAt
   activity       Activity[]
   interview      Interview[]
+  companies      Company[]
   goal           Goal?
 
   @@index([username])
 }
 
 model Goal {
-  id        String    @id @default(uuid())
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  goalType  GoalType  @default(QUESTION)
-  value     Int       @default(20)
-  companies Company[]
-  endDate   DateTime
-  beginAt   DateTime  @default(now())
+  id       String   @id @default(uuid())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalType GoalType @default(QUESTION)
+  value    Int      @default(20)
+  endDate  DateTime
+  beginAt  DateTime @default(now())
 
   @@unique([userId])
 }
