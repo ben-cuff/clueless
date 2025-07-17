@@ -7,6 +7,8 @@ const CLUELESS_API_ROUTES = {
   createAccount: `${BASE_URL}/api/auth/register`,
   login: `${BASE_URL}/api/auth/login`,
   accountWithUserId: (userId: number) => `${BASE_URL}/api/account/${userId}`,
+  accountWithUserIdWithCompany: (userId: number) =>
+    `${BASE_URL}/api/account/${userId}/company`,
   chat: `${BASE_URL}/api/chat`,
   codeExecution: `${BASE_URL}/api/run-code`,
   feedbackWithInterviewId: (interviewId: string) =>
@@ -25,8 +27,6 @@ const CLUELESS_API_ROUTES = {
     `${BASE_URL}/api/questions/recommended/${userId}`,
   activityWithUserId: (userId: number) => `${BASE_URL}/api/activity/${userId}`,
   goalWithUserId: (userId: number) => `${BASE_URL}/api/goal/${userId}`,
-  goalWithUserIdWithCompany: (userId: number) =>
-    `${BASE_URL}/api/goal/${userId}/company`,
   goalProgressWithUserId: (userId: number) =>
     `${BASE_URL}/api/goal/${userId}/progress`,
   notificationsWithUserId: (userId: number) =>
