@@ -93,7 +93,7 @@ export async function POST(req: Request) {
   let response;
   try {
     response = await ai.models.generateContentStream({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flashds',
       contents: messages,
     });
   } catch (error) {
@@ -103,8 +103,10 @@ export async function POST(req: Request) {
       'status' in error &&
       error.status === 429 // Rate limit exceeded
     ) {
+      errorLog('Rate limit exceeded for Google GenAI: ' + error);
       return get400Response('Rate limit exceeded. Please try again later.');
     }
+    errorLog('Error generating content from AI model: ' + error);
     return get400Response('Error generating content from AI model.');
   }
 
