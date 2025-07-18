@@ -93,7 +93,7 @@ export async function POST(req: Request) {
   let response;
   try {
     response = await ai.models.generateContentStream({
-      model: 'gemini-2.5-flashds',
+      model: 'gemini-2.5-flash',
       contents: messages,
     });
   } catch (error) {
