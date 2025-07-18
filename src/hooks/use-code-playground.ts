@@ -96,10 +96,10 @@ export default function useCodePlayground(
 
 const getThemeFromSystem = (systemTheme: string): Theme => {
   if (systemTheme === 'system') {
-    const prefersDark =
-      typeof window !== 'undefined' && window.matchMedia
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        : false;
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
+
     return prefersDark ? 'vs-dark' : 'light';
   } else {
     return systemTheme === 'dark' ? 'vs-dark' : 'light';
