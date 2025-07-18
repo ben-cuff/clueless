@@ -1,5 +1,6 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import { FEEDBACK_MESSAGE_TEXT } from '@/constants/prompt-fillers';
+import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { interviewAPI } from './interview-api';
 import { errorLog } from './logger';
