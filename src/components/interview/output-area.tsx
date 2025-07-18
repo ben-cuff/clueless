@@ -39,7 +39,7 @@ export default function OutputArea({
   }, [output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[200px]">
+    <div className="bg-card flex flex-col items-center rounded-lg max-h-[400px] min-h-[200px]">
       <div>
         <Button
           className="mt-2"
@@ -50,7 +50,7 @@ export default function OutputArea({
           {isLoading ? 'Submitting...' : 'Run Testcases'}
         </Button>
       </div>
-      <pre className="p-4 w-full">
+      <pre className="p-4 w-full max-w-200 overflow-scroll">
         {output.stdout || output.stderr || output.status ? (
           <div>
             {output.status && <div>Status: {output.status.description}</div>}
