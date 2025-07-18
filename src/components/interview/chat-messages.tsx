@@ -2,6 +2,7 @@ import {
   USER_SUBMITTED_CODE_MESSAGE,
   USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
 } from '@/constants/prompt-fillers';
+import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom';
 import { Message } from '@/types/message';
 import Markdown from 'react-markdown';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -9,6 +10,8 @@ import { CardContent } from '../ui/card';
 import { ScrollArea } from '../ui/scroll-area';
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
+  const { scrollAreaRef } = useAutoScrollToBottom(messages);
+
   const messagesWithoutOutput = messages.map((message) =>
     message.parts[0].text.startsWith(USER_SUBMITTED_CODE_MESSAGE)
       ? {
@@ -23,7 +26,7 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
   );
 
   return (
-    <ScrollArea className="overflow-y-auto h-full">
+    <ScrollArea className="overflow-y-auto h-full" ref={scrollAreaRef}>
       <CardContent className="p-6">
         <div className="flex flex-col gap-4">
           {messagesWithoutOutput.map((message, idx) => (
