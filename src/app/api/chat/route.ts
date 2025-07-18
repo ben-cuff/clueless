@@ -1,8 +1,8 @@
 import { prismaLib } from '@/lib/prisma';
-import { Question_Extended } from '@/types/question';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
 import { GoogleGenAI } from '@google/genai';
+import { Question } from '@prisma/client';
 
 type GenAIChunk = {
   candidates?: Array<{
@@ -51,11 +51,14 @@ class StreamingTextResponse extends Response {
 }
 
 export async function POST(req: Request) {
-  const { messages, questionNumber, interviewId } = await req
-    .json()
-    .catch(() => {
-      return get400Response('Invalid JSON body');
-    });
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
+  const { messages, questionNumber, interviewId } = body;
 
   if (questionNumber && interviewId) {
     return get400Response(
@@ -123,7 +126,7 @@ async function getPromptFromQuestionNumber(id: number) {
     throw new Error('Question not found');
   }
 
-  return getMessageFromQuestion(question as Question_Extended);
+  return getMessageFromQuestion(question);
 }
 
 async function getPromptFromInterviewId(interviewId: string) {
@@ -144,10 +147,10 @@ async function getPromptFromInterviewId(interviewId: string) {
     throw new Error('Interview not found');
   }
 
-  return getMessageFromQuestion(interview.question as Question_Extended);
+  return getMessageFromQuestion(interview.question);
 }
 
-function getMessageFromQuestion(question: Question_Extended) {
+function getMessageFromQuestion(question: Partial<Question>) {
   let message = '';
   if (question.title) {
     message += `Title: ${question.title}`;

@@ -4,6 +4,15 @@ import { NotificationItem, NotificationType } from '@/types/notifications';
 import { Activity } from '@prisma/client';
 import { secondsInDay } from 'date-fns/constants';
 
+/**
+ * Handles global notifications by filtering out viewed notifications.
+ * Also marks notifications as viewed in Redis.
+ *
+ * @param globalNotifications - The array of global notification strings.
+ * @param userId - The ID of the user.
+ * @param cacheKeyViewed - The Redis cache key for viewed notifications.
+ * @returns The filtered global notifications.
+ */
 async function handleGlobalNotifications(
   globalNotifications: string[],
   userId: number,
@@ -48,6 +57,13 @@ async function handleGlobalNotifications(
   return [];
 }
 
+/**
+ * Handles user-specific notifications by parsing and deleting them from Redis.
+ *
+ * @param userNotifications - The array of user notification strings.
+ * @param cacheKeyUser - The Redis cache key for the user notifications.
+ * @returns The parsed user notifications.
+ */
 async function handleUserNotifications(
   userNotifications: string[],
   cacheKeyUser: string

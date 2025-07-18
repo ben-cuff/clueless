@@ -1,7 +1,7 @@
 import InterviewLoading from '@/components/interview/interview-loading';
 import InterviewQuestionPage from '@/components/interview/interview-question-page';
-import { Question_Extended } from '@/types/question';
 import { apiQuestions } from '@/utils/questions-api';
+import { Question } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,7 +24,7 @@ export default async function NewInterviewPage({
 
   const questionId = questionNumber ?? randomQuestionId;
 
-  const question: Question_Extended = await apiQuestions.getQuestionById(
+  const question: Question = await apiQuestions.getQuestionById(
     Number(questionId)
   );
 

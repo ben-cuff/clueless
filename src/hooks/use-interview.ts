@@ -13,6 +13,7 @@ import { Nullable } from '@/types/util';
 import { getMessageObject } from '@/utils/ai-message';
 import { chatAPI } from '@/utils/chat-api';
 import { interviewAPI } from '@/utils/interview-api';
+import { errorLog } from '@/utils/logger';
 import { InterviewType } from '@prisma/client';
 import {
   millisecondsInMinute,
@@ -20,7 +21,15 @@ import {
   secondsInHour,
 } from 'date-fns/constants';
 import { useRouter } from 'next/navigation';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export default function useInterview(
   interviewId: string,
@@ -79,20 +88,7 @@ export default function useInterview(
       );
 
       if (!response?.ok) {
-        setMessages((prev) => {
-          const updated = [...(prev ?? [])];
-
-          const newMessageObject = getMessageObject(
-            'model',
-            MODEL_ERROR_MESSAGE
-          );
-          if (updated.length === 0) {
-            return [newMessageObject];
-          }
-          updated[updated.length - 1] = newMessageObject;
-          return updated;
-        });
-        setIsStreaming(false);
+        handleStreamingError(setMessages, setIsStreaming);
         return;
       }
 
@@ -107,24 +103,30 @@ export default function useInterview(
 
       setIsStreaming(true);
       let done = false;
-      while (!done) {
-        const result = await reader.read();
-        done = result.done;
-        if (!done) {
-          const chunk = decoder.decode(result.value);
-          content += chunk;
+      try {
+        while (!done) {
+          const result = await reader.read();
+          done = result.done;
+          if (!done) {
+            const chunk = decoder.decode(result.value);
+            content += chunk;
 
-          setMessages((prev) => {
-            const updated = [...(prev || [])];
+            setMessages((prev) => {
+              const updated = [...(prev || [])];
 
-            const lastMessageIndex = updated.length - 1;
-            updated[lastMessageIndex] = {
-              ...updated[lastMessageIndex],
-              parts: [{ text: content }],
-            };
-            return updated;
-          });
+              const lastMessageIndex = updated.length - 1;
+              updated[lastMessageIndex] = {
+                ...updated[lastMessageIndex],
+                parts: [{ text: content }],
+              };
+              return updated;
+            });
+          }
         }
+      } catch (error) {
+        errorLog('Error during reading response stream: ' + error);
+        handleStreamingError(setMessages, setIsStreaming);
+        return;
       }
       setIsStreaming(false);
     },
@@ -292,4 +294,21 @@ function doesLastMessageContain(
   }
 
   return lastMessage.parts[0].text.includes(text);
+}
+
+function handleStreamingError(
+  setMessages: Dispatch<SetStateAction<Message[] | undefined>>,
+  setIsStreaming: Dispatch<SetStateAction<boolean>>
+) {
+  setMessages((prev) => {
+    const updated = [...(prev ?? [])];
+
+    const newMessageObject = getMessageObject('model', MODEL_ERROR_MESSAGE);
+    if (updated.length === 0) {
+      return [newMessageObject];
+    }
+    updated[updated.length - 1] = newMessageObject;
+    return updated;
+  });
+  setIsStreaming(false);
 }

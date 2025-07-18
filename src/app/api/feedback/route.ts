@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import { ActivityAPI } from '@/utils/activity-api';
 import {
@@ -13,9 +14,14 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function POST(req: Request) {
-  const { userId, interviewId, feedback } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { userId, interviewId, feedback } = body;
 
   if (!interviewId || !feedback) {
     return get400Response('Missing required fields:  interviewId, feedback');
@@ -61,7 +67,7 @@ export async function POST(req: Request) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002' // Unique constraint failed on the feedback entry
+      error.code === PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAILED // Unique constraint failed on the feedback entry
     ) {
       return get409Response('Feedback for this interview already exists.');
     } else {

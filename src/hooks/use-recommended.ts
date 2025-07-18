@@ -1,11 +1,11 @@
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import { apiQuestions } from '@/utils/questions-api';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function useRecommended() {
   const [recommendedQuestions, setRecommendedQuestions] =
-    useState<Question[]>();
+    useState<QuestionPartial[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);

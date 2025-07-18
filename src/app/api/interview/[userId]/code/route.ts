@@ -28,9 +28,14 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { id, code, language } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { id, code, language } = body;
 
   if (!id || !code || !language) {
     return get400Response('Missing required fields: id, code, language');

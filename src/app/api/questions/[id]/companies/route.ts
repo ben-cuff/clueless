@@ -20,9 +20,14 @@ export async function PATCH(
     return get400Response('Invalid question number');
   }
 
-  const { companies } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { companies } = body;
 
   if (!companies || !Array.isArray(companies)) {
     return get400Response('Invalid or missing companies array');

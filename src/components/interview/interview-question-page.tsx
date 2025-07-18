@@ -2,8 +2,7 @@
 
 import CodePlayground from '@/components/interview/code-playground';
 import useInterview from '@/hooks/use-interview';
-import { Question_Extended } from '@/types/question';
-import { InterviewType } from '@prisma/client';
+import { InterviewType, Question } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import { useContext } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -19,7 +18,7 @@ export default function InterviewQuestionPage({
   question,
 }: {
   interviewId: string;
-  question: Question_Extended;
+  question: Question;
 }) {
   const searchParams = useSearchParams();
   const type = searchParams.get('type');

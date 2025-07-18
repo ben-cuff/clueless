@@ -1,4 +1,4 @@
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import {
   Pagination,
   PaginationContent,
@@ -18,7 +18,7 @@ export default function PaginationSelect({
   currentPage: number;
   handlePreviousPage: () => void;
   handleNextPage: () => void;
-  questionsData: Question[];
+  questionsData: QuestionPartial[];
   takeSize: number;
 }) {
   return (

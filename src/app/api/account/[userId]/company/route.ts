@@ -1,4 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
@@ -9,6 +10,44 @@ import {
 import { errorLog } from '@/utils/logger';
 import { Company, Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.userId);
+
+  if (isNaN(userId)) {
+    return get400Response('Invalid user ID');
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (session?.user.id !== userId) {
+    return ForbiddenError;
+  }
+
+  try {
+    const user = await prismaLib.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        companies: true,
+      },
+    });
+
+    if (!user) {
+      return get400Response('User with that userId not found');
+    }
+
+    return get200Response(user.companies);
+  } catch (error) {
+    errorLog('Unexpected error while fetching user: ' + error);
+    return UnknownServerError;
+  }
+}
 
 export async function PATCH(
   req: Request,
@@ -27,12 +66,14 @@ export async function PATCH(
     return ForbiddenError;
   }
 
-  let companies;
+  let body;
   try {
-    ({ companies } = await req.json());
+    body = await req.json();
   } catch {
     return get400Response('Invalid JSON body');
   }
+
+  const { companies } = body;
 
   if (!Array.isArray(companies) || companies.length === 0) {
     return get400Response('You must provide a non-empty companies array');
@@ -45,16 +86,16 @@ export async function PATCH(
   }
 
   try {
-    const updatedGoal = await prismaLib.goal.update({
-      where: { userId },
+    const updatedUser = await prismaLib.user.update({
+      where: { id: userId },
       data: { companies },
     });
 
-    return get200Response(updatedGoal);
+    return get200Response(updatedUser);
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND
     ) {
       return get400Response('No user found for this userId');
     } else {

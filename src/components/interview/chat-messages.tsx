@@ -1,3 +1,7 @@
+import {
+  USER_SUBMITTED_CODE_MESSAGE,
+  USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
+} from '@/constants/prompt-fillers';
 import { Message } from '@/types/message';
 import Markdown from 'react-markdown';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -6,12 +10,12 @@ import { ScrollArea } from '../ui/scroll-area';
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
   const messagesWithoutOutput = messages.map((message) =>
-    message.parts[0].text.startsWith('Here is the latest code output:')
+    message.parts[0].text.startsWith(USER_SUBMITTED_CODE_MESSAGE)
       ? {
           ...message,
           parts: [
             {
-              text: 'The user submitted code, view the code output in the output area',
+              text: USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
             },
           ],
         }

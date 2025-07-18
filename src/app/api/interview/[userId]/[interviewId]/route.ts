@@ -1,4 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
@@ -75,7 +76,7 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025' // Record to delete does not exist
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND // Record to delete does not exist
     ) {
       return get404Response('Interview not found');
     } else {

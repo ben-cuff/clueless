@@ -1,8 +1,9 @@
 'use client';
 
 import { LanguageOption } from '@/constants/language-options';
+import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
 import useCodeOutput from '@/hooks/use-code-output';
-import { Question_Extended } from '@/types/question';
+import { Question } from '@prisma/client';
 import { useContext, useEffect } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
@@ -13,7 +14,7 @@ export default function OutputArea({
   code,
   handleOutputChange,
 }: {
-  question: Question_Extended;
+  question: Question;
   language: LanguageOption;
   code: string;
   handleOutputChange: (outputMessage: string) => Promise<void>;
@@ -26,19 +27,19 @@ export default function OutputArea({
   const isFeedback = useContext(FeedbackContext);
 
   useEffect(() => {
-    const outputMessage = `Here is the latest code output:\n\n${
+    const outputMessage = `${USER_SUBMITTED_CODE_MESSAGE}\n\n${
       output.stdout ? `Output:\n${output.stdout}\n` : ''
     }${output.stderr ? `Errors:\n${output.stderr}\n` : ''}`;
 
     if (output.status.id !== 0) {
       handleOutputChange(outputMessage);
     }
-    // This is a workaround for now to stop and infinite loop
+    // This is a workaround to stop infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[100px]">
+    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[200px]">
       <div>
         <Button
           className="mt-2"

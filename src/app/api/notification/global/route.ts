@@ -7,9 +7,14 @@ import {
 import { errorLog } from '@/utils/logger';
 
 export async function POST(req: Request) {
-  const { text } = await req.json().catch(() => {
-    return get400Response('Invalid request body');
-  });
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
+  const { text } = body;
 
   if (typeof text !== 'string' || text.trim() === '') {
     return get400Response('Text must be a non-empty string');

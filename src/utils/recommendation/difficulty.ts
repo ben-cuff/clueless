@@ -1,14 +1,31 @@
 import { DifficultyEnum } from '@/constants/difficulties';
 import { InterviewWithFeedback } from '@/types/interview';
+import { Nullable } from '@/types/util';
+
+const EASY_CORE_QUESTION_THRESHOLD = 0.6;
 
 function getDifficultyWeights(
   interviews: InterviewWithFeedback[]
-): Map<DifficultyEnum, number> {
+): Nullable<Map<DifficultyEnum, number>> {
   const struggleScores: Record<DifficultyEnum, number> =
     getStruggleScores(interviews);
 
   const struggles = getStruggles(struggleScores);
 
+  if (
+    struggles.length > 1 &&
+    struggleScores[DifficultyEnum.EASY] > EASY_CORE_QUESTION_THRESHOLD
+  ) {
+    return null;
+  }
+
+  return createDifficultyWeightsMap(struggles, struggleScores);
+}
+
+function createDifficultyWeightsMap(
+  struggles: DifficultyEnum[],
+  struggleScores: Record<DifficultyEnum, number>
+): Map<DifficultyEnum, number> {
   const difficultyWeights = new Map<DifficultyEnum, number>();
 
   if (struggles.length === 0) {
@@ -66,15 +83,16 @@ function getStruggleScores(interviews: InterviewWithFeedback[]) {
   return struggleScores;
 }
 
+const EASY_STRUGGLE_THRESHOLD = 0.4;
+const MEDIUM_STRUGGLE_THRESHOLD = 0.3;
+const HARD_STRUGGLE_THRESHOLD = 0.3;
+
 /**
  * Gets struggles based on the struggle scores.
  * If a user has a struggle score above a certain threshold for a difficulty,
  * then that difficulty is considered a struggle.
  */
 function getStruggles(struggleScores: Record<DifficultyEnum, number>) {
-  const EASY_STRUGGLE_THRESHOLD = 0.4;
-  const MEDIUM_STRUGGLE_THRESHOLD = 0.3;
-  const HARD_STRUGGLE_THRESHOLD = 0.3;
   const struggles: DifficultyEnum[] = [];
 
   if (struggleScores[DifficultyEnum.EASY] > EASY_STRUGGLE_THRESHOLD) {
@@ -158,4 +176,15 @@ function applyDifficultyWeights(
   );
 }
 
-export { getDifficultyWeights };
+export {
+  applyDifficultyWeights,
+  BOOSTS_AND_WEIGHTS,
+  createDifficultyWeightsMap,
+  EASY_CORE_QUESTION_THRESHOLD,
+  EASY_STRUGGLE_THRESHOLD,
+  getDifficultyWeights,
+  getStruggles,
+  getStruggleScores,
+  HARD_STRUGGLE_THRESHOLD,
+  MEDIUM_STRUGGLE_THRESHOLD,
+};

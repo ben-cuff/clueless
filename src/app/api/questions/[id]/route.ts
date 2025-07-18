@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   get200Response,
@@ -55,7 +56,7 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND
     ) {
       return get404Response('Question not found');
     }

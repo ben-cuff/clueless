@@ -1,18 +1,18 @@
 import { InterviewWithFeedback } from '@/types/interview';
 import { Nullable } from '@/types/util';
-import { Company, Goal } from '@prisma/client';
+import { Company } from '@prisma/client';
 
 function getCompanyWeights(
-  goal: Nullable<Goal>,
+  companies: Nullable<Company[]>,
   interviews: InterviewWithFeedback[]
 ): Map<Company, number> {
   const companyWeights = new Map<Company, number>();
 
-  if (goal == null || goal?.companies.length === 0) {
+  if (companies == null || companies.length === 0) {
     return companyWeights;
   }
 
-  goal.companies.forEach((company) => {
+  companies.forEach((company) => {
     companyWeights.set(company, 1);
   });
 
@@ -57,13 +57,21 @@ function reduceCompanyWeightsBasedOnCompanyCounts(
   const COMPANY_INTERVIEW_THRESHOLD = 1;
 
   for (const [company, count] of recentCompanyCounts.entries()) {
-    if (count >= COMPANY_INTERVIEW_THRESHOLD && companyWeights.has(company)) {
+    if (count > COMPANY_INTERVIEW_THRESHOLD && companyWeights.has(company)) {
       companyWeights.set(
         company,
-        companyWeights.get(company)! * INTERVIEW_COMPANY_PENALTY
+        companyWeights.get(company)! *
+          Math.pow(
+            INTERVIEW_COMPANY_PENALTY,
+            count - COMPANY_INTERVIEW_THRESHOLD
+          )
       );
     }
   }
 }
 
-export { getCompanyWeights };
+export {
+  getCompanyWeights,
+  getRecentInterviewsWithCompaniesCount,
+  reduceCompanyWeightsBasedOnCompanyCounts,
+};

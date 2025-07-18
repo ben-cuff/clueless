@@ -1,23 +1,27 @@
+import { CORE_QUESTIONS } from '@/constants/core-questions';
 import { DifficultyEnum } from '@/constants/difficulties';
+import {
+  COMPANY_SCALER,
+  DIFFICULTY_SCALER,
+  NOISE_SCALER,
+  TOPICS_SCALER,
+} from '@/constants/recommendation-scalers';
 import { InterviewWithFeedback } from '@/types/interview';
-import { Question } from '@/types/question';
+import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
-import { Company, Goal, Topic } from '@prisma/client';
+import { Company, Topic } from '@prisma/client';
 import { millisecondsInDay } from 'date-fns/constants';
 import { getCompanyWeights } from './company';
 import { getDifficultyWeights } from './difficulty';
 import { getTopicWeights } from './topic';
 
-const TOPICS_SCALER = 5;
-const DIFFICULTY_SCALER = 1;
-const COMPANY_SCALER = 10;
-const NOISE_SCALER = 1;
-
 function getRecommendedQuestions(
   interviews: InterviewWithFeedback[],
-  questions: Question[],
-  goal: Nullable<Goal>
-): Question[] {
+  questions: QuestionPartial[],
+  companies: Nullable<Company[]>
+): QuestionPartial[] {
+  const NUM_OF_RECOMMENDED_QUESTIONS = 5;
+
   // Filter interviews to only include those with feedback given in the last 30 days
   const recentInterviews = getRecentValidInterviews(interviews);
 
@@ -26,7 +30,11 @@ function getRecommendedQuestions(
 
   const topicWeights = getTopicWeights(recentInterviews);
   const difficultyWeights = getDifficultyWeights(recentInterviews);
-  const companyWeights = getCompanyWeights(goal, recentInterviews);
+  const companyWeights = getCompanyWeights(companies, recentInterviews);
+
+  if (difficultyWeights == null) {
+    return CORE_QUESTIONS as QuestionPartial[];
+  }
 
   const weightedQuestions = getSortedWeightedQuestions(
     filteredQuestions,
@@ -36,7 +44,10 @@ function getRecommendedQuestions(
   );
 
   // get the top 5 questions based on the highest weights
-  const recommendedQuestions = weightedQuestions.slice(0, 5);
+  const recommendedQuestions = weightedQuestions.slice(
+    0,
+    NUM_OF_RECOMMENDED_QUESTIONS
+  );
 
   return recommendedQuestions;
 }
@@ -49,6 +60,7 @@ function getRecentValidInterviews(
 
   return interviews.filter(
     (interview) =>
+      interview.feedback != null &&
       interview.feedback?.feedbackNumber !== NO_FEEDBACK_NUMBER &&
       interview.updatedAt >
         new Date(Date.now() - millisecondsInDay * LONGEST_VALID_INTERVIEW_DAYS) // within the last 30 days
@@ -57,7 +69,7 @@ function getRecentValidInterviews(
 
 function removeRecentQuestions(
   interviews: InterviewWithFeedback[],
-  questions: Question[]
+  questions: QuestionPartial[]
 ) {
   return questions.filter(
     (question) =>
@@ -76,11 +88,11 @@ function removeRecentQuestions(
  * After calculating the weights for all questions, they are sorted in descending order based on their weights.
  */
 function getSortedWeightedQuestions(
-  questions: Question[],
+  questions: QuestionPartial[],
   topicWeights: Map<Topic, number>,
   difficultyWeights: Map<DifficultyEnum, number>,
   companyWeights: Map<Company, number>
-): Question[] {
+): QuestionPartial[] & { weight: number }[] {
   const weightedQuestions = questions.map((question) => {
     return getTotalWeightForQuestion(
       question,
@@ -96,11 +108,11 @@ function getSortedWeightedQuestions(
 
 // Calculates the total weight for a question based on its topics, difficulty, companies and scalers.
 function getTotalWeightForQuestion(
-  question: Question,
+  question: QuestionPartial,
   topicWeights: Map<Topic, number>,
   difficultyWeights: Map<DifficultyEnum, number>,
   companyWeights: Map<Company, number>
-): Question & { weight: number } {
+): QuestionPartial & { weight: number } {
   let totalWeight = 0;
 
   const numTopics = question.topics.length || 1;
@@ -124,4 +136,11 @@ function getTotalWeightForQuestion(
   };
 }
 
-export { getRecommendedQuestions };
+export {
+  getRecentValidInterviews,
+  getRecommendedQuestions,
+  getSortedWeightedQuestions,
+  getTotalWeightForQuestion,
+  NOISE_SCALER,
+  removeRecentQuestions,
+};

@@ -1,3 +1,4 @@
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
 import {
   ForbiddenError,
@@ -32,9 +33,14 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { hours, questions, endDate } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { hours, questions, endDate } = body;
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
@@ -70,7 +76,7 @@ export async function POST(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002' // Unique constraint failed (duplicate userId)
+      error.code === PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAILED // Unique constraint failed (duplicate userId)
     ) {
       return get409Response('Goal already exists for this user');
     } else {
@@ -120,9 +126,14 @@ export async function PUT(
     return ForbiddenError;
   }
 
-  const { hours, questions, endDate } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { hours, questions, endDate } = body;
 
   if ((!hours && !questions) || !endDate) {
     return get400Response(
@@ -158,7 +169,7 @@ export async function PUT(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025' // Record to update not found
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND // Record to update not found
     ) {
       return get400Response('No goal found for this user');
     } else {
@@ -194,7 +205,7 @@ export async function DELETE(
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025' // Record to delete not found
+      error.code === PRISMA_ERROR_CODES.RECORD_NOT_FOUND // Record to delete not found
     ) {
       return get400Response('No goal found for this user');
     } else {

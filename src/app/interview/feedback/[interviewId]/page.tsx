@@ -2,8 +2,8 @@ import InterviewLoading from '@/components/interview/interview-loading';
 import InterviewQuestionPage from '@/components/interview/interview-question-page';
 import FeedbackProvider from '@/components/providers/feedback-provider';
 import { NotificationProvider } from '@/components/providers/notifications-provider';
-import { Question_Extended } from '@/types/question';
 import { apiQuestions } from '@/utils/questions-api';
+import { Question } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -28,9 +28,7 @@ export default async function InterviewFeedbackPage({
     redirect('/interview');
   }
 
-  const question: Question_Extended = await apiQuestions.getQuestionById(
-    questionId
-  );
+  const question: Question = await apiQuestions.getQuestionById(questionId);
 
   if (question == null) {
     redirect('/interview');

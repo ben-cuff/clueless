@@ -1,13 +1,19 @@
 const USER_CODE_INCLUSION_MESSAGE =
   "\n\nThe user's current code looks like as follows, this was included automatically, they did not choose to include it:\n\n";
 
+const USER_SUBMITTED_CODE_MESSAGE = 'Here is the latest code output:';
+
+const USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT =
+  'The user submitted code, view the code output in the output area';
+
 const INITIAL_MESSAGE_UNTIMED =
   'Welcome to the interview! Before we begin, do you have any questions? ' +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
-  'Explaining your thought process and communication skills are an important part of the interview.';
+  'Explaining your thought process and communication skills are an important part of the interview.' +
+  'If you get stuck, you can ask for hints or clarifications at any time.';
 
 const INITIAL_MESSAGE_TIMED =
-  'Welcome to the TIMED interview! You have a limited time to complete this interview. ' +
+  'Welcome to the timed interview! You have a limited time to complete this interview. ' +
   'You cannot resume this interview if you happen to leave the page. ' +
   'Please talk through your approach to the problem before you start coding. ' +
   'Explaining your thought process and communication skills are an important part of the interview. ' +
@@ -25,7 +31,9 @@ const SYSTEM_MESSAGE_TEXT =
   'You should ask the user to walk through their thought process and explain their reasoning before coding.' +
   'Whenever the user submits code, you will receive the output of the code execution ' +
   'and you will help lead the user in the correct direction if there is a bug' +
-  `Once you are satisfied with the user's response, you will end the interview by saying '${END_INTERVIEW_TEXT}.'`;
+  'Never in any circumstance should you answer the prompt, you are the interviewer, not the interviewee. ' +
+  `Once you are satisfied with the user's response, you will end the interview by saying '${END_INTERVIEW_TEXT}.'` +
+  'Reminder that you are the interviewer, not the interviewee. ';
 
 const FEEDBACK_MESSAGE_TEXT =
   "You are an AI feedback provider evaluating a user's technical interview performance. " +
@@ -40,7 +48,11 @@ const FEEDBACK_MESSAGE_TEXT =
   '- NO-HIRE: Failed to solve the problem with unclear explanations. ' +
   '- STRONG NO-HIRE: Demonstrated significant gaps in both problem-solving and communication. ' +
   'After the rating, provide a concise summary of strengths and specific areas for improvement. ' +
-  'Use markdown formatting (headings, bullet points) to organize your feedback.';
+  'Use markdown formatting (headings, bullet points) to organize your feedback.' +
+  'Reminder that you are the feedback provider, not the interviewer. ' +
+  'You will not provide any code or solutions. ' +
+  'You will not provide any explanations or additional information. ' +
+  'You will only respond with the feedback in the format specified above.';
 
 const NUDGE_MESSAGE =
   "It looks like you've been thinking for a bit. If you'd like a hint or want to talk through your approach, just let me know, I'm here to help!";
@@ -61,4 +73,6 @@ export {
   OUT_OF_TIME_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
+  USER_SUBMITTED_CODE_MESSAGE,
+  USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
 };

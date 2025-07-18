@@ -1,5 +1,6 @@
 import { COMPANIES } from '@/constants/companies';
 import { DIFFICULTIES, Difficulty } from '@/constants/difficulties';
+import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { Topic, TOPICS } from '@/constants/topics';
 import { prismaLib } from '@/lib/prisma';
 import { Optional } from '@/types/util';
@@ -19,6 +20,13 @@ import {
 } from '@prisma/client';
 
 export async function POST(req: Request) {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
   const {
     id,
     title,
@@ -32,9 +40,7 @@ export async function POST(req: Request) {
     difficulty,
     article,
     titleSlug,
-  } = await req.json().catch(() => {
-    return get400Response('Invalid JSON body');
-  });
+  } = body;
 
   const isValid =
     typeof id === 'number' &&
@@ -104,7 +110,7 @@ export async function POST(req: Request) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002' // Unique constraint failed
+      error.code === PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAILED // Unique constraint failed
     ) {
       return get409Response(
         `Question with id ${id} already exists. Please use a different question number.`

@@ -28,11 +28,14 @@ export async function POST(
     return ForbiddenError;
   }
 
-  const { id, messages, questionNumber, code, codeLanguage, type } = await req
-    .json()
-    .catch(() => {
-      return get400Response('Invalid JSON body');
-    });
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return get400Response('Invalid JSON body');
+  }
+
+  const { id, messages, questionNumber, code, codeLanguage, type } = body;
 
   if (!id || !messages || !questionNumber || !code || !codeLanguage) {
     return get400Response(

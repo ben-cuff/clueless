@@ -8,9 +8,14 @@ import {
 } from '@/utils/api-responses';
 
 export async function POST(req: Request) {
-  const { code, language, testcases } = await req.json().catch(() => {
+  let body;
+  try {
+    body = await req.json();
+  } catch {
     return get400Response('Invalid JSON body');
-  });
+  }
+
+  const { code, language, testcases } = await body;
 
   if (!code || !language) {
     return get400Response('Missing required fields: code, language');
