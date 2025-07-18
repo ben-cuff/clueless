@@ -3,31 +3,33 @@
  * There are two main types of notifications:
  * 1. User-specific notifications
  * 2. Global notifications
- * 
+ *
  * There are further 2 major user specific notifications:
  * 1. Goal progress notifications
  * 2. Streak notifications
- * 
+ *
  * Goal progress notifications are designed to be send at most 3 times per day, and no more than once every 2 hours.
  * Streak notifications are designed to be sent once per day, if the user has a streak.
- * 
+ *
  * For global notifications, they are sent to all users and are not user-specific.
- * 
+ *
  * The GET method retrieves the notifications for a user as well as checking if there are any global notifications.
  * It also checks if the user has already viewed the global notification, as these cannot be deleted after being viewed.
  * Global notifications are stored for 1 day and if the user has not viewed them after they expire, they will never see them.
- * 
+ *
  * The POST method is used to trigger the notifications based on the user's progress and streak.
  * It checks if the user has made progress on their goals or if they have a streak, and publishes the notifications to the notification worker.
  */
 
-
+import { PrismaServerError } from '@/errors/prisma-error';
+import { RedisServerError } from '@/errors/redis-error';
 import redisLib from '@/lib/redis';
 import { NotificationItem } from '@/types/notifications';
 import {
   ForbiddenError,
   get200Response,
   get400Response,
+  get500Response,
   UnknownServerError,
 } from '@/utils/api-responses';
 import { checkIfGoalProgressNotification } from '@/utils/goal-progress';
@@ -99,6 +101,12 @@ export async function GET(
       ) // parse global notifications and mark as viewed
     );
   } catch (error) {
+    if (error instanceof RedisServerError) {
+      errorLog('Error handling global notifications: ' + error.message);
+      return get500Response(
+        'A redis error occurred while handling global notifications.'
+      );
+    }
     errorLog('Error handling global notifications: ' + error);
     return UnknownServerError;
   }
@@ -166,7 +174,17 @@ export async function POST(
         cachedNotificationCount
       );
     } catch (error) {
-      errorLog('Error checking goal progress notification: ' + error);
+      if (error instanceof PrismaServerError) {
+        errorLog('Error checking goal progress notification: ' + error.message);
+        return get500Response(
+          'A prisma database error occurred while checking goal progress notification.'
+        );
+      } else if (error instanceof RedisServerError) {
+        errorLog('Error checking goal progress notification: ' + error.message);
+        return get500Response(
+          'A redis database error occurred while checking goal progress notification.'
+        );
+      }
       return UnknownServerError;
     }
     if (notificationResult) {
@@ -197,6 +215,17 @@ export async function POST(
     try {
       notificationStreak = await checkIfStreakNotification(userId);
     } catch (error) {
+      if (error instanceof PrismaServerError) {
+        errorLog('Error checking streak notification: ' + error.message);
+        return get500Response(
+          'A prisma database error occurred while checking streak notification.'
+        );
+      } else if (error instanceof RedisServerError) {
+        errorLog('Error checking streak notification: ' + error.message);
+        return get500Response(
+          'A redis database error occurred while checking streak notification.'
+        );
+      }
       errorLog('Error checking streak notification: ' + error);
       return UnknownServerError;
     }

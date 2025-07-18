@@ -1,4 +1,6 @@
 import { ACTIVITY_FIELD_MAP } from '@/constants/goals';
+import { PrismaServerError } from '@/errors/prisma-error';
+import { RedisServerError } from '@/errors/redis-error';
 import { prismaLib } from '@/lib/prisma';
 import redisLib from '@/lib/redis';
 import { NotificationType } from '@/types/notifications';
@@ -21,7 +23,9 @@ async function checkIfGoalProgressNotification(
       where: { userId },
     });
   } catch (error) {
-    throw new Error('Unexpected error during goal retrieval: ' + error);
+    throw new PrismaServerError(
+      'Unexpected error during goal retrieval: ' + error
+    );
   }
 
   if (!goal) {
@@ -42,7 +46,9 @@ async function checkIfGoalProgressNotification(
       },
     });
   } catch (error) {
-    throw new Error('Unexpected error during activity retrieval: ' + error);
+    throw new PrismaServerError(
+      'Unexpected error during activity retrieval: ' + error
+    );
   }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
@@ -71,8 +77,8 @@ async function checkIfGoalProgressNotification(
         });
       }
     } catch (error) {
-      throw new Error(
-        'Failed to set cache key for goal progress notification: ' + error
+      throw new RedisServerError(
+        'Failed to set or increment goal progress notification cache: ' + error
       );
     }
 
@@ -86,7 +92,7 @@ async function checkIfGoalProgressNotification(
         })
       )
       .catch((error) => {
-        throw new Error(
+        throw new RedisServerError(
           'Failed to publish goal progress notification: ' + error
         );
       });

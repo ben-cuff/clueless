@@ -1,4 +1,5 @@
 import { SOLUTION_INCLUSION_MESSAGE } from '@/constants/prompt-fillers';
+import { NotFoundError } from '@/errors/not-found';
 import { prismaLib } from '@/lib/prisma';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
@@ -78,9 +79,12 @@ export async function POST(req: Request) {
 
       messages.splice(1, 0, { role: 'user', parts: [{ text: prompt }] });
     } catch (error) {
-      return get400Response(
-        error instanceof Error ? error.message : 'Could not retrieve prompt'
-      );
+      if (error instanceof NotFoundError) {
+        return get400Response(error.message);
+      } else {
+        errorLog('Error fetching prompt: ' + error);
+        return UnknownServerError;
+      }
     }
   }
 
@@ -126,7 +130,7 @@ async function getPromptFromQuestionNumber(id: number) {
   });
 
   if (!question) {
-    throw new Error('Question not found');
+    throw new NotFoundError(`Question with ID ${id} not found.`);
   }
 
   return getMessageFromQuestion(question);
@@ -147,7 +151,9 @@ async function getPromptFromInterviewId(interviewId: string) {
   });
 
   if (!interview || !interview.question) {
-    throw new Error('Interview not found');
+    throw new NotFoundError(
+      `Interview with ID ${interviewId} not found or has no associated question.`
+    );
   }
 
   return getMessageFromQuestion(interview.question);

@@ -52,6 +52,13 @@ function get409Response(message: string) {
   });
 }
 
+function get500Response(error: string) {
+  return new Response(JSON.stringify({ error }), {
+    status: 500,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
 export {
   ForbiddenError,
   get200Response,
@@ -60,5 +67,6 @@ export {
   get401Response,
   get404Response,
   get409Response,
+  get500Response,
   UnknownServerError,
 };
