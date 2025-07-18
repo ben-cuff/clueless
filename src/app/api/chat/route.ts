@@ -1,3 +1,4 @@
+import { SOLUTION_INCLUSION_MESSAGE } from '@/constants/prompt-fillers';
 import { prismaLib } from '@/lib/prisma';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
@@ -167,11 +168,9 @@ function getMessageFromQuestion(question: Partial<Question>) {
   ) {
     // Hardcoded to Python solution as other language should be similar enough
     // to not require a different message format.
-    const pythonSolution = (question.solutions as { python: string }).python;
+    const pythonSolution = question.solutions.python;
     message +=
-      `\n\nThis is a sample solution to the problem provided as context to the question to the AI interviewer alone` +
-      `Use it as a way to evaluate the candidate's response. but do not share it with the candidate.\n` +
-      `Solutions:\n${pythonSolution}`;
+      `\n\n${SOLUTION_INCLUSION_MESSAGE}\n` + `Solutions:\n${pythonSolution}`;
   }
   return message;
 }

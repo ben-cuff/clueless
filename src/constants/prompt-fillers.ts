@@ -9,7 +9,7 @@ const USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT =
 const INITIAL_MESSAGE_UNTIMED =
   'Welcome to the interview! Before we begin, do you have any questions? ' +
   "When you're ready, please talk through your approach to the problem before you start coding. " +
-  'Explaining your thought process and communication skills are an important part of the interview.' +
+  'Explaining your thought process and communication skills are an important part of the interview. ' +
   'If you get stuck, you can ask for hints or clarifications at any time.';
 
 const INITIAL_MESSAGE_TIMED =
@@ -63,6 +63,11 @@ const MODEL_ERROR_MESSAGE =
 const OUT_OF_TIME_MESSAGE =
   'The interview has ended due to time constraints. Thank you for your participation!';
 
+const SOLUTION_INCLUSION_MESSAGE =
+  'This is a sample solution to the problem provided as context to the question to the AI interviewer alone. ' +
+  "Use it as a way to evaluate the candidate's response. But do not share it with the candidate. " +
+  'The user can do code their solution in any language they choose, but the solution provided is in Python.';
+
 export {
   END_INTERVIEW_TEXT,
   FEEDBACK_MESSAGE_TEXT,
@@ -71,6 +76,7 @@ export {
   MODEL_ERROR_MESSAGE,
   NUDGE_MESSAGE,
   OUT_OF_TIME_MESSAGE,
+  SOLUTION_INCLUSION_MESSAGE,
   SYSTEM_MESSAGE_TEXT,
   USER_CODE_INCLUSION_MESSAGE,
   USER_SUBMITTED_CODE_MESSAGE,
