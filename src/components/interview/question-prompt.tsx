@@ -15,7 +15,7 @@ export default function QuestionPrompt({
   const formattedPrompt = formatPromptWithBreaks(prompt);
 
   return (
-    <div className="rounded-lg shadow p-6 max-w-128 bg-card mx-2 overflow-auto max-h-200 min-w-82">
+    <div className="rounded-lg shadow p-6 max-w-128 bg-card ml-2 overflow-auto max-h-200 min-w-82">
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Question {questionNumber}</span>
         <DifficultyBadge difficulty={difficulty as 1 | 2 | 3} />
