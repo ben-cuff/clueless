@@ -48,7 +48,7 @@ export default function useInterview(
   const languageRef = useRef('python');
   const router = useRouter();
 
-  const TIME_LIMIT = type === InterviewType.TIMED ? secondsInHour / 2 : null;
+  const TIME_LIMIT = type === InterviewType.TIMED ? secondsInHour / 2 : null; // thirty minutes for timed interviews
 
   const handleCodeSave = useCallback(
     async (code: string) => {
