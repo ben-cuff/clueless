@@ -4,3 +4,5 @@ class GeminiError extends Error {
     this.name = 'GeminiError';
   }
 }
+
+export { GeminiError };

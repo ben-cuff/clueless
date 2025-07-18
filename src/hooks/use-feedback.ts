@@ -1,4 +1,5 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
+import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { feedbackAPI } from '@/utils/feedback-api';
 import { errorLog } from '@/utils/logger';
