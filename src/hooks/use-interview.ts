@@ -1,3 +1,4 @@
+import { FeedbackContext } from '@/components/providers/feedback-provider';
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import {
   END_INTERVIEW_TEXT,
@@ -41,6 +42,7 @@ export default function useInterview(
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [timer, setTimer] = useState<Nullable<number>>(null);
   const userId = useContext(UserIdContext);
+  const isFeedback = useContext(FeedbackContext);
   const codeRef = useRef('');
   const hasMounted = useRef(false);
   const languageRef = useRef('python');
@@ -228,7 +230,11 @@ export default function useInterview(
         NUDGE_MESSAGE
       );
 
-      if (areCodeAndMessagesUnchanged && !isPreviousMessageNudge) {
+      if (
+        areCodeAndMessagesUnchanged &&
+        !isPreviousMessageNudge &&
+        !isFeedback
+      ) {
         setMessages((prev) => [
           ...(prev ?? []),
           getMessageObject('model', NUDGE_MESSAGE),
@@ -240,7 +246,7 @@ export default function useInterview(
     }, DURATION_BETWEEN_NUDGES);
 
     return () => clearInterval(interval);
-  }, [codeRef, messages]);
+  }, [codeRef, isFeedback, messages]);
 
   useEffect(() => {
     if (type !== InterviewType.TIMED) return;
