@@ -1,3 +1,18 @@
+/**
+ * This file handles API routes for tracking user activity.
+ * It allows for fetching and updating user activity data, such as time spent on tasks and questions answered.
+ *
+ * The GET method retrieves the activity for a specific user, checking if the latest activity is completed and updating it if necessary.
+ * The POST method allows for adding new activity data, such as the number of questions answered and time spent.
+ *
+ * It uses the cluelessInteractionsLib to fetch user interactions and calculate the total time spent on tasks.
+ * A user is considered "active" on the site and their activity is recorded if they are on the
+ * interview page and have made interactions with the code editor or other relevant components.
+ *
+ * The tracking of interactions allows going back and calculating total time spent using different constants for
+ * things like MAX_TIME_ADDED, which is the maximum time added for each interaction.
+ */
+
 import { cluelessInteractionsLib } from '@/lib/interactions';
 import { prismaLib } from '@/lib/prisma';
 import { ActivityAPI } from '@/utils/activity-api';
@@ -142,8 +157,10 @@ function getDayRange(date: Date): { from: Date; to: Date } {
   return { from, to };
 }
 
-// fetches valid interactions for a user on a specific date
-// filters by pathname prefix and qualifying events
+/**
+ * fetches valid interactions for a user on a specific date
+ * filters by pathname prefix and qualifying events
+ */
 async function fetchUserInteractions(
   userId: number,
   date: Date
