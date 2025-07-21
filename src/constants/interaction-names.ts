@@ -7,3 +7,5 @@ const INTERACTION_NAMES = {
   textarea: { chatInput: 'chat_input_change' },
   codeEditor: 'code_editor_change',
 };
+
+export default INTERACTION_NAMES;

@@ -1,5 +1,6 @@
 'use client';
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import useCodePlayground from '@/hooks/use-code-playground';
 import useDebounce from '@/hooks/use-debouncer';
 import { Message } from '@/types/message';

@@ -13,6 +13,7 @@
  * things like MAX_TIME_ADDED, which is the maximum time added for each interaction.
  */
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import { cluelessInteractionsLib } from '@/lib/interactions';
 import { prismaLib } from '@/lib/prisma';
 import { ActivityAPI } from '@/utils/activity-api';

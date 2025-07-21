@@ -1,5 +1,6 @@
 'use client';
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import { LanguageOption } from '@/constants/language-options';
 import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
 import useCodeOutput from '@/hooks/use-code-output';

@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import INTERACTION_NAMES from '@/constants/interaction-names';
 
 export default function ChatInput({
   handleMessageSubmit,
