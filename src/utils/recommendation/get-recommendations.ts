@@ -1,11 +1,6 @@
 import { CORE_QUESTIONS } from '@/constants/core-questions';
 import { DifficultyEnum } from '@/constants/difficulties';
-import {
-  COMPANY_SCALER,
-  DIFFICULTY_SCALER,
-  NOISE_SCALER,
-  TOPICS_SCALER,
-} from '@/constants/recommendation-scalers';
+import { RECOMMENDATION_SCALERS } from '@/constants/recommendation-scalers';
 import { InterviewWithFeedback } from '@/types/interview';
 import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
@@ -117,18 +112,22 @@ function getTotalWeightForQuestion(
 
   const numTopics = question.topics.length || 1;
   question.topics.forEach((topic) => {
-    totalWeight += ((topicWeights.get(topic) ?? 0) * TOPICS_SCALER) / numTopics;
+    totalWeight +=
+      ((topicWeights.get(topic) ?? 0) * RECOMMENDATION_SCALERS.TOPICS) /
+      numTopics;
   });
 
   const difficultyWeight =
-    (difficultyWeights.get(question.difficulty) ?? 0) * DIFFICULTY_SCALER;
+    (difficultyWeights.get(question.difficulty) ?? 0) *
+    RECOMMENDATION_SCALERS.DIFFICULTY;
   totalWeight += difficultyWeight;
 
   question.companies.forEach((company) => {
-    totalWeight += (companyWeights.get(company) ?? 0) * COMPANY_SCALER;
+    totalWeight +=
+      (companyWeights.get(company) ?? 0) * RECOMMENDATION_SCALERS.COMPANY;
   });
 
-  totalWeight += Math.random() * NOISE_SCALER;
+  totalWeight += Math.random() * RECOMMENDATION_SCALERS.NOISE;
 
   return {
     ...question,
@@ -141,6 +140,5 @@ export {
   getRecommendedQuestions,
   getSortedWeightedQuestions,
   getTotalWeightForQuestion,
-  NOISE_SCALER,
   removeRecentQuestions,
 };
