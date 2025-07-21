@@ -214,6 +214,7 @@ export default function useInterview(
     })();
   }, [interviewId, type, userId]);
 
+  // sets up nudges on an interval
   useEffect(() => {
     let prevCode = codeRef.current;
     let prevMessages = JSON.stringify(messages);
@@ -248,6 +249,7 @@ export default function useInterview(
     return () => clearInterval(interval);
   }, [codeRef, isFeedback, messages]);
 
+  // sets up the timer for timed interviews
   useEffect(() => {
     if (type !== InterviewType.TIMED) return;
 
