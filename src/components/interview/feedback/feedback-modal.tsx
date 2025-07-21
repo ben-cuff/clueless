@@ -24,7 +24,7 @@ export default function FeedbackModal({
         Open Feedback
       </Button>
       <Dialog open={isModalOpen} onOpenChange={toggleModal}>
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Feedback</DialogTitle>
           </DialogHeader>
