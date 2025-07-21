@@ -167,10 +167,10 @@ async function fetchUserInteractions(
 ): Promise<InteractionEvent[]> {
   const PATHNAME_PREFIX = '/interview/';
   const QUALIFYING_EVENTS = [
-    'textarea_change',
-    'code_editor_change',
-    'run_testcases_button_press',
-    'submit_message_button_press',
+    INTERACTION_NAMES.button.submitChatMessage,
+    INTERACTION_NAMES.button.runTestCases,
+    INTERACTION_NAMES.textarea.chatInput,
+    INTERACTION_NAMES.codeEditor,
   ];
 
   const { from, to } = getDayRange(date);

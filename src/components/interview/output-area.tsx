@@ -43,7 +43,7 @@ export default function OutputArea({
       <div>
         <Button
           className="mt-2"
-          interactionName="run_testcases_button_press"
+          interactionName={INTERACTION_NAMES.button.runTestCases}
           onClick={handleSubmitCode}
           disabled={isLoading || isFeedback}
         >

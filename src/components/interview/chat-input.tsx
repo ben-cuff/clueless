@@ -30,7 +30,7 @@ export default function ChatInput({
         className="m-2 flex-1"
         name="message"
         placeholder="Your message here"
-        interactionName="chat_input_change"
+        interactionName={INTERACTION_NAMES.textarea.chatInput}
         rows={2}
         disabled={isReadOnly}
         value={message}
@@ -38,7 +38,7 @@ export default function ChatInput({
       />
       <Button
         type="submit"
-        interactionName="submit_message_button_press"
+        interactionName={INTERACTION_NAMES.button.submitChatMessage}
         className="m-2 h-10"
         disabled={isReadOnly}
       >

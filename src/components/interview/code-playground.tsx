@@ -47,7 +47,7 @@ export default function CodePlayground({
     handleCodeSave(debouncedCode as string);
     const pathname = window.location.pathname;
     interactionAPI.addEvent(
-      'code_editor_change',
+      INTERACTION_NAMES.codeEditor,
       pathname,
       debouncedCode as string
     );
