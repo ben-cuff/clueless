@@ -62,11 +62,15 @@ export default function useFeedback(interviewId: string) {
 
       if (!data || data.error) {
         const feedbackFromModel = await generateFeedback();
-        feedbackAPI.createFeedback(
-          userId,
-          interviewId,
-          feedbackFromModel as string
-        );
+        if (feedbackFromModel) {
+          feedbackAPI.createFeedback(
+            userId,
+            interviewId,
+            feedbackFromModel as string
+          );
+        } else {
+          setError('Failed to generate feedback from model');
+        }
       } else {
         setFeedbackContent(data.feedback);
       }
