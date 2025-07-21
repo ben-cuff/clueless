@@ -52,10 +52,14 @@ export default function OutputArea({
         </Button>
       </div>
       <pre className="p-4 w-full max-w-200 overflow-scroll">
-        {output.stdout || output.stderr || output.status ? (
+        {output.status.id != 0 ? (
           <div>
-            {output.status && <div>Status: {output.status.description}</div>}
-            {output.stdout && <div>Output: {output.stdout}</div>}
+            <div>Status: {output.status.description}</div>
+            {output.stdout ? (
+              <div>Output: {output.stdout}</div>
+            ) : output.stderr ? null : (
+              <div>No output was produced by your code.</div>
+            )}
             {output.stderr && <div>Errors: {output.stderr}</div>}
           </div>
         ) : (
