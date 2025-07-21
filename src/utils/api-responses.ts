@@ -1,62 +1,43 @@
-const UnknownServerError = new Response(
-  JSON.stringify({ error: 'Internal Server Error' }),
-  {
-    status: 500,
-    headers: { 'Content-Type': 'application/json' },
-  }
-);
+function createResponse(
+  status: number,
+  body: object,
+  headers: HeadersInit = { 'Content-Type': 'application/json' }
+) {
+  return new Response(JSON.stringify(body), { status, headers });
+}
 
-const ForbiddenError = new Response(JSON.stringify({ error: 'Unauthorized' }), {
-  status: 403,
-  headers: { 'Content-Type': 'application/json' },
+const UnknownServerError = createResponse(500, {
+  error: 'Internal Server Error',
 });
 
+const ForbiddenError = createResponse(403, { error: 'Unauthorized' });
+
 function get200Response(data: object) {
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(200, data);
 }
+
 function get201Response(data: object) {
-  return new Response(JSON.stringify(data), {
-    status: 201,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(201, data);
 }
 
 function get400Response(error: string) {
-  return new Response(JSON.stringify({ error }), {
-    status: 400,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(400, { error });
 }
 
 function get401Response(error: string) {
-  return new Response(JSON.stringify({ error }), {
-    status: 401,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(401, { error });
 }
 
 function get404Response(error: string) {
-  return new Response(JSON.stringify({ error }), {
-    status: 404,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(404, { error });
 }
 
-function get409Response(message: string) {
-  return new Response(JSON.stringify({ error: message }), {
-    status: 409,
-    headers: { 'Content-Type': 'application/json' },
-  });
+function get409Response(error: string) {
+  return createResponse(409, { error });
 }
 
 function get500Response(error: string) {
-  return new Response(JSON.stringify({ error }), {
-    status: 500,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return createResponse(500, { error });
 }
 
 export {
