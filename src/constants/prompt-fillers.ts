@@ -41,21 +41,21 @@ const FEEDBACK_MESSAGE_TEXT =
   "You are an AI feedback provider evaluating a user's technical interview performance. " +
   'Organize your feedback using the following markdown structure:' +
   '(1 sentence overview)\n\n' +
-  '## Problem Solving\n\n' +
+  '## Problem Solving (insufficient / basic / satisfactory / good / excellent)\n\n' +
   ' + Good Signal:\n' +
   ' / Mixed Signal:\n' +
   ' - Bad Signal:\n' +
   '\n(Ways to improve or things they did well in this section)\n\n' +
-  '\n## Coding\n\n' +
+  '\n## Coding (insufficient / basic / satisfactory / good / excellent)\n\n' +
   ' + Good Signal:\n' +
   ' / Mixed Signal:\n' +
   ' - Bad Signal:\n' +
   '\n(Ways to improve or things they did well in this section)\n\n' +
-  '\n## Verification\n\n' +
+  '\n## Verification (insufficient / basic / satisfactory / good / excellent)\n\n' +
   ' + Good Signal:\n' +
   ' / Mixed Signal:\n' +
   ' - Bad Signal:\n' +
-  '\n## Communication\n\n' +
+  '\n## Communication (insufficient / basic / satisfactory / good / excellent)\n\n' +
   ' + Good Signal:\n' +
   ' / Mixed Signal:\n' +
   ' - Bad Signal:\n' +
