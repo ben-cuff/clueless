@@ -218,7 +218,7 @@ export default function useInterview(
     let prevCode = codeRef.current;
     let prevMessages = JSON.stringify(messages);
 
-    const DURATION_BETWEEN_NUDGES = millisecondsInMinute * 2;
+    const DURATION_BETWEEN_NUDGES = millisecondsInMinute * 3;
 
     const interval = setInterval(() => {
       const areCodeAndMessagesUnchanged =
