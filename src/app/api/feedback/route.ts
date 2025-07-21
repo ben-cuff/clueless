@@ -79,6 +79,7 @@ export async function POST(req: Request) {
 const getFeedbackNumberFromFeedback = (feedback: string) => {
   const lowerFeedback = feedback.toLowerCase();
 
+  // not in order due to potential overlap in keywords
   const feedbackRatings = [
     { pattern: 'strong hire', value: 5 },
     { pattern: 'strong no-hire', value: 0 },
