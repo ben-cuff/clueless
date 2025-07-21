@@ -9,13 +9,17 @@ export default function CalendarHeatmap({
   numDays = daysInYear,
   showMonthLabels = true,
   title = 'Heatmap',
+  startDate,
+  endDate = new Date(),
 }: {
   dateValues: ActivityForHeatmap[];
   numDays?: number;
   showMonthLabels?: boolean;
   title?: string;
+  endDate?: Date;
+  startDate?: Date;
 }) {
-  const daysArray = generateDaysArray(numDays);
+  const daysArray = generateDaysArray(numDays, endDate, startDate);
 
   // Sort dateValues by date ascending to ensure correct mapping
   const sortedDateValues = [...dateValues].sort(
@@ -37,12 +41,26 @@ export default function CalendarHeatmap({
   );
 }
 
-// gets an array of dates with the specified number of days
-function generateDaysArray(numDays: number) {
+// gets an array of dates with the specified number of days, or between startDate and endDate
+function generateDaysArray(numDays: number, endDate: Date, startDate?: Date) {
+  let array: Date[] = [];
+
+  if (startDate) {
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(endDate);
+    end.setHours(0, 0, 0, 0);
+
+    let current = new Date(start);
+    while (current <= end) {
+      array.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    return array;
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const array: Date[] = [];
-
   const roundedNumDays = Math.round(numDays);
 
   for (let i = 0; i < roundedNumDays; i++) {
