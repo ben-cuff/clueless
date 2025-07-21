@@ -43,7 +43,7 @@ export default function CalendarHeatmap({
 
 // gets an array of dates with the specified number of days, or between startDate and endDate
 function generateDaysArray(numDays: number, endDate: Date, startDate?: Date) {
-  let array: Date[] = [];
+  const dates: Date[] = [];
 
   if (startDate) {
     const start = new Date(startDate);
@@ -51,12 +51,12 @@ function generateDaysArray(numDays: number, endDate: Date, startDate?: Date) {
     const end = new Date(endDate);
     end.setHours(0, 0, 0, 0);
 
-    let current = new Date(start);
+    const current = new Date(start);
     while (current <= end) {
-      array.push(new Date(current));
+      dates.push(new Date(current));
       current.setDate(current.getDate() + 1);
     }
-    return array;
+    return dates;
   }
 
   const today = new Date();
@@ -66,9 +66,9 @@ function generateDaysArray(numDays: number, endDate: Date, startDate?: Date) {
   for (let i = 0; i < roundedNumDays; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() - (roundedNumDays - 1 - i));
-    array.push(d);
+    dates.push(d);
   }
-  return array;
+  return dates;
 }
 
 function groupDaysIntoWeeks(daysArray: Date[]): Optional<Date>[][] {
