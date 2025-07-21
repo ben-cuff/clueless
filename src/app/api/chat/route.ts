@@ -107,7 +107,9 @@ export async function POST(req: Request) {
       'status' in error &&
       error.status === 429 // Rate limit exceeded
     ) {
-      errorLog('Rate limit exceeded for Google GenAI: ' + error);
+      errorLog(
+        'Rate limit exceeded for Google GenAI: ' + JSON.stringify(error)
+      );
       return get400Response('Rate limit exceeded. Please try again later.');
     }
     errorLog('Error generating content from AI model: ' + error);
