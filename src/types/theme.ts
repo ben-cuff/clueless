@@ -1,4 +1,6 @@
 export type Theme =
+  | 'vs-dark'
+  | 'light'
   | 'active4d'
   | 'all-hallows-eve'
   | 'amy'

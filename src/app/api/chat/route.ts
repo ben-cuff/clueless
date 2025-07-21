@@ -1,3 +1,5 @@
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
+import { NotFoundError } from '@/errors/not-found';
 import { prismaLib } from '@/lib/prisma';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
@@ -77,9 +79,12 @@ export async function POST(req: Request) {
 
       messages.splice(1, 0, { role: 'user', parts: [{ text: prompt }] });
     } catch (error) {
-      return get400Response(
-        error instanceof Error ? error.message : 'Could not retrieve prompt'
-      );
+      if (error instanceof NotFoundError) {
+        return get400Response(error.message);
+      } else {
+        errorLog('Error fetching prompt: ' + error);
+        return UnknownServerError;
+      }
     }
   }
 
@@ -92,7 +97,7 @@ export async function POST(req: Request) {
   let response;
   try {
     response = await ai.models.generateContentStream({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: messages,
     });
   } catch (error) {
@@ -102,8 +107,12 @@ export async function POST(req: Request) {
       'status' in error &&
       error.status === 429 // Rate limit exceeded
     ) {
+      errorLog(
+        'Rate limit exceeded for Google GenAI: ' + JSON.stringify(error)
+      );
       return get400Response('Rate limit exceeded. Please try again later.');
     }
+    errorLog('Error generating content from AI model: ' + error);
     return get400Response('Error generating content from AI model.');
   }
 
@@ -123,7 +132,7 @@ async function getPromptFromQuestionNumber(id: number) {
   });
 
   if (!question) {
-    throw new Error('Question not found');
+    throw new NotFoundError(`Question with ID ${id} not found.`);
   }
 
   return getMessageFromQuestion(question);
@@ -144,7 +153,9 @@ async function getPromptFromInterviewId(interviewId: string) {
   });
 
   if (!interview || !interview.question) {
-    throw new Error('Interview not found');
+    throw new NotFoundError(
+      `Interview with ID ${interviewId} not found or has no associated question.`
+    );
   }
 
   return getMessageFromQuestion(interview.question);
@@ -167,10 +178,9 @@ function getMessageFromQuestion(question: Partial<Question>) {
   ) {
     // Hardcoded to Python solution as other language should be similar enough
     // to not require a different message format.
-    const pythonSolution = (question.solutions as { python: string }).python;
+    const pythonSolution = question.solutions.python;
     message +=
-      `\n\nThis is a sample solution to the problem provided as context to the question to the AI interviewer alone` +
-      `Use it as a way to evaluate the candidate's response. but do not share it with the candidate.\n` +
+      `\n\n${PROMPT_MESSAGES.SOLUTION_INCLUSION_MESSAGE}\n` +
       `Solutions:\n${pythonSolution}`;
   }
   return message;

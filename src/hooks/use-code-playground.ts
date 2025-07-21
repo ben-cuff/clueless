@@ -18,8 +18,8 @@ export default function useCodePlayground(
 ) {
   const userId = useContext(UserIdContext);
   const { theme: systemTheme } = useTheme();
-  const [theme, setTheme] = useState(
-    systemTheme === 'dark' ? 'vs-dark' : 'light'
+  const [theme, setTheme] = useState<Theme>(() =>
+    getThemeFromSystem(systemTheme ?? 'light')
   );
   const [language, setLanguage] = useState<Optional<LanguageOption>>();
   const [code, setCode] = useState<string>('');
@@ -80,6 +80,10 @@ export default function useCodePlayground(
     handleLanguageChange,
   ]);
 
+  useEffect(() => {
+    setTheme(getThemeFromSystem(systemTheme ?? 'light'));
+  }, [systemTheme]);
+
   return {
     theme,
     language,
@@ -89,3 +93,15 @@ export default function useCodePlayground(
     setCode,
   };
 }
+
+const getThemeFromSystem = (systemTheme: string): Theme => {
+  if (systemTheme === 'system') {
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
+
+    return prefersDark ? 'vs-dark' : 'light';
+  } else {
+    return systemTheme === 'dark' ? 'vs-dark' : 'light';
+  }
+};

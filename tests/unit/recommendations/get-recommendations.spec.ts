@@ -1,9 +1,4 @@
-import {
-  COMPANY_SCALER,
-  DIFFICULTY_SCALER,
-  NOISE_SCALER,
-  TOPICS_SCALER,
-} from '@/constants/recommendation-scalers';
+import { RECOMMENDATION_SCALERS } from '@/constants/recommendation-scalers';
 import { Company, Topic } from '@prisma/client';
 import { millisecondsInDay, millisecondsInWeek } from 'date-fns/constants';
 import { DifficultyEnum } from '../../../src/constants/difficulties';
@@ -232,13 +227,16 @@ describe('getTotalWeightForQuestion', () => {
 
     expect(result.weight).toBeGreaterThan(0);
     const expectedWeight =
-      (topicWeights.get('ARRAY') ?? 0) * TOPICS_SCALER +
-      (difficultyWeights.get(DifficultyEnum.EASY) ?? 0) * DIFFICULTY_SCALER +
-      (companyWeights.get('GOOGLE') ?? 0) * COMPANY_SCALER;
+      (topicWeights.get('ARRAY') ?? 0) * RECOMMENDATION_SCALERS.TOPICS +
+      (difficultyWeights.get(DifficultyEnum.EASY) ?? 0) *
+        RECOMMENDATION_SCALERS.DIFFICULTY +
+      (companyWeights.get('GOOGLE') ?? 0) * RECOMMENDATION_SCALERS.COMPANY;
 
     // Allow for noise in the result
     expect(result.weight).toBeGreaterThanOrEqual(expectedWeight);
-    expect(result.weight).toBeLessThanOrEqual(expectedWeight + NOISE_SCALER);
+    expect(result.weight).toBeLessThanOrEqual(
+      expectedWeight + RECOMMENDATION_SCALERS.NOISE
+    );
   });
 
   it('calculates total weight for a question with multiple topics and companies', () => {
@@ -282,12 +280,15 @@ describe('getTotalWeightForQuestion', () => {
       (companyWeights.get('GOOGLE') ?? 0) + (companyWeights.get('META') ?? 0);
 
     const expectedWeight =
-      avgTopicWeight * TOPICS_SCALER +
-      (difficultyWeights.get(DifficultyEnum.HARD) ?? 0) * DIFFICULTY_SCALER +
-      companyWeight * COMPANY_SCALER;
+      avgTopicWeight * RECOMMENDATION_SCALERS.TOPICS +
+      (difficultyWeights.get(DifficultyEnum.HARD) ?? 0) *
+        RECOMMENDATION_SCALERS.DIFFICULTY +
+      companyWeight * RECOMMENDATION_SCALERS.COMPANY;
 
     expect(result.weight).toBeGreaterThanOrEqual(expectedWeight);
-    expect(result.weight).toBeLessThanOrEqual(expectedWeight + NOISE_SCALER);
+    expect(result.weight).toBeLessThanOrEqual(
+      expectedWeight + RECOMMENDATION_SCALERS.NOISE
+    );
   });
 
   it('calculates total weight for a question with no companies', () => {
@@ -328,10 +329,13 @@ describe('getTotalWeightForQuestion', () => {
     const topicWeight = topicWeights.get('TREE') ?? 0;
     const difficultyWeight = difficultyWeights.get(DifficultyEnum.MEDIUM) ?? 0;
     const expectedWeight =
-      topicWeight * TOPICS_SCALER + difficultyWeight * DIFFICULTY_SCALER;
+      topicWeight * RECOMMENDATION_SCALERS.TOPICS +
+      difficultyWeight * RECOMMENDATION_SCALERS.DIFFICULTY;
 
     expect(result.weight).toBeGreaterThanOrEqual(expectedWeight);
-    expect(result.weight).toBeLessThanOrEqual(expectedWeight + NOISE_SCALER);
+    expect(result.weight).toBeLessThanOrEqual(
+      expectedWeight + RECOMMENDATION_SCALERS.NOISE
+    );
   });
 });
 

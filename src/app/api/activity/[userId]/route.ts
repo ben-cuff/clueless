@@ -13,6 +13,7 @@
  * things like MAX_TIME_ADDED, which is the maximum time added for each interaction.
  */
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import { cluelessInteractionsLib } from '@/lib/interactions';
 import { prismaLib } from '@/lib/prisma';
 import { ActivityAPI } from '@/utils/activity-api';
@@ -167,10 +168,10 @@ async function fetchUserInteractions(
 ): Promise<InteractionEvent[]> {
   const PATHNAME_PREFIX = '/interview/';
   const QUALIFYING_EVENTS = [
-    'textarea_change',
-    'code_editor_change',
-    'run_testcases_button_press',
-    'submit_message_button_press',
+    INTERACTION_NAMES.button.submitChatMessage,
+    INTERACTION_NAMES.button.runTestCases,
+    INTERACTION_NAMES.textarea.chatInput,
+    INTERACTION_NAMES.codeEditor,
   ];
 
   const { from, to } = getDayRange(date);

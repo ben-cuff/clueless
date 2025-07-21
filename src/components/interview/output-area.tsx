@@ -1,7 +1,8 @@
 'use client';
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import { LanguageOption } from '@/constants/language-options';
-import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import useCodeOutput from '@/hooks/use-code-output';
 import { Question } from '@prisma/client';
 import { useContext, useEffect } from 'react';
@@ -27,7 +28,7 @@ export default function OutputArea({
   const isFeedback = useContext(FeedbackContext);
 
   useEffect(() => {
-    const outputMessage = `${USER_SUBMITTED_CODE_MESSAGE}\n\n${
+    const outputMessage = `${PROMPT_MESSAGES.USER_SUBMITTED_CODE_MESSAGE}\n\n${
       output.stdout ? `Output:\n${output.stdout}\n` : ''
     }${output.stderr ? `Errors:\n${output.stderr}\n` : ''}`;
 
@@ -39,22 +40,26 @@ export default function OutputArea({
   }, [output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-w-screen overflow-scroll max-h-[400px] min-h-[200px]">
+    <div className="bg-card flex flex-col items-center rounded-lg max-h-[400px] min-h-[200px]">
       <div>
         <Button
           className="mt-2"
-          interactionName="run_testcases_button_press"
+          interactionName={INTERACTION_NAMES.button.runTestCases}
           onClick={handleSubmitCode}
           disabled={isLoading || isFeedback}
         >
           {isLoading ? 'Submitting...' : 'Run Testcases'}
         </Button>
       </div>
-      <pre className="p-4 w-full">
-        {output.stdout || output.stderr || output.status ? (
+      <pre className="p-4 w-full max-w-200 overflow-scroll">
+        {output.status.id != 0 ? (
           <div>
-            {output.status && <div>Status: {output.status.description}</div>}
-            {output.stdout && <div>Output: {output.stdout}</div>}
+            <div>Status: {output.status.description}</div>
+            {output.stdout ? (
+              <div>Output: {output.stdout}</div>
+            ) : output.stderr ? null : (
+              <div>No output was produced by your code.</div>
+            )}
             {output.stderr && <div>Errors: {output.stderr}</div>}
           </div>
         ) : (

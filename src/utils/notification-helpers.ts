@@ -1,3 +1,5 @@
+import { PrismaServerError } from '@/errors/prisma-error';
+import { RedisServerError } from '@/errors/redis-error';
 import { prismaLib } from '@/lib/prisma';
 import redisLib from '@/lib/redis';
 import { NotificationItem, NotificationType } from '@/types/notifications';
@@ -44,7 +46,9 @@ async function handleGlobalNotifications(
           filtered.map((n) => JSON.stringify(n))
         )
         .catch((error) => {
-          throw new Error('Failed to push viewed notifications: ' + error);
+          throw new RedisServerError(
+            'Failed to mark notifications as viewed: ' + error
+          );
         });
 
       const ttl = await redisLib.ttl(cacheKeyViewed);
@@ -80,7 +84,9 @@ async function handleUserNotifications(
       .filter((n) => n !== null);
 
     await redisLib.del(cacheKeyUser).catch((error) => {
-      throw new Error('Failed to delete user notifications: ' + error);
+      throw new RedisServerError(
+        'Failed to delete user notifications: ' + error
+      );
     });
 
     if (parsed.length > 0) {
@@ -95,8 +101,10 @@ async function getViewedNotifications(userId: number): Promise<string[]> {
 
   const viewedNotifications = await redisLib
     .lRange(cacheKeyViewed, 0, -1)
-    .catch(() => {
-      throw new Error('Failed to fetch viewed notifications');
+    .catch((error) => {
+      throw new RedisServerError(
+        'Failed to fetch viewed notifications: ' + error
+      );
     });
 
   if (Array.isArray(viewedNotifications)) {
@@ -107,14 +115,16 @@ async function getViewedNotifications(userId: number): Promise<string[]> {
 }
 
 function parseNotificationIds(viewedNotifications: string[]): string[] {
-  return viewedNotifications.map((n) => {
-    try {
-      const parsed = JSON.parse(n);
-      return parsed.id;
-    } catch {
-      return null;
-    }
-  });
+  return viewedNotifications
+    .map((n) => {
+      try {
+        const parsed = JSON.parse(n);
+        return parsed.id;
+      } catch {
+        return null;
+      }
+    })
+    .filter((id) => id != null);
 }
 
 async function checkIfStreakNotification(userId: number) {
@@ -127,7 +137,7 @@ async function checkIfStreakNotification(userId: number) {
       orderBy: { date: 'desc' },
     });
   } catch (error) {
-    throw new Error('Failed to fetch activity data: ' + error);
+    throw new PrismaServerError('Failed to fetch activity data: ' + error);
   }
 
   if (!activity || activity.length === 0) {
@@ -173,7 +183,9 @@ async function checkIfStreakNotification(userId: number) {
         })
       )
       .catch((error) => {
-        throw new Error('Failed to publish streak notification: ' + error);
+        throw new RedisServerError(
+          'Failed to publish streak notification: ' + error
+        );
       });
     return true;
   }

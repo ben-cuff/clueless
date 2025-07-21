@@ -1,8 +1,8 @@
-import { INITIAL_MESSAGE_UNTIMED } from "@/constants/prompt-fillers";
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 
 const AI_INITIAL_SNAPSHOT = `
       - text: AI
-      - paragraph: ${INITIAL_MESSAGE_UNTIMED}
+      - paragraph: ${PROMPT_MESSAGES.INITIAL_MESSAGE_UNTIMED}
       - textbox "Your message here"
       - button "Submit"
       `;

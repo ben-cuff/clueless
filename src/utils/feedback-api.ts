@@ -1,5 +1,7 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
-import { FEEDBACK_MESSAGE_TEXT } from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
+import { GeminiError } from '@/errors/gemini';
+import { NotFoundError } from '@/errors/not-found';
 import { interviewAPI } from './interview-api';
 import { errorLog } from './logger';
 
@@ -39,7 +41,7 @@ export const feedbackAPI = {
       role: 'model',
       parts: [
         {
-          text: FEEDBACK_MESSAGE_TEXT,
+          text: PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT,
         },
       ],
     };
@@ -47,7 +49,7 @@ export const feedbackAPI = {
     const interview = await interviewAPI.getInterview(userId, interviewId);
 
     if (interview.error) {
-      throw new Error('Interview not found');
+      throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
     }
 
     const messages = interview?.messages || [];
@@ -80,7 +82,9 @@ export const feedbackAPI = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch Gemini response');
+      throw new GeminiError(
+        `Failed to get Gemini response: ${response.status} ${response.statusText}`
+      );
     }
 
     return response;

@@ -1,4 +1,6 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
+import { GeminiError } from '@/errors/gemini';
+import { NotFoundError } from '@/errors/not-found';
 import { feedbackAPI } from '@/utils/feedback-api';
 import { errorLog } from '@/utils/logger';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -19,9 +21,12 @@ export default function useFeedback(interviewId: string) {
     try {
       response = await feedbackAPI.getGeminiResponse(interviewId, userId);
     } catch (error) {
-      if (error instanceof Error) {
-        errorLog('Error generating feedback: ' + error);
-        setError(error.message || 'Failed to generate feedback');
+      if (error instanceof NotFoundError) {
+        errorLog('Error generating feedback: ' + error.message);
+        setError(error.message);
+      } else if (error instanceof GeminiError) {
+        errorLog('Error generating feedback: ' + error.message);
+        setError(error.message);
       } else {
         errorLog('Unexpected error: ' + error);
         setError('Failed to generate feedback');
@@ -57,11 +62,15 @@ export default function useFeedback(interviewId: string) {
 
       if (!data || data.error) {
         const feedbackFromModel = await generateFeedback();
-        feedbackAPI.createFeedback(
-          userId,
-          interviewId,
-          feedbackFromModel as string
-        );
+        if (feedbackFromModel) {
+          feedbackAPI.createFeedback(
+            userId,
+            interviewId,
+            feedbackFromModel as string
+          );
+        } else {
+          setError('Failed to generate feedback from model');
+        }
       } else {
         setFeedbackContent(data.feedback);
       }
