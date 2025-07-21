@@ -1,5 +1,6 @@
-"use client"
+'use client';
 
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,14 +15,16 @@ export default function NavLink({
 }) {
   const pathname = usePathname();
   const isActive = pathname === href;
+
   return (
     <Link
       href={href}
-      className={`${className} ${
+      className={cn(
+        className,
         isActive
           ? 'text-primary font-semibold border-b-2 border-primary'
           : 'text-muted-foreground'
-      }`}
+      )}
     >
       {children}
     </Link>
