@@ -1,7 +1,4 @@
-import {
-  USER_SUBMITTED_CODE_MESSAGE,
-  USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
-} from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom';
 import { Message } from '@/types/message';
 import Markdown from 'react-markdown';
@@ -13,12 +10,14 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
   const { scrollAreaRef } = useAutoScrollToBottom(messages);
 
   const messagesWithoutOutput = messages.map((message) =>
-    message.parts[0].text.startsWith(USER_SUBMITTED_CODE_MESSAGE)
+    message.parts[0].text.startsWith(
+      PROMPT_MESSAGES.USER_SUBMITTED_CODE_MESSAGE
+    )
       ? {
           ...message,
           parts: [
             {
-              text: USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
+              text: PROMPT_MESSAGES.USER_SUBMITTED_CODE_MESSAGE_WITHOUT_OUTPUT,
             },
           ],
         }

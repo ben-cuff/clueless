@@ -2,7 +2,7 @@
 
 import INTERACTION_NAMES from '@/constants/interaction-names';
 import { LanguageOption } from '@/constants/language-options';
-import { USER_SUBMITTED_CODE_MESSAGE } from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import useCodeOutput from '@/hooks/use-code-output';
 import { Question } from '@prisma/client';
 import { useContext, useEffect } from 'react';
@@ -28,7 +28,7 @@ export default function OutputArea({
   const isFeedback = useContext(FeedbackContext);
 
   useEffect(() => {
-    const outputMessage = `${USER_SUBMITTED_CODE_MESSAGE}\n\n${
+    const outputMessage = `${PROMPT_MESSAGES.USER_SUBMITTED_CODE_MESSAGE}\n\n${
       output.stdout ? `Output:\n${output.stdout}\n` : ''
     }${output.stderr ? `Errors:\n${output.stderr}\n` : ''}`;
 

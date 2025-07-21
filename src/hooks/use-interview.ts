@@ -1,14 +1,6 @@
 import { FeedbackContext } from '@/components/providers/feedback-provider';
 import { UserIdContext } from '@/components/providers/user-id-provider';
-import {
-  END_INTERVIEW_TEXT,
-  INITIAL_MESSAGE_TIMED,
-  INITIAL_MESSAGE_UNTIMED,
-  MODEL_ERROR_MESSAGE,
-  NUDGE_MESSAGE,
-  OUT_OF_TIME_MESSAGE,
-  USER_CODE_INCLUSION_MESSAGE,
-} from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { Message } from '@/types/message';
 import { Nullable } from '@/types/util';
 import { getMessageObject } from '@/utils/ai-message';
@@ -77,7 +69,7 @@ export default function useInterview(
           {
             text:
               userMessage.parts[0].text +
-              USER_CODE_INCLUSION_MESSAGE +
+              PROMPT_MESSAGES.USER_CODE_INCLUSION_MESSAGE +
               codeRef.current,
           },
         ],
@@ -169,7 +161,10 @@ export default function useInterview(
           );
 
           const lastMessageContainsEndInterviewStatement =
-            doesLastMessageContain(messages, END_INTERVIEW_TEXT);
+            doesLastMessageContain(
+              messages,
+              PROMPT_MESSAGES.END_INTERVIEW_TEXT
+            );
 
           if (lastMessageContainsEndInterviewStatement) {
             router.push(
@@ -205,8 +200,8 @@ export default function useInterview(
           getMessageObject(
             'model',
             type === InterviewType.TIMED
-              ? INITIAL_MESSAGE_TIMED
-              : INITIAL_MESSAGE_UNTIMED
+              ? PROMPT_MESSAGES.INITIAL_MESSAGE_TIMED
+              : PROMPT_MESSAGES.INITIAL_MESSAGE_UNTIMED
           ),
         ]);
       }
@@ -228,7 +223,7 @@ export default function useInterview(
 
       const isPreviousMessageNudge = doesLastMessageContain(
         messages,
-        NUDGE_MESSAGE
+        PROMPT_MESSAGES.NUDGE_MESSAGE
       );
 
       if (
@@ -238,7 +233,7 @@ export default function useInterview(
       ) {
         setMessages((prev) => [
           ...(prev ?? []),
-          getMessageObject('model', NUDGE_MESSAGE),
+          getMessageObject('model', PROMPT_MESSAGES.NUDGE_MESSAGE),
         ]);
       } else {
         prevCode = codeRef.current;
@@ -261,7 +256,7 @@ export default function useInterview(
     if (timer === 0) {
       setMessages((prev) => [
         ...(prev ?? []),
-        getMessageObject('model', OUT_OF_TIME_MESSAGE),
+        getMessageObject('model', PROMPT_MESSAGES.OUT_OF_TIME_MESSAGE),
       ]);
       handleEndInterview();
       return;
@@ -311,7 +306,10 @@ function handleStreamingError(
   setMessages((prev) => {
     const updated = [...(prev ?? [])];
 
-    const newMessageObject = getMessageObject('model', MODEL_ERROR_MESSAGE);
+    const newMessageObject = getMessageObject(
+      'model',
+      PROMPT_MESSAGES.MODEL_ERROR_MESSAGE
+    );
     if (updated.length === 0) {
       return [newMessageObject];
     }

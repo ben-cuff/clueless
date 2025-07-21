@@ -1,5 +1,5 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
-import { FEEDBACK_MESSAGE_TEXT } from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { interviewAPI } from './interview-api';
@@ -41,7 +41,7 @@ export const feedbackAPI = {
       role: 'model',
       parts: [
         {
-          text: FEEDBACK_MESSAGE_TEXT,
+          text: PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT,
         },
       ],
     };

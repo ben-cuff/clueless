@@ -1,4 +1,4 @@
-import { SOLUTION_INCLUSION_MESSAGE } from '@/constants/prompt-fillers';
+import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { NotFoundError } from '@/errors/not-found';
 import { prismaLib } from '@/lib/prisma';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
@@ -178,7 +178,8 @@ function getMessageFromQuestion(question: Partial<Question>) {
     // to not require a different message format.
     const pythonSolution = question.solutions.python;
     message +=
-      `\n\n${SOLUTION_INCLUSION_MESSAGE}\n` + `Solutions:\n${pythonSolution}`;
+      `\n\n${PROMPT_MESSAGES.SOLUTION_INCLUSION_MESSAGE}\n` +
+      `Solutions:\n${pythonSolution}`;
   }
   return message;
 }
