@@ -52,7 +52,7 @@ export default function OutputArea({
           {isLoading ? 'Submitting...' : 'Run Testcases'}
         </Button>
       </div>
-      <pre className="p-4 w-full max-w-200 overflow-scroll">
+      <pre className="p-4 w-full max-w-100 overflow-scroll">
         {output.status.id != 0 ? (
           <div>
             <div>Status: {output.status.description}</div>
