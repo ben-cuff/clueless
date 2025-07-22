@@ -2,6 +2,8 @@ import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
+import { MessageRoleType } from '@/types/message';
+import getMessageObject from './ai-message';
 import { interviewAPI } from './interview-api';
 import { errorLog } from './logger';
 
@@ -37,14 +39,10 @@ export const feedbackAPI = {
     }
   },
   getGeminiResponse: async (interviewId: string, userId: number) => {
-    const systemMessage = {
-      role: 'model',
-      parts: [
-        {
-          text: PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT,
-        },
-      ],
-    };
+    const systemMessage = getMessageObject(
+      MessageRoleType.MODEL,
+      PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT
+    );
 
     const interview = await interviewAPI.getInterview(userId, interviewId);
 
@@ -55,14 +53,10 @@ export const feedbackAPI = {
     const messages = interview?.messages || [];
     const finalCode = interview?.code || '';
 
-    const codeMessage = {
-      role: 'user',
-      parts: [
-        {
-          text: `This is the state of the users code at the end of the interview: ${finalCode}`,
-        },
-      ],
-    };
+    const codeMessage = getMessageObject(
+      MessageRoleType.USER,
+      `This is the state of the users code at the end of the interview: ${finalCode}`
+    );
 
     const newMessagesWithSystemAndUser = [
       systemMessage,

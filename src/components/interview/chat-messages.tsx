@@ -1,6 +1,6 @@
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom';
-import { Message } from '@/types/message';
+import { Message, MessageRoleType } from '@/types/message';
 import Markdown from 'react-markdown';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { CardContent } from '../ui/card';
@@ -33,12 +33,12 @@ export default function ChatMessages({ messages }: { messages: Message[] }) {
               key={idx}
               data-testid={`chat-message-${message.role}-${idx}`}
               className={`flex gap-3 ${
-                message.role === 'model' ? '' : 'flex-row-reverse'
+                message.role === MessageRoleType.MODEL ? '' : 'flex-row-reverse'
               }`}
             >
               <Avatar>
                 <AvatarFallback>
-                  {message.role === 'model' ? 'AI' : 'ME'}
+                  {message.role === MessageRoleType.MODEL ? 'AI' : 'ME'}
                 </AvatarFallback>
               </Avatar>
               <div className="rounded-lg p-4 max-w-120 bg-muted">
