@@ -10,7 +10,7 @@ test('create goal', async ({ page }) => {
 
   await test.step('Verify create goal page is visible and click questions goal tab', async () => {
     await expect(
-      page.getByRole('heading', { name: 'Select Date Range' })
+      page.getByRole('heading', { name: 'Select Goal End Date' })
     ).toBeVisible();
     await expect(
       page.getByRole('tab', { name: 'Questions Goal' })
