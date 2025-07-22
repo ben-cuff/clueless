@@ -44,15 +44,18 @@ export default function useInterview(
 
   const handleCodeSave = useCallback(
     async (code: string) => {
-      if (code)
+      const MIN_MESSAGES_TO_SAVE_CODE = 3;
+
+      if (code && messages && messages.length >= MIN_MESSAGES_TO_SAVE_CODE) {
         await interviewAPI.updateCodeForInterview(
           userId || -1,
           interviewId,
           code,
           languageRef.current
         );
+      }
     },
-    [interviewId, userId]
+    [interviewId, messages, userId]
   );
 
   const addUserMessage = useCallback((message: string) => {
