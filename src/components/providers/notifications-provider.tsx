@@ -43,9 +43,9 @@ export const NotificationProvider = ({
         await NotificationsAPI.postNotification(session.user.id);
       }
       await fetchAndNotify();
-      const intervalId = setInterval(fetchAndNotify, POLL_INTERVAL);
-      return () => clearInterval(intervalId);
     })();
+    const intervalId = setInterval(fetchAndNotify, POLL_INTERVAL);
+    return () => clearInterval(intervalId);
   }, [POLL_INTERVAL, fetchAndNotify, session?.user.id]);
 
   return <>{children}</>;
