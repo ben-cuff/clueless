@@ -73,7 +73,7 @@ test('navigate-to-goals', async ({ page }) => {
   await test.step('Verify goals page is displayed', async () => {
     await expect(page).toHaveURL('http://localhost:3000/goals');
     await expect(
-      page.getByRole('heading', { name: 'Select Date Range' })
+      page.getByRole('heading', { name: 'Select Goal End Date' })
     ).toBeVisible();
   });
 });
