@@ -46,7 +46,7 @@ export function useAutoScrollToBottom(
     const now = Date.now();
     const timeSinceLastScroll = now - lastUserScroll.current;
 
-    const isdocsIdleAfterScrollDown =
+    const isIdleAfterScrollDown =
       lastScrollDirection.current === 'down' &&
       timeSinceLastScroll > MAX_TIME_AFTER_SCROLL_DOWN;
     const isIdleAfterScrollUp =
