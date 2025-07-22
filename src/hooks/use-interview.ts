@@ -3,7 +3,7 @@ import { UserIdContext } from '@/components/providers/user-id-provider';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { Message } from '@/types/message';
 import { Nullable } from '@/types/util';
-import { getMessageObject } from '@/utils/ai-message';
+import getMessageObject from '@/utils/ai-message';
 import { chatAPI } from '@/utils/chat-api';
 import { interviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';

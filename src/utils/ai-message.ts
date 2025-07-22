@@ -11,4 +11,4 @@ function getMessageObject(role: 'user' | 'model', text: string): Message {
   };
 }
 
-export { getMessageObject };
+export default getMessageObject;
