@@ -1,5 +1,6 @@
 import { DifficultyEnum } from '@/constants/difficulties';
 import { Company, InterviewType, Topic } from '@prisma/client';
+import { Message } from './message';
 import { Nullable } from './util';
 
 export interface Interview {
@@ -8,11 +9,7 @@ export interface Interview {
   completed: boolean;
   createdAt: string;
   id: string;
-  messages: Array<{
-    parts: Array<{
-      text: string;
-    }>;
-  }>;
+  messages: Array<Message>;
   questionNumber: number;
   updatedAt: string;
   userId: number;
