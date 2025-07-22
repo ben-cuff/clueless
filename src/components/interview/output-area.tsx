@@ -41,7 +41,7 @@ export default function OutputArea({
   }, [handleOutputChange, output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-h-[400px] min-h-[200px]">
+    <div className="bg-card flex flex-col items-center rounded-lg max-h-100 min-h-50">
       <div>
         <Button
           className="mt-2"
