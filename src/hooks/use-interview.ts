@@ -1,9 +1,9 @@
 import { FeedbackContext } from '@/components/providers/feedback-provider';
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
-import { Message } from '@/types/message';
+import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
-import { getMessageObject } from '@/utils/ai-message';
+import getMessageObject from '@/utils/ai-message';
 import { chatAPI } from '@/utils/chat-api';
 import { interviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';
@@ -44,19 +44,25 @@ export default function useInterview(
 
   const handleCodeSave = useCallback(
     async (code: string) => {
-      if (code)
+      const MIN_MESSAGES_TO_SAVE_CODE = 3;
+
+      if (code && messages && messages.length >= MIN_MESSAGES_TO_SAVE_CODE) {
         await interviewAPI.updateCodeForInterview(
           userId || -1,
           interviewId,
           code,
           languageRef.current
         );
+      }
     },
-    [interviewId, userId]
+    [interviewId, messages, userId]
   );
 
   const addUserMessage = useCallback((message: string) => {
-    const userMessage: Message = getMessageObject('user', message);
+    const userMessage: Message = getMessageObject(
+      MessageRoleType.USER,
+      message
+    );
     setMessages((prev) => [...(prev ?? []), userMessage]);
     return userMessage;
   }, []);
@@ -132,7 +138,10 @@ export default function useInterview(
       const userMessage = addUserMessage(message);
 
       // adds a placeholder for the model's response
-      setMessages((prev) => [...(prev ?? []), getMessageObject('model', '')]);
+      setMessages((prev) => [
+        ...(prev ?? []),
+        getMessageObject(MessageRoleType.MODEL, ''),
+      ]);
 
       await streamModelResponse(userMessage);
     },
@@ -198,7 +207,7 @@ export default function useInterview(
       } else {
         setMessages([
           getMessageObject(
-            'model',
+            MessageRoleType.MODEL,
             type === InterviewType.TIMED
               ? PROMPT_MESSAGES.INITIAL_MESSAGE_TIMED
               : PROMPT_MESSAGES.INITIAL_MESSAGE_UNTIMED
@@ -233,7 +242,10 @@ export default function useInterview(
       ) {
         setMessages((prev) => [
           ...(prev ?? []),
-          getMessageObject('model', PROMPT_MESSAGES.NUDGE_MESSAGE),
+          getMessageObject(
+            MessageRoleType.MODEL,
+            PROMPT_MESSAGES.NUDGE_MESSAGE
+          ),
         ]);
       } else {
         prevCode = codeRef.current;
@@ -256,7 +268,10 @@ export default function useInterview(
     if (timer === 0) {
       setMessages((prev) => [
         ...(prev ?? []),
-        getMessageObject('model', PROMPT_MESSAGES.OUT_OF_TIME_MESSAGE),
+        getMessageObject(
+          MessageRoleType.MODEL,
+          PROMPT_MESSAGES.OUT_OF_TIME_MESSAGE
+        ),
       ]);
       handleEndInterview();
       return;
@@ -307,7 +322,7 @@ function handleStreamingError(
     const updated = [...(prev ?? [])];
 
     const newMessageObject = getMessageObject(
-      'model',
+      MessageRoleType.MODEL,
       PROMPT_MESSAGES.MODEL_ERROR_MESSAGE
     );
     if (updated.length === 0) {

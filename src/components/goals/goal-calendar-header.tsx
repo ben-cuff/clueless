@@ -5,7 +5,7 @@ export default function GoalCalendarHeader({
 }) {
   return (
     <div className="flex flex-col w-full items-center">
-      <h1 className="text-xl font-bold mb-4">Select Date Range</h1>
+      <h1 className="text-xl font-bold mb-4">Select Goal End Date</h1>
       {children}
     </div>
   );

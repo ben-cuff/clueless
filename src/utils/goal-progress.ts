@@ -73,7 +73,7 @@ async function checkIfGoalProgressNotification(
         await redisLib.incr(cacheKey);
       } else {
         await redisLib.set(cacheKey, '1', {
-          EX: secondsInDay,
+          expiration: { type: 'EX', value: secondsInDay },
         });
       }
     } catch (error) {

@@ -1,6 +1,6 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
-import { Message } from '@/types/message';
+import { Message, MessageRoleType } from '@/types/message';
 import { errorLog } from './logger';
 
 export const chatAPI = {
@@ -11,7 +11,7 @@ export const chatAPI = {
   ) => {
     try {
       const systemMessage = {
-        role: 'model',
+        role: MessageRoleType.MODEL,
         parts: [
           {
             text: PROMPT_MESSAGES.SYSTEM_MESSAGE_TEXT,

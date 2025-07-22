@@ -1,6 +1,8 @@
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { NotFoundError } from '@/errors/not-found';
 import { prismaLib } from '@/lib/prisma';
+import { MessageRoleType } from '@/types/message';
+import getMessageObject from '@/utils/ai-message';
 import { get400Response, UnknownServerError } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
 import { GoogleGenAI } from '@google/genai';
@@ -77,7 +79,7 @@ export async function POST(req: Request) {
         prompt = await getPromptFromInterviewId(interviewId);
       }
 
-      messages.splice(1, 0, { role: 'user', parts: [{ text: prompt }] });
+      messages.splice(1, 0, getMessageObject(MessageRoleType.USER, prompt));
     } catch (error) {
       if (error instanceof NotFoundError) {
         return get400Response(error.message);

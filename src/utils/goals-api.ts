@@ -1,10 +1,11 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { GoalCategoryTabs } from '@/types/goal-tab';
 import { errorLog } from './logger';
 
 export const GoalsAPI = {
   createGoal: async (
     userId: number,
-    goalType: 'hours' | 'questions',
+    goalType: GoalCategoryTabs,
     goalValue: number,
     endDate: Date
   ) => {
@@ -20,8 +21,8 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      alert(`${data.error || 'Unable to update goal'}`);
+      errorLog('Failed to create goal: ' + response.statusText);
+      return null;
     }
 
     const data = await response.json();
@@ -39,7 +40,7 @@ export const GoalsAPI = {
   },
   updateGoal: async (
     userId: number,
-    goalType: 'hours' | 'questions',
+    goalType: GoalCategoryTabs,
     goalValue: number,
     endDate: Date
   ) => {
@@ -55,8 +56,8 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      alert(`${data.error || 'Unable to update goal'}`);
+      errorLog('Failed to update goal: ' + response.statusText);
+      return null;
     }
 
     const data = await response.json();
@@ -71,6 +72,19 @@ export const GoalsAPI = {
       errorLog('Failed to fetch goal progress: ' + response.statusText);
       return null;
     }
+    const data = await response.json();
+    return data;
+  },
+  deleteGoal: async (userId: number) => {
+    const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId), {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      errorLog('Failed to delete goal: ' + response.statusText);
+      return null;
+    }
+
     const data = await response.json();
     return data;
   },

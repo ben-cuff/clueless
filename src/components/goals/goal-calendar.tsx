@@ -13,13 +13,10 @@ export default function GoalCalendar({
 }) {
   return (
     <Calendar
-      mode="range"
-      selected={dateRange}
+      mode="single"
+      selected={dateRange.to}
       onSelect={(value) => {
-        setDateRange({
-          from: dateRange.from,
-          to: value?.to,
-        });
+        setDateRange({ from: dateRange.from, to: value });
       }}
       className="rounded-md border"
       numberOfMonths={2}

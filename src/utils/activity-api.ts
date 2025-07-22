@@ -1,12 +1,12 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
-import { Activity } from '@prisma/client';
+import { Activity, GoalType } from '@prisma/client';
 import { errorLog } from './logger';
 
 export const ActivityAPI = {
-  updateActivity: async (userId: number, type: 'seconds' | 'questions') => {
+  updateActivity: async (userId: number, type: GoalType) => {
     const body: { questions?: boolean } = {};
 
-    if (type === 'questions') {
+    if (type === GoalType.QUESTION) {
       body.questions = true;
     }
 

@@ -1,11 +1,12 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
+import { GoalCategoryTabs, GoalTabModes } from '@/types/goal-tab';
 import { GoalsAPI } from '@/utils/goals-api';
 import { millisecondsInWeek } from 'date-fns/constants';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 export default function useCreateUpdateGoal(
-  type: 'update' | 'create',
+  type: GoalTabModes,
   fetchGoal: () => Promise<void>
 ) {
   const DATE_TWO_WEEKS_FROM_NOW = useMemo(
@@ -17,7 +18,9 @@ export default function useCreateUpdateGoal(
     to: DATE_TWO_WEEKS_FROM_NOW,
   });
   const [goalValue, setGoalValue] = useState(20);
-  const [goalType, setGoalType] = useState<'hours' | 'questions'>('hours');
+  const [goalType, setGoalType] = useState<GoalCategoryTabs>(
+    GoalCategoryTabs.HOURS
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const userId = useContext(UserIdContext);
 
@@ -25,7 +28,7 @@ export default function useCreateUpdateGoal(
     const NO_USER_ID = -1;
     setIsSubmitting(true);
 
-    if (type === 'update') {
+    if (type === GoalTabModes.UPDATE) {
       await GoalsAPI.updateGoal(
         userId ?? NO_USER_ID,
         goalType,
@@ -53,6 +56,15 @@ export default function useCreateUpdateGoal(
     DATE_TWO_WEEKS_FROM_NOW,
   ]);
 
+  const handleDeleteGoal = useCallback(async () => {
+    if (userId === undefined || userId === -1) return;
+
+    setIsSubmitting(true);
+    await GoalsAPI.deleteGoal(userId);
+    setIsSubmitting(false);
+    fetchGoal();
+  }, [fetchGoal, userId]);
+
   return {
     dateRange,
     setDateRange,
@@ -61,5 +73,6 @@ export default function useCreateUpdateGoal(
     handleSubmitGoal,
     setGoalType,
     isSubmitting,
+    handleDeleteGoal,
   };
 }

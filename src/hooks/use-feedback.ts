@@ -22,11 +22,15 @@ export default function useFeedback(interviewId: string) {
       response = await feedbackAPI.getGeminiResponse(interviewId, userId);
     } catch (error) {
       if (error instanceof NotFoundError) {
-        errorLog('Error generating feedback: ' + error.message);
-        setError(error.message);
+        errorLog(
+          'Interview not found while creating feedback: ' + error.message
+        );
+        setError('Interview not found. Please check the interview ID.');
       } else if (error instanceof GeminiError) {
-        errorLog('Error generating feedback: ' + error.message);
-        setError(error.message);
+        errorLog('Gemini service error: ' + error.message);
+        setError(
+          'There was a problem generating feedback. Please try again later.'
+        );
       } else {
         errorLog('Unexpected error: ' + error);
         setError('Failed to generate feedback');
@@ -60,17 +64,13 @@ export default function useFeedback(interviewId: string) {
       setIsLoading(true);
       const data = await feedbackAPI.getFeedback(interviewId);
 
-      if (!data || data.error) {
-        const feedbackFromModel = await generateFeedback();
-        if (feedbackFromModel) {
-          feedbackAPI.createFeedback(
-            userId,
-            interviewId,
-            feedbackFromModel as string
-          );
-        } else {
-          setError('Failed to generate feedback from model');
-        }
+      const feedbackFromModel = await generateFeedback();
+      if (feedbackFromModel) {
+        feedbackAPI.createFeedback(
+          userId,
+          interviewId,
+          feedbackFromModel as string
+        );
       } else {
         setFeedbackContent(data.feedback);
       }

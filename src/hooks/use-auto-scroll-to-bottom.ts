@@ -1,13 +1,17 @@
+import { millisecondsInSecond } from 'date-fns/constants';
 import { useCallback, useEffect, useRef } from 'react';
+
+const MAX_TIME_AFTER_SCROLL_DOWN = millisecondsInSecond / 4;
+const MAX_TIME_AFTER_SCROLL_UP = millisecondsInSecond * 10;
 
 export function useAutoScrollToBottom(
   content: unknown,
   scrollAreaSelector = '[data-radix-scroll-area-viewport]'
 ) {
+  const lastScrollDirection = useRef<'up' | 'down'>('down');
+  const prevScrollTop = useRef(0);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-  const lastUserScrollRef = useRef<number>(0);
-
-  const MAX_TIME_AFTER_SCROLL = 250; // 1/4 of a second
+  const lastUserScroll = useRef<number>(0);
 
   // updates lastUserScrollRef after user scrolls in the container
   useEffect(() => {
@@ -16,14 +20,17 @@ export function useAutoScrollToBottom(
     if (!scrollContainer) return;
 
     const handleUserScroll = () => {
-      lastUserScrollRef.current = Date.now();
+      lastUserScroll.current = Date.now();
+      lastScrollDirection.current =
+        scrollContainer.scrollTop > prevScrollTop.current ? 'down' : 'up';
+      prevScrollTop.current = scrollContainer.scrollTop;
     };
 
     scrollContainer.addEventListener('scroll', handleUserScroll);
     return () => {
       scrollContainer.removeEventListener('scroll', handleUserScroll);
     };
-  }, [scrollAreaSelector]);
+  }, [scrollAreaSelector, lastScrollDirection]);
 
   const handleScrollToBottom = useCallback(() => {
     if (scrollAreaRef.current) {
@@ -35,10 +42,18 @@ export function useAutoScrollToBottom(
     }
   }, [scrollAreaSelector]);
 
-  // scrolls to bottom if the user has not scrolled in the last MAX_TIME_AFTER_SCROLL
   useEffect(() => {
     const now = Date.now();
-    if (now - lastUserScrollRef.current > MAX_TIME_AFTER_SCROLL) {
+    const timeSinceLastScroll = now - lastUserScroll.current;
+
+    const isIdleAfterScrollDown =
+      lastScrollDirection.current === 'down' &&
+      timeSinceLastScroll > MAX_TIME_AFTER_SCROLL_DOWN;
+    const isIdleAfterScrollUp =
+      lastScrollDirection.current === 'up' &&
+      timeSinceLastScroll > MAX_TIME_AFTER_SCROLL_UP;
+
+    if (isIdleAfterScrollDown || isIdleAfterScrollUp) {
       handleScrollToBottom();
     }
   }, [content, handleScrollToBottom]);

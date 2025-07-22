@@ -1,6 +1,8 @@
 import useCreateUpdateGoal from '@/hooks/use-create-update-goal';
+import { GoalTabModes } from '@/types/goal-tab';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
+import DeleteGoalButton from './delete-goal-button';
 import GoalCalendar from './goal-calendar';
 import GoalCalendarHeader from './goal-calendar-header';
 import GoalsTabs from './goal-tabs';
@@ -9,7 +11,7 @@ export default function TabsCalendarContainer({
   type,
   fetchGoal,
 }: {
-  type: 'create' | 'update';
+  type: GoalTabModes;
   fetchGoal: () => Promise<void>;
 }) {
   const {
@@ -20,6 +22,7 @@ export default function TabsCalendarContainer({
     handleSubmitGoal,
     setGoalType,
     isSubmitting,
+    handleDeleteGoal,
   } = useCreateUpdateGoal(type, fetchGoal);
 
   return (
@@ -40,6 +43,9 @@ export default function TabsCalendarContainer({
           setGoalType={setGoalType}
           isDisabled={isSubmitting}
         />
+        {type === GoalTabModes.UPDATE && (
+          <DeleteGoalButton handleDeleteGoal={handleDeleteGoal} />
+        )}
       </div>
     </ErrorBoundary>
   );

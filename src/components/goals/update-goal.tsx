@@ -1,3 +1,4 @@
+import { GoalTabModes } from '@/types/goal-tab';
 import TabsCalendarContainer from './tabs-calendar-container';
 
 export default function UpdateGoal({
@@ -5,5 +6,7 @@ export default function UpdateGoal({
 }: {
   fetchGoal: () => Promise<void>;
 }) {
-  return <TabsCalendarContainer fetchGoal={fetchGoal} type="update" />;
+  return (
+    <TabsCalendarContainer fetchGoal={fetchGoal} type={GoalTabModes.UPDATE} />
+  );
 }
