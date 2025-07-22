@@ -24,7 +24,7 @@ import {
   UnknownServerError,
 } from '@/utils/api-responses';
 import { errorLog } from '@/utils/logger';
-import { Activity, Prisma } from '@prisma/client';
+import { Activity, GoalType, Prisma } from '@prisma/client';
 import { millisecondsInSecond } from 'date-fns/constants';
 
 export async function GET(
@@ -52,7 +52,7 @@ export async function GET(
     if (activities[0]?.completed) {
       const mostRecentActivity = await ActivityAPI.updateActivity(
         userId,
-        'seconds'
+        GoalType.SECOND
       );
 
       if (mostRecentActivity) {

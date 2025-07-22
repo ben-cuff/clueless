@@ -9,7 +9,7 @@ import {
   UnknownServerError,
 } from '@/utils/api-responses';
 import { NotificationsAPI } from '@/utils/notifications-api';
-import { Prisma } from '@prisma/client';
+import { GoalType, Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';
 
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       },
     });
 
-    ActivityAPI.updateActivity(userId, 'questions');
+    ActivityAPI.updateActivity(userId, GoalType.QUESTION);
 
     NotificationsAPI.postNotification(userId);
 
