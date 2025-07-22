@@ -42,12 +42,11 @@ export function useAutoScrollToBottom(
     }
   }, [scrollAreaSelector]);
 
-  // scrolls to bottom if the user has not scrolled in the last MAX_TIME_AFTER_SCROLL
   useEffect(() => {
     const now = Date.now();
     const timeSinceLastScroll = now - lastUserScroll.current;
 
-    const isIdleAfterScrollDown =
+    const isdocsIdleAfterScrollDown =
       lastScrollDirection.current === 'down' &&
       timeSinceLastScroll > MAX_TIME_AFTER_SCROLL_DOWN;
     const isIdleAfterScrollUp =
