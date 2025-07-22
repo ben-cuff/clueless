@@ -134,7 +134,7 @@ export async function GET(
 
   try {
     redisLib.set(cacheKey, JSON.stringify(recommendedQuestions), {
-      EX: secondsInHour / 2, // cache for half an hour
+      expiration: { type: 'EX', value: secondsInHour / 2 }, // cache for 30 minutes
     });
   } catch (error) {
     debugLog('Error caching recommended questions: ' + error);

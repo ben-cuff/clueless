@@ -191,7 +191,7 @@ export async function POST(
       notificationsAdded += 1;
       try {
         await redisLib.set(cacheKeyProgressLastSent, '1', {
-          EX: secondsInHour * 2, // Only allow progress notifications every 2 hours
+          expiration: { type: 'EX', value: secondsInHour * 2 },
         });
       } catch (error) {
         errorLog('Error setting progress notification last sent: ' + error);
@@ -235,7 +235,9 @@ export async function POST(
     }
 
     try {
-      await redisLib.set(cacheKeyStreak, '1', { EX: secondsInDay });
+      await redisLib.set(cacheKeyStreak, '1', {
+        expiration: { type: 'EX', value: secondsInDay },
+      });
     } catch (error) {
       errorLog('Error setting streak notification cache: ' + error);
       return UnknownServerError;
