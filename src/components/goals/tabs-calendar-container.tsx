@@ -2,7 +2,7 @@ import useCreateUpdateGoal from '@/hooks/use-create-update-goal';
 import { GoalTabModes } from '@/types/goal-tab';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
-import { Button } from '../ui/button';
+import DeleteGoalButton from './delete-goal-button';
 import GoalCalendar from './goal-calendar';
 import GoalCalendarHeader from './goal-calendar-header';
 import GoalsTabs from './goal-tabs';
@@ -44,13 +44,7 @@ export default function TabsCalendarContainer({
           isDisabled={isSubmitting}
         />
         {type === GoalTabModes.UPDATE && (
-          <Button
-            variant="destructive"
-            onClick={handleDeleteGoal}
-            className="ml-auto mt-2"
-          >
-            Delete Goal
-          </Button>
+          <DeleteGoalButton handleDeleteGoal={handleDeleteGoal} />
         )}
       </div>
     </ErrorBoundary>
