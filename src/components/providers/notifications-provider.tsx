@@ -32,9 +32,12 @@ export const NotificationProvider = ({
   }, [session?.user.id]);
 
   useEffect(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission();
-    }
+    const timer = setTimeout(() => {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+    }, millisecondsInSecond * 5); // waits 5 seconds before asking if it can send notifications
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
