@@ -1,5 +1,5 @@
 import useCreateUpdateGoal from '@/hooks/use-create-update-goal';
-import { GoalTabsType } from '@/types/goal-tab-type';
+import { GoalTabModes } from '@/types/goal-tab';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
 import { Button } from '../ui/button';
@@ -11,7 +11,7 @@ export default function TabsCalendarContainer({
   type,
   fetchGoal,
 }: {
-  type: GoalTabsType;
+  type: GoalTabModes;
   fetchGoal: () => Promise<void>;
 }) {
   const {
@@ -22,7 +22,7 @@ export default function TabsCalendarContainer({
     handleSubmitGoal,
     setGoalType,
     isSubmitting,
-    handleDeleteGoal
+    handleDeleteGoal,
   } = useCreateUpdateGoal(type, fetchGoal);
 
   return (
@@ -43,7 +43,7 @@ export default function TabsCalendarContainer({
           setGoalType={setGoalType}
           isDisabled={isSubmitting}
         />
-        {type === GoalTabsType.UPDATE && (
+        {type === GoalTabModes.UPDATE && (
           <Button
             variant="destructive"
             onClick={handleDeleteGoal}

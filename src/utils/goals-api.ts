@@ -1,10 +1,11 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { GoalCategoryTabs } from '@/types/goal-tab';
 import { errorLog } from './logger';
 
 export const GoalsAPI = {
   createGoal: async (
     userId: number,
-    goalType: 'hours' | 'questions',
+    goalType: GoalCategoryTabs,
     goalValue: number,
     endDate: Date
   ) => {
@@ -39,7 +40,7 @@ export const GoalsAPI = {
   },
   updateGoal: async (
     userId: number,
-    goalType: 'hours' | 'questions',
+    goalType: GoalCategoryTabs,
     goalValue: number,
     endDate: Date
   ) => {

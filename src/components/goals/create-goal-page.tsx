@@ -1,4 +1,4 @@
-import { GoalTabsType } from '@/types/goal-tab-type';
+import { GoalTabModes } from '@/types/goal-tab';
 import TabsCalendarContainer from './tabs-calendar-container';
 
 export default function CreateGoalPage({
@@ -11,7 +11,7 @@ export default function CreateGoalPage({
       <div className="flex flex-col w-full max-w-2xl">
         <TabsCalendarContainer
           fetchGoal={fetchGoal}
-          type={GoalTabsType.CREATE}
+          type={GoalTabModes.CREATE}
         />
       </div>
     </div>
