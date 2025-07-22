@@ -20,8 +20,8 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      alert(`${data.error || 'Unable to update goal'}`);
+      errorLog('Failed to create goal: ' + response.statusText);
+      return null;
     }
 
     const data = await response.json();
@@ -55,8 +55,8 @@ export const GoalsAPI = {
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      alert(`${data.error || 'Unable to update goal'}`);
+      errorLog('Failed to update goal: ' + response.statusText);
+      return null;
     }
 
     const data = await response.json();
@@ -71,6 +71,19 @@ export const GoalsAPI = {
       errorLog('Failed to fetch goal progress: ' + response.statusText);
       return null;
     }
+    const data = await response.json();
+    return data;
+  },
+  deleteGoal: async (userId: number) => {
+    const response = await fetch(CLUELESS_API_ROUTES.goalWithUserId(userId), {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      errorLog('Failed to delete goal: ' + response.statusText);
+      return null;
+    }
+
     const data = await response.json();
     return data;
   },
