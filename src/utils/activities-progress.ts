@@ -7,15 +7,10 @@ function filterActivitiesBeforeBeginAt(
 ): Activity[] {
   return activities.filter((activity) => {
     const activityDate = new Date(activity.date);
-    const goalBeginDate = new Date(beginAt);
-    goalBeginDate.setDate(goalBeginDate.getDate() - 1); // Adjust goal begin date to include activities on the same day
+    const adjustedBeginAt = new Date(beginAt);
+    adjustedBeginAt.setDate(adjustedBeginAt.getDate() - 1);
 
-    // checks if the activity date is on or after the goal's begin date (activity on same day is included)
-    return (
-      activityDate.getDay() >= goalBeginDate.getDay() &&
-      activityDate.getMonth() >= goalBeginDate.getMonth() &&
-      activityDate.getFullYear() >= goalBeginDate.getFullYear()
-    );
+    return activityDate.getTime() >= adjustedBeginAt.getTime();
   });
 }
 
