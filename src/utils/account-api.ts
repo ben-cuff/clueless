@@ -19,9 +19,9 @@ export const AccountAPI = {
     if (!response.ok) {
       const errorData = await response.json();
       if (response.status === 401 || response.status === 403) {
-        throw new AuthError('Unauthorized to delete account');
+        throw new AuthError('Unauthorized to create account');
       }
-      throw new AccountAPIError(errorData.error || 'Failed to delete account');
+      throw new AccountAPIError(errorData.error || 'Failed to create account');
     }
 
     return response.json();
@@ -34,7 +34,7 @@ export const AccountAPI = {
     if (!response.ok) {
       const errorData = await response.json();
       if (response.status === 401 || response.status === 403) {
-        throw new AuthError('Unauthorized to delete account');
+        throw new AuthError('Unauthorized to get companies');
       }
       throw new AccountAPIError(errorData.error || 'Failed to delete account');
     }
@@ -58,9 +58,11 @@ export const AccountAPI = {
     if (!response.ok) {
       const errorData = await response.json();
       if (response.status === 401 || response.status === 403) {
-        throw new AuthError('Unauthorized to delete account');
+        throw new AuthError('Unauthorized to update companies');
       }
-      throw new AccountAPIError(errorData.error || 'Failed to delete account');
+      throw new AccountAPIError(
+        errorData.error || 'Failed to update companies'
+      );
     }
 
     return response.json();
