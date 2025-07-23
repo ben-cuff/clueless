@@ -1,7 +1,7 @@
 import { DEFAULT_TAKE_SIZE } from '@/constants/take-sizes';
 import { TOPIC_LIST, TopicInfo } from '@/constants/topics';
 import { QuestionWithRowNumber } from '@/types/question';
-import { apiQuestions } from '@/utils/questions-api';
+import { QuestionsAPI } from '@/utils/questions-api';
 import { useCallback, useEffect, useState } from 'react';
 import useCompanies from './use-companies';
 import useDebounce from './use-debouncer';
@@ -36,7 +36,7 @@ export default function useQuestions() {
 
       const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
 
-      const data = await apiQuestions.getQuestions(
+      const data = await QuestionsAPI.getQuestions(
         topicsIdList,
         parsedDifficulty,
         companiesIdList,

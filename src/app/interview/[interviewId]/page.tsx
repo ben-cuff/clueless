@@ -1,6 +1,6 @@
 import InterviewLoading from '@/components/interview/interview-loading';
 import InterviewQuestionPage from '@/components/interview/interview-question-page';
-import { apiQuestions } from '@/utils/questions-api';
+import { QuestionsAPI } from '@/utils/questions-api';
 import { Question } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -26,7 +26,7 @@ export default async function ResumeInterviewPage({
     redirect('/interview');
   }
 
-  const question: Question = await apiQuestions.getQuestionById(
+  const question: Question = await QuestionsAPI.getQuestionById(
     Number(questionId)
   );
 

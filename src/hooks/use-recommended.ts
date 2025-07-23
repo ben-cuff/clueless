@@ -1,5 +1,5 @@
 import { QuestionPartial } from '@/types/question';
-import { apiQuestions } from '@/utils/questions-api';
+import { QuestionsAPI } from '@/utils/questions-api';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -16,7 +16,7 @@ export default function useRecommended() {
       if (session?.user?.id) {
         setIsLoading(true);
         setIsLoggedIn(true);
-        const data = await apiQuestions.getRecommendedQuestions(
+        const data = await QuestionsAPI.getRecommendedQuestions(
           session.user.id
         );
 
