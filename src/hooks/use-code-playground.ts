@@ -7,7 +7,7 @@ import {
 import { defineTheme } from '@/lib/define-theme';
 import { Theme } from '@/types/theme';
 import { Optional } from '@/types/util';
-import { interviewAPI } from '@/utils/interview-api';
+import { InterviewAPI } from '@/utils/interview-api';
 import { Question } from '@prisma/client';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -57,7 +57,7 @@ export default function useCodePlayground(
   // Fetch the initial code and language for the interview if it exists
   useEffect(() => {
     (async () => {
-      const interview = await interviewAPI.getInterview(
+      const interview = await InterviewAPI.getInterview(
         userId || -1, // fallbacks to -1 if userId is not available
         interviewId
       );

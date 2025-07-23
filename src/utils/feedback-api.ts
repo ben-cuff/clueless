@@ -4,7 +4,7 @@ import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { MessageRoleType } from '@/types/message';
 import getMessageObject from './ai-message';
-import { interviewAPI } from './interview-api';
+import { InterviewAPI } from './interview-api';
 import { errorLog } from './logger';
 
 export const FeedbackAPI = {
@@ -44,7 +44,7 @@ export const FeedbackAPI = {
       PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT
     );
 
-    const interview = await interviewAPI.getInterview(userId, interviewId);
+    const interview = await InterviewAPI.getInterview(userId, interviewId);
 
     if (interview.error) {
       throw new NotFoundError(`Interview with ID ${interviewId} not found.`);

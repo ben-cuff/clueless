@@ -1,6 +1,6 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { Interview } from '@/types/interview';
-import { interviewAPI } from '@/utils/interview-api';
+import { InterviewAPI } from '@/utils/interview-api';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function usePastInterviews() {
@@ -11,7 +11,7 @@ export default function usePastInterviews() {
   useEffect(() => {
     (async () => {
       if (userId !== -1) {
-        const data = await interviewAPI.getInterviewsByUserId(userId);
+        const data = await InterviewAPI.getInterviewsByUserId(userId);
         setPastInterviewData(data);
       }
       setIsLoadingInterviews(false);
@@ -23,7 +23,7 @@ export default function usePastInterviews() {
       setPastInterviewData((prev) => {
         return prev?.filter((interview) => interview.id !== interviewId);
       });
-      await interviewAPI.deleteInterview(userId, interviewId);
+      await InterviewAPI.deleteInterview(userId, interviewId);
     },
     []
   );

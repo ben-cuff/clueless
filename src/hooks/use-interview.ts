@@ -5,7 +5,7 @@ import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
 import getMessageObject from '@/utils/ai-message';
 import { ChatAPI } from '@/utils/chat-api';
-import { interviewAPI } from '@/utils/interview-api';
+import { InterviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';
 import { InterviewType } from '@prisma/client';
 import {
@@ -47,7 +47,7 @@ export default function useInterview(
       const MIN_MESSAGES_TO_SAVE_CODE = 3;
 
       if (code && messages && messages.length >= MIN_MESSAGES_TO_SAVE_CODE) {
-        await interviewAPI.updateCodeForInterview(
+        await InterviewAPI.updateCodeForInterview(
           userId || -1,
           interviewId,
           code,
@@ -159,7 +159,7 @@ export default function useInterview(
     if (hasMounted.current) {
       (async () => {
         if (!isStreaming && messages && messages?.length > 1) {
-          await interviewAPI.createOrUpdateInterview(
+          await InterviewAPI.createOrUpdateInterview(
             userId || -1,
             interviewId,
             messages!,
@@ -198,7 +198,7 @@ export default function useInterview(
   // runs on mount to fetch the interview messages if they exist
   useEffect(() => {
     (async () => {
-      const interviewData = await interviewAPI.getInterview(
+      const interviewData = await InterviewAPI.getInterview(
         userId || -1,
         interviewId
       );

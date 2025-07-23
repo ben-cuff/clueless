@@ -3,7 +3,7 @@ import { Message } from '@/types/message';
 import { InterviewType } from '@prisma/client';
 import { errorLog } from './logger';
 
-export const interviewAPI = {
+export const InterviewAPI = {
   async createOrUpdateInterview(
     userId: number,
     id: string,
