@@ -5,6 +5,13 @@ class AccountAPIError extends Error {
   }
 }
 
+class ActivityAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ActivityAPIError';
+  }
+}
+
 class AuthError extends Error {
   constructor(message: string) {
     super(message);
@@ -12,4 +19,4 @@ class AuthError extends Error {
   }
 }
 
-export { AccountAPIError, AuthError };
+export { AccountAPIError, ActivityAPIError, AuthError };

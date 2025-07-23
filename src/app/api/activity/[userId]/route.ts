@@ -50,13 +50,17 @@ export async function GET(
 
     // if the latest activity is completed, then we know we are on a new day
     if (activities[0]?.completed) {
-      const mostRecentActivity = await ActivityAPI.updateActivity(
-        userId,
-        GoalType.SECOND
-      );
+      try {
+        const mostRecentActivity = await ActivityAPI.updateActivity(
+          userId,
+          GoalType.SECOND
+        );
 
-      if (mostRecentActivity) {
-        activities.unshift(mostRecentActivity);
+        if (mostRecentActivity) {
+          activities.unshift(mostRecentActivity);
+        }
+      } catch (error) {
+        handleActivityAPIError(error);
       }
     }
 
