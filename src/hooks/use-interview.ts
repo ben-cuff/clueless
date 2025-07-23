@@ -4,7 +4,7 @@ import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
 import getMessageObject from '@/utils/ai-message';
-import { chatAPI } from '@/utils/chat-api';
+import { ChatAPI } from '@/utils/chat-api';
 import { interviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';
 import { InterviewType } from '@prisma/client';
@@ -81,7 +81,7 @@ export default function useInterview(
         ],
       };
 
-      const response = await chatAPI.getGeminiResponse(
+      const response = await ChatAPI.getGeminiResponse(
         messages ?? [],
         userMessageWithCode,
         questionNumber

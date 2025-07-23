@@ -3,7 +3,7 @@ import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { Message, MessageRoleType } from '@/types/message';
 import { errorLog } from './logger';
 
-export const chatAPI = {
+export const ChatAPI = {
   getGeminiResponse: async (
     messages: Message[],
     userMessage: Message,
