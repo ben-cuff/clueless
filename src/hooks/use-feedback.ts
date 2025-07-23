@@ -1,8 +1,5 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
-import { GeminiError } from '@/errors/gemini';
-import { NotFoundError } from '@/errors/not-found';
-import { FeedbackAPI } from '@/utils/feedback-api';
-import { errorLog } from '@/utils/logger';
+import { FeedbackAPI, handleFeedbackAPIError } from '@/utils/feedback-api';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function useFeedback(interviewId: string) {
@@ -21,20 +18,11 @@ export default function useFeedback(interviewId: string) {
     try {
       response = await FeedbackAPI.getGeminiResponse(interviewId, userId);
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        errorLog(
-          'Interview not found while creating feedback: ' + error.message
-        );
-        setError('Interview not found. Please check the interview ID.');
-      } else if (error instanceof GeminiError) {
-        errorLog('Gemini service error: ' + error.message);
-        setError(
-          'There was a problem generating feedback. Please try again later.'
-        );
-      } else {
-        errorLog('Unexpected error: ' + error);
-        setError('Failed to generate feedback');
-      }
+      handleFeedbackAPIError(
+        error as Error,
+        'While creating feedback:',
+        setError
+      );
       return;
     }
     if (!response || !response.ok || !response.body) {
@@ -62,19 +50,28 @@ export default function useFeedback(interviewId: string) {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const data = await FeedbackAPI.getFeedback(interviewId);
+      try {
+        const data = await FeedbackAPI.getFeedback(interviewId);
 
-      const feedbackFromModel = await generateFeedback();
-      if (feedbackFromModel) {
-        FeedbackAPI.createFeedback(
-          userId,
-          interviewId,
-          feedbackFromModel as string
+        const feedbackFromModel = await generateFeedback();
+        if (feedbackFromModel) {
+          FeedbackAPI.createFeedback(
+            userId,
+            interviewId,
+            feedbackFromModel as string
+          );
+        } else {
+          setFeedbackContent(data.feedback);
+        }
+      } catch (err) {
+        handleFeedbackAPIError(
+          err as Error,
+          'While loading feedback:',
+          setError
         );
-      } else {
-        setFeedbackContent(data.feedback);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     })();
   }, [interviewId, generateFeedback, userId]);
 

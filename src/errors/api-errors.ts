@@ -26,4 +26,25 @@ class ChatAPIError extends Error {
   }
 }
 
-export { AccountAPIError, ActivityAPIError, AuthError, ChatAPIError };
+class FeedbackAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FeedbackAPIError';
+  }
+}
+
+class GoalsAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GoalsAPIError';
+  }
+}
+
+export {
+  AccountAPIError,
+  ActivityAPIError,
+  AuthError,
+  ChatAPIError,
+  FeedbackAPIError,
+  GoalsAPIError,
+};

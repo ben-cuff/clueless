@@ -1,42 +1,54 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
+import { AuthError, FeedbackAPIError } from '@/errors/api-errors';
 import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { MessageRoleType } from '@/types/message';
+import { Dispatch, SetStateAction } from 'react';
 import getMessageObject from './ai-message';
 import { InterviewAPI } from './interview-api';
 import { errorLog } from './logger';
 
 export const FeedbackAPI = {
   async getFeedback(interviewId: string) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.feedbackWithInterviewId(interviewId)
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.feedbackWithInterviewId(interviewId)
+    );
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error fetching feedback: ' + error);
-      return null;
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to get feedback');
+      } else if (response.status === 404) {
+        throw new NotFoundError(
+          `Feedback for interview ${interviewId} not found.`
+        );
+      }
+      const errorData = await response.json();
+      throw new FeedbackAPIError(errorData.error || 'Failed to get feedback');
     }
+
+    return response.json();
   },
   async createFeedback(userId: number, interviewId: string, feedback: string) {
-    try {
-      const response = await fetch(CLUELESS_API_ROUTES.feedback, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, feedback, interviewId }),
-      });
+    const response = await fetch(CLUELESS_API_ROUTES.feedback, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, feedback, interviewId }),
+    });
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error creating feedback: ' + error);
-      return null;
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to create feedback');
+      }
+      const errorData = await response.json();
+      throw new FeedbackAPIError(
+        errorData.error || 'Failed to create feedback'
+      );
     }
+
+    return response.json();
   },
   getGeminiResponse: async (interviewId: string, userId: number) => {
     const systemMessage = getMessageObject(
@@ -76,6 +88,9 @@ export const FeedbackAPI = {
     });
 
     if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to get Gemini response');
+      }
       throw new GeminiError(
         `Failed to get Gemini response: ${response.status} ${response.statusText}`
       );
@@ -84,3 +99,27 @@ export const FeedbackAPI = {
     return response;
   },
 };
+
+function handleFeedbackAPIError(
+  error: Error,
+  context: string = '',
+  setError: Dispatch<SetStateAction<string>>
+) {
+  if (error instanceof NotFoundError) {
+    errorLog(`${context} Not found: ${error.message}`);
+    setError('Interview not found. Please check the interview ID.');
+  } else if (error instanceof AuthError) {
+    errorLog(`${context} Authentication error: ${error.message}`);
+    setError('Authentication error. Please log in again.');
+  } else if (error instanceof GeminiError) {
+    errorLog(`${context} Gemini service error: ${error.message}`);
+    setError(
+      'There was a problem generating feedback. Please try again later.'
+    );
+  } else {
+    errorLog(`${context} Unexpected error: ${error}`);
+    setError('Failed to load feedback. Please try again later.');
+  }
+}
+
+export { handleFeedbackAPIError };
