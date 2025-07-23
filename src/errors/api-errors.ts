@@ -19,4 +19,11 @@ class AuthError extends Error {
   }
 }
 
-export { AccountAPIError, ActivityAPIError, AuthError };
+class ChatAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ChatAPIError';
+  }
+}
+
+export { AccountAPIError, ActivityAPIError, AuthError, ChatAPIError };

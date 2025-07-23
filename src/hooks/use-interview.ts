@@ -1,6 +1,8 @@
 import { FeedbackContext } from '@/components/providers/feedback-provider';
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
+import { AuthError } from '@/errors/api-errors';
+import { GeminiError } from '@/errors/gemini';
 import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
 import getMessageObject from '@/utils/ai-message';
@@ -81,19 +83,30 @@ export default function useInterview(
         ],
       };
 
-      const response = await ChatAPI.getGeminiResponse(
-        messages ?? [],
-        userMessageWithCode,
-        questionNumber
-      );
-
-      if (!response?.ok) {
-        handleStreamingError(setMessages, setIsStreaming);
+      let response: Response | undefined;
+      try {
+        response = await ChatAPI.getGeminiResponse(
+          messages ?? [],
+          userMessageWithCode,
+          questionNumber
+        );
+      } catch (error) {
+        if (error instanceof AuthError) {
+          alert(error.message);
+          return;
+        } else if (error instanceof GeminiError) {
+          errorLog('Gemini API error: ' + error.message);
+          handleStreamingError(setMessages, setIsStreaming);
+          return;
+        }
+        alert('An unexpected error occurred, please retry later');
+        errorLog('Unexpected error during streaming: ' + error);
         return;
       }
 
       if (!response || !response.body) {
-        alert('An unexpected error occurred');
+        errorLog('No response or response body from Gemini API');
+        handleStreamingError(setMessages, setIsStreaming);
         return;
       }
 
