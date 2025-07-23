@@ -1,7 +1,7 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
-import { feedbackAPI } from '@/utils/feedback-api';
+import { FeedbackAPI } from '@/utils/feedback-api';
 import { errorLog } from '@/utils/logger';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
@@ -19,7 +19,7 @@ export default function useFeedback(interviewId: string) {
   const generateFeedback = useCallback(async () => {
     let response;
     try {
-      response = await feedbackAPI.getGeminiResponse(interviewId, userId);
+      response = await FeedbackAPI.getGeminiResponse(interviewId, userId);
     } catch (error) {
       if (error instanceof NotFoundError) {
         errorLog(
@@ -62,11 +62,11 @@ export default function useFeedback(interviewId: string) {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const data = await feedbackAPI.getFeedback(interviewId);
+      const data = await FeedbackAPI.getFeedback(interviewId);
 
       const feedbackFromModel = await generateFeedback();
       if (feedbackFromModel) {
-        feedbackAPI.createFeedback(
+        FeedbackAPI.createFeedback(
           userId,
           interviewId,
           feedbackFromModel as string

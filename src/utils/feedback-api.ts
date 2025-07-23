@@ -7,7 +7,7 @@ import getMessageObject from './ai-message';
 import { interviewAPI } from './interview-api';
 import { errorLog } from './logger';
 
-export const feedbackAPI = {
+export const FeedbackAPI = {
   async getFeedback(interviewId: string) {
     try {
       const response = await fetch(
