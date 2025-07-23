@@ -20,7 +20,7 @@ export default function useActivityHeatmap() {
           const mappedActivity = getActivityForHeatmap(activityData ?? []);
           setActivity(mappedActivity);
         } catch (error) {
-          handleActivityAPIError(error);
+          handleActivityAPIError(error as Error);
         } finally {
           setIsLoading(false);
         }

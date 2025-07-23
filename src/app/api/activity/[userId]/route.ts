@@ -60,7 +60,7 @@ export async function GET(
           activities.unshift(mostRecentActivity);
         }
       } catch (error) {
-        handleActivityAPIError(error);
+        handleActivityAPIError(error as Error);
       }
     }
 

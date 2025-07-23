@@ -22,7 +22,7 @@ export default function useAddCompany() {
         }
         setIsLoading(false);
       } catch (error) {
-        handleAccountAPIError(error);
+        handleAccountAPIError(error as Error);
       }
     }
   }, [companies, session?.user.id]);
@@ -38,7 +38,7 @@ export default function useAddCompany() {
 
           setCurrentCompanies(updatedCompanies ?? []);
         } catch (error) {
-          handleAccountAPIError(error);
+          handleAccountAPIError(error as Error);
           setCurrentCompanies([]);
           return;
         }

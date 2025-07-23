@@ -60,7 +60,7 @@ export const ActivityAPI = {
   },
 };
 
-function handleActivityAPIError(error: unknown) {
+function handleActivityAPIError(error: Error) {
   const isServerSide = typeof window === 'undefined';
 
   if (error instanceof ActivityAPIError || error instanceof AuthError) {

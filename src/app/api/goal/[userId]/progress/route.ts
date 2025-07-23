@@ -43,7 +43,7 @@ export async function GET(
   try {
     activities = (await ActivityAPI.getActivity(userId)) ?? [];
   } catch (error) {
-    handleActivityAPIError(error);
+    handleActivityAPIError(error as Error);
   }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(

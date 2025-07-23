@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     try {
       ActivityAPI.updateActivity(userId, GoalType.QUESTION);
     } catch (error) {
-      handleActivityAPIError(error);
+      handleActivityAPIError(error as Error);
     }
 
     NotificationsAPI.postNotification(userId);

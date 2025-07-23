@@ -27,7 +27,7 @@ export default function useAuth(mode: 'login' | 'register') {
         try {
           await AccountAPI.createAccount(username, password);
         } catch (error) {
-          handleAccountAPIError(error);
+          handleAccountAPIError(error as Error);
           return;
         }
       }

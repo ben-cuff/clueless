@@ -90,7 +90,7 @@ export const AccountAPI = {
   },
 };
 
-function handleAccountAPIError(error: unknown) {
+function handleAccountAPIError(error: Error) {
   if (error instanceof AuthError) {
     alert(error.message);
   } else if (error instanceof AccountAPIError) {
