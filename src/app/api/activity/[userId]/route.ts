@@ -16,7 +16,7 @@
 import INTERACTION_NAMES from '@/constants/interaction-names';
 import { cluelessInteractionsLib } from '@/lib/interactions';
 import { prismaLib } from '@/lib/prisma';
-import { ActivityAPI } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
 import {
   get200Response,
   get201Response,
