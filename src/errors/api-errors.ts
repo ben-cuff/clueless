@@ -40,6 +40,13 @@ class GoalsAPIError extends Error {
   }
 }
 
+class InterviewAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InterviewAPIError';
+  }
+}
+
 export {
   AccountAPIError,
   ActivityAPIError,
@@ -47,4 +54,5 @@ export {
   ChatAPIError,
   FeedbackAPIError,
   GoalsAPIError,
+  InterviewAPIError,
 };

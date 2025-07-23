@@ -4,10 +4,13 @@ import {
   languageOptions,
   PYTHON_INDEX,
 } from '@/constants/language-options';
+import { AuthError, InterviewAPIError } from '@/errors/api-errors';
+import { NotFoundError } from '@/errors/not-found';
 import { defineTheme } from '@/lib/define-theme';
 import { Theme } from '@/types/theme';
 import { Optional } from '@/types/util';
 import { InterviewAPI } from '@/utils/interview-api';
+import { errorLog } from '@/utils/logger';
 import { Question } from '@prisma/client';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -57,18 +60,29 @@ export default function useCodePlayground(
   // Fetch the initial code and language for the interview if it exists
   useEffect(() => {
     (async () => {
-      const interview = await InterviewAPI.getInterview(
-        userId || -1, // fallbacks to -1 if userId is not available
-        interviewId
-      );
-      if (!interview.error) {
+      try {
+        const interview = await InterviewAPI.getInterview(
+          userId || -1, // fallbacks to -1 if userId is not available
+          interviewId
+        );
+
         setCode(interview.code || '');
         setLanguage(
           languageOptions.find(
             (lang) => lang.value === interview.codeLanguage?.toLowerCase()
           ) ?? languageOptions[PYTHON_INDEX]
         );
-      } else {
+      } catch (error) {
+        if (error instanceof AuthError) {
+          alert('Authentication error. Please log in again.');
+        } else if (error instanceof NotFoundError) {
+          // expected to happen on first load if interview does not exist
+        } else if (error instanceof InterviewAPIError) {
+          errorLog(`Failed to fetch interview: ${error.message}`);
+          alert(`Failed to fetch interview: ${error.message}`);
+        } else {
+          errorLog(`Unexpected error fetching interview: ${error}`);
+        }
         handleLanguageChange(languageOptions[PYTHON_INDEX]); // Default to Python if interview not found or error
       }
     })();

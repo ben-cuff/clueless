@@ -1,7 +1,8 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { AuthError, InterviewAPIError } from '@/errors/api-errors';
+import { NotFoundError } from '@/errors/not-found';
 import { Message } from '@/types/message';
 import { InterviewType } from '@prisma/client';
-import { errorLog } from './logger';
 
 export const InterviewAPI = {
   async createOrUpdateInterview(
@@ -13,30 +14,35 @@ export const InterviewAPI = {
     codeLanguage: string,
     type: InterviewType = InterviewType.UNTIMED
   ) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.interviewWithUserId(userId),
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id,
-            messages,
-            questionNumber,
-            code,
-            codeLanguage: codeLanguage.toUpperCase(),
-            type,
-          }),
-        }
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.interviewWithUserId(userId),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          messages,
+          questionNumber,
+          code,
+          codeLanguage: codeLanguage.toUpperCase(),
+          type,
+        }),
+      }
+    );
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error creating or updating interview: ' + error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to create or update interview');
+      }
+      const errorData = await response.json();
+      throw new InterviewAPIError(
+        errorData.error || 'Failed to create or update interview'
+      );
     }
+
+    return response.json();
   },
   async updateCodeForInterview(
     userId: number,
@@ -44,69 +50,89 @@ export const InterviewAPI = {
     code: string,
     language: string
   ) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.interviewWithUserIdForCode(userId),
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id, code, language }),
-        }
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.interviewWithUserIdForCode(userId),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, code, language }),
+      }
+    );
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error updating code for interview: ' + error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to update interview code');
+      } else if (response.status === 404) {
+        throw new NotFoundError(`Interview with ID ${id} not found.`);
+      }
+      const errorData = await response.json();
+      throw new InterviewAPIError(
+        errorData.error || 'Failed to update interview code'
+      );
     }
+
+    return response.json();
   },
   async getInterview(userId: number, interviewId: string) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
-          userId,
-          interviewId
-        )
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(userId, interviewId)
+    );
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error fetching interview: ' + error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to get interview');
+      } else if (response.status === 404) {
+        throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
+      }
+      const errorData = await response.json();
+      throw new InterviewAPIError(errorData.error || 'Failed to get interview');
     }
+
+    return response.json();
   },
   async getInterviewsByUserId(userId: number) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.interviewWithUserId(userId)
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.interviewWithUserId(userId)
+    );
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      errorLog('Error fetching interviews by user ID: ' + error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to get interviews');
+      }
+
+      const errorData = await response.json();
+      throw new InterviewAPIError(
+        errorData.error || 'Failed to get interviews'
+      );
     }
+
+    return response.json();
   },
   async deleteInterview(userId: number, interviewId: string) {
-    try {
-      await fetch(
-        CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
-          userId,
-          interviewId
-        ),
-        {
-          method: 'DELETE',
-        }
-      );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.interviewWithUserIdAndInterviewId(
+        userId,
+        interviewId
+      ),
+      {
+        method: 'DELETE',
+      }
+    );
 
-      return { success: true };
-    } catch (error) {
-      errorLog('Error deleting interview: ' + error);
-      return {
-        success: false,
-      };
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to delete interview');
+      } else if (response.status === 404) {
+        throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
+      }
+      const errorData = await response.json();
+      throw new InterviewAPIError(
+        errorData.error || 'Failed to delete interview'
+      );
     }
+
+    return { success: true };
   },
 };

@@ -1,9 +1,14 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
-import { AuthError, FeedbackAPIError } from '@/errors/api-errors';
+import {
+  AuthError,
+  FeedbackAPIError,
+  InterviewAPIError,
+} from '@/errors/api-errors';
 import { GeminiError } from '@/errors/gemini';
 import { NotFoundError } from '@/errors/not-found';
 import { MessageRoleType } from '@/types/message';
+import { Interview } from '@prisma/client';
 import { Dispatch, SetStateAction } from 'react';
 import getMessageObject from './ai-message';
 import { InterviewAPI } from './interview-api';
@@ -55,14 +60,21 @@ export const FeedbackAPI = {
       MessageRoleType.MODEL,
       PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT
     );
-
-    const interview = await InterviewAPI.getInterview(userId, interviewId);
-
-    if (interview.error) {
-      throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
+    let interview: Interview = {} as Interview;
+    try {
+      interview = await InterviewAPI.getInterview(userId, interviewId);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
+      } else if (error instanceof AuthError) {
+        throw new AuthError('Unauthorized to get interview for feedback');
+      } else if (error instanceof InterviewAPIError) {
+        // do not rethrow, just log the error
+        errorLog(`Failed to fetch interview for feedback: ${error.message}`);
+      }
     }
 
-    const messages = interview?.messages || [];
+    const messages = Array.isArray(interview?.messages) ? interview.messages : [];
     const finalCode = interview?.code || '';
 
     const codeMessage = getMessageObject(
