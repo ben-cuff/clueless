@@ -1,4 +1,4 @@
-import { AccountAPI } from '@/utils/account-api';
+import { AccountAPI, handleAccountAPIError } from '@/utils/account-api';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -24,7 +24,12 @@ export default function useAuth(mode: 'login' | 'register') {
           return;
         }
 
-        await AccountAPI.createAccount(username, password);
+        try {
+          await AccountAPI.createAccount(username, password);
+        } catch (error) {
+          handleAccountAPIError(error);
+          return;
+        }
       }
 
       const result = await signIn('credentials', {

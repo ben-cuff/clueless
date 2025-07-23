@@ -1,5 +1,6 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import { CompanyInfo } from '@/constants/companies';
+import { AccountAPIError, AuthError } from '@/errors/api-errors';
 import { errorLog } from './logger';
 
 export const AccountAPI = {
@@ -17,9 +18,13 @@ export const AccountAPI = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      alert(`Error: ${errorData.error}`);
-      return;
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to delete account');
+      }
+      throw new AccountAPIError(errorData.error || 'Failed to delete account');
     }
+
+    return response.json();
   },
   getCompanies: async (userId: number) => {
     const response = await fetch(
@@ -27,14 +32,16 @@ export const AccountAPI = {
     );
 
     if (!response.ok) {
-      errorLog('Failed to fetch companies: ' + response.statusText);
-      return null;
+      const errorData = await response.json();
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to delete account');
+      }
+      throw new AccountAPIError(errorData.error || 'Failed to delete account');
     }
 
-    const data = await response.json();
-    return data;
+    return response.json();
   },
-  UpdateCompanies: async (userId: number, companies: CompanyInfo[]) => {
+  updateCompanies: async (userId: number, companies: CompanyInfo[]) => {
     const companyEnums = companies.map((company) => company.db);
 
     const response = await fetch(
@@ -49,13 +56,14 @@ export const AccountAPI = {
     );
 
     if (!response.ok) {
-      errorLog('Failed to update account companies: ' + response.statusText);
-      return null;
+      const errorData = await response.json();
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to delete account');
+      }
+      throw new AccountAPIError(errorData.error || 'Failed to delete account');
     }
 
-    const data = await response.json();
-
-    return data;
+    return response.json();
   },
   deleteAccount: async (userId: number) => {
     const response = await fetch(
@@ -70,8 +78,25 @@ export const AccountAPI = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      alert(`Unable to delete account: ${errorData.error}`);
-      return;
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to delete account');
+      }
+      throw new AccountAPIError(errorData.error || 'Failed to delete account');
     }
+
+    return response.json();
   },
 };
+
+function handleAccountAPIError(error: unknown) {
+  if (error instanceof AuthError) {
+    alert(error.message);
+  } else if (error instanceof AccountAPIError) {
+    alert(error.message);
+  } else {
+    alert('An unexpected error occurred, please retry later');
+    errorLog('Account API error: ' + error);
+  }
+}
+
+export { handleAccountAPIError };

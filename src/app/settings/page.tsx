@@ -1,7 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { AccountAPIError, AuthError } from '@/errors/api-errors';
 import { AccountAPI } from '@/utils/account-api';
+import { errorLog } from '@/utils/logger';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
@@ -16,7 +18,18 @@ export default function SettingsPage() {
     );
     if (!confirmed) return;
     if (session && session.user && session.user.id) {
-      await AccountAPI.deleteAccount(session.user.id);
+      try {
+        await AccountAPI.deleteAccount(session.user.id);
+      } catch (error) {
+        if (error instanceof AuthError) {
+          alert(error.message);
+        } else if (error instanceof AccountAPIError) {
+          alert(error.message);
+        } else {
+          errorLog('Delete account error: ' + error);
+        }
+        return;
+      }
       await signOut({ redirect: false });
       router.push('/');
     }
