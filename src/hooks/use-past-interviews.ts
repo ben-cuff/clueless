@@ -1,5 +1,6 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { AuthError, InterviewAPIError } from '@/errors/api-errors';
+import { NotFoundError } from '@/errors/not-found';
 import { Interview } from '@/types/interview';
 import { InterviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';

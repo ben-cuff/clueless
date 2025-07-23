@@ -2,7 +2,7 @@ import InterviewLoading from '@/components/interview/interview-loading';
 import InterviewQuestionPage from '@/components/interview/interview-question-page';
 import FeedbackProvider from '@/components/providers/feedback-provider';
 import { NotificationProvider } from '@/components/providers/notifications-provider';
-import { QuestionsAPI } from '@/utils/questions-api';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { Question } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -28,9 +28,11 @@ export default async function InterviewFeedbackPage({
     redirect('/interview');
   }
 
-  const question: Question = await QuestionsAPI.getQuestionById(questionId);
-
-  if (question == null) {
+  let question: Question;
+  try {
+    question = await QuestionsAPI.getQuestionById(questionId);
+  } catch (error) {
+    handleQuestionsAPIError(error as Error, 'While getting specific question');
     redirect('/interview');
   }
 
