@@ -1,7 +1,7 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { GoalProgress } from '@/types/goal-progress';
 import { Nullable } from '@/types/util';
-import { GoalsAPI } from '@/utils/goals-api';
+import { GoalsAPI, handleGoalsAPIError } from '@/utils/goals-api';
 import { Goal } from '@prisma/client';
 import { useContext, useEffect, useState } from 'react';
 
@@ -14,10 +14,15 @@ export default function useGoalProgress() {
 
   useEffect(() => {
     (async () => {
-      const data = await GoalsAPI.getGoalProgress(userId);
-      setIsLoading(false);
-      setGoalProgress(data.progress);
-      setGoal(data.goal);
+      try {
+        const data = await GoalsAPI.getGoalProgress(userId);
+        setGoal(data.goal);
+        setGoalProgress(data.progress);
+      } catch (error) {
+        handleGoalsAPIError(error as Error, 'While fetching goal:');
+      } finally {
+        setIsLoading(false);
+      }
     })();
   }, [userId]);
 
