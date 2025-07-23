@@ -4,7 +4,7 @@ import INTERACTION_NAMES from '@/constants/interaction-names';
 import useCodePlayground from '@/hooks/use-code-playground';
 import useDebounce from '@/hooks/use-debouncer';
 import { Message } from '@/types/message';
-import { interactionAPI } from '@/utils/interaction-api';
+import { InteractionAPI } from '@/utils/interaction-api';
 import { Question } from '@prisma/client';
 import { RefObject, useEffect } from 'react';
 import ChatArea from './chat-area';
@@ -47,7 +47,7 @@ export default function CodePlayground({
   useEffect(() => {
     handleCodeSave(debouncedCode as string);
     const pathname = window.location.pathname;
-    interactionAPI.addEvent(
+    InteractionAPI.addEvent(
       INTERACTION_NAMES.codeEditor,
       pathname,
       debouncedCode as string

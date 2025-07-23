@@ -1,6 +1,6 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 
-export const interactionAPI = {
+export const InteractionAPI = {
   async addEvent(eventName: string, pathname: string, value?: string) {
     const body: { eventName: string; pathname: string; value?: string } = {
       eventName,
