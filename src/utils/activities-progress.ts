@@ -15,6 +15,7 @@ function filterActivitiesBeforeBeginAt(
 }
 
 function getTimeProgressPercentage(beginAt: Date, endDate: Date): number {
+  endDate.setHours(23, 59, 59, 999); // Set endDate to the end of the day
   const totalDuration = endDate.getTime() - beginAt.getTime();
   const elapsedDuration = new Date().getTime() - beginAt.getTime();
   return Math.max(0, Math.min(100, (elapsedDuration / totalDuration) * 100));
