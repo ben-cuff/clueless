@@ -62,13 +62,13 @@ export default function EditorOutputContainer({
         style={{ height: `${outputHeight}px` }}
       >
         <div
-          className="h-2 cursor-row-resize bg-gray-200 flex items-center justify-center mx-2"
+          className="h-2 cursor-row-resize bg-gray-200 dark:bg-gray-700 flex items-center justify-center mx-2"
           onMouseDown={(e) => {
             e.preventDefault();
             handleMouseDown(e.clientY);
           }}
         >
-          <div className="w-12 h-1 bg-gray-400 rounded" />
+          <div className="w-12 h-1 bg-gray-400 dark:bg-gray-500 rounded" />
         </div>
         <OutputArea
           question={question}
