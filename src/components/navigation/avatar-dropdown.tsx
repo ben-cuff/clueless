@@ -41,10 +41,7 @@ export default function AvatarDropdown() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="rounded-4xl cursor-pointer p-0">
           <Avatar>
-            <AvatarImage
-              src="/person.svg"
-              className="bg-gray-300 border-1 border-gray-800 dark:border-gray-200 p-0.5"
-            />
+            <AvatarImage src="/person.svg" className="bg-gray-300 p-1" />
             <AvatarFallback>ME</AvatarFallback>
           </Avatar>
         </Button>
