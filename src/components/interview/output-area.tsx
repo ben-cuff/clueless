@@ -9,6 +9,7 @@ import { Question } from '@prisma/client';
 import { useContext, useEffect, useRef } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 
 export default function OutputArea({
   question,
@@ -41,32 +42,35 @@ export default function OutputArea({
   }, [handleOutputChange, output]);
 
   return (
-    <div className="bg-card flex flex-col items-center rounded-lg max-h-100 min-h-50">
-      <div>
-        <Button
-          className="mt-2"
-          interactionName={INTERACTION_NAMES.button.runTestCases}
-          onClick={handleSubmitCode}
-          disabled={isLoading || isFeedback}
-        >
-          {isLoading ? 'Submitting...' : 'Run Testcases'}
-        </Button>
-      </div>
-      <pre className="p-4 w-full max-w-100 overflow-scroll">
-        {output.status.id != 0 ? (
-          <div>
-            <div>Status: {output.status.description}</div>
-            {output.stdout ? (
-              <div>Output: {output.stdout}</div>
-            ) : output.stderr ? null : (
-              <div>No output was produced by your code.</div>
-            )}
-            {output.stderr && <div>Errors: {output.stderr}</div>}
-          </div>
-        ) : (
-          'Your testcase output will appear here'
-        )}
-      </pre>
-    </div>
+    <Card className="flex flex-col items-center rounded-lg w-200 h-49">
+      <CardContent className="w-full">
+        <div className="w-full flex mb-4">
+          <Button
+            interactionName={INTERACTION_NAMES.button.runTestCases}
+            onClick={handleSubmitCode}
+            disabled={isLoading || isFeedback}
+          >
+            {isLoading ? 'Submitting...' : 'Run Testcases'}
+          </Button>
+        </div>
+        <pre className="w-full overflow-auto max-h-28">
+          {output.status.id != 0 ? (
+            <div className="whitespace-pre-wrap break-words">
+              <div>Status: {output.status.description}</div>
+              {output.stdout ? (
+                <div>Output: {output.stdout}</div>
+              ) : output.stderr ? null : (
+                <div>No output was produced by your code.</div>
+              )}
+              {output.stderr && <div>Errors: {output.stderr}</div>}
+            </div>
+          ) : (
+            <div className="whitespace-pre-wrap break-words">
+              Your testcase output will appear here
+            </div>
+          )}
+        </pre>
+      </CardContent>
+    </Card>
   );
 }

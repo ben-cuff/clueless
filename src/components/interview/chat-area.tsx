@@ -18,7 +18,7 @@ export default function ChatArea({
         <ErrorFallback text="Error while rendering chat area, try again later" />
       }
     >
-      <Card className="flex flex-col h-[800px] overflow-hidden max-h-full">
+      <Card className="flex flex-col overflow-auto h-200">
         <ChatMessages messages={messages} />
         <ChatInput handleMessageSubmit={handleMessageSubmit} />
       </Card>

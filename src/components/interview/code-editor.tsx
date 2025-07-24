@@ -24,17 +24,19 @@ export default function CodeEditor({
         <ErrorFallback text="Error while trying to display code editor, try again later" />
       }
     >
-      <Editor
-        height={'600px'}
-        language={languageValue}
-        theme={theme}
-        value={code}
-        onChange={(value) => setCode(value ?? '')}
-        options={{
-          minimap: { enabled: false },
-          readOnly: isFeedback,
-        }}
-      />
+      <div className="shadow max-w-200">
+        <Editor
+          height={'600px'}
+          language={languageValue}
+          theme={theme}
+          value={code}
+          onChange={(value) => setCode(value ?? '')}
+          options={{
+            minimap: { enabled: false },
+            readOnly: isFeedback,
+          }}
+        />
+      </div>
     </ErrorBoundary>
   );
 }
