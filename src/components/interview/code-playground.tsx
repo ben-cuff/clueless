@@ -81,9 +81,9 @@ export default function CodePlayground({
           handleLanguageChange={handleLanguageChange}
           initialLanguage={language}
         />
-        <ThemeSelect handleThemeChange={handleThemeChange} />
+        <ThemeSelect handleThemeChange={handleThemeChange} theme={theme} />
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-1 m-1">
         <QuestionPrompt
           title={question.title}
           prompt={question.prompt}
