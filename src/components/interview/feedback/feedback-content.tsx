@@ -3,7 +3,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Markdown from 'react-markdown';
 
 export default function FeedbackContent({ feedback }: { feedback: string }) {
-  console.log(feedback);
   return (
     <ErrorBoundary
       fallback={
