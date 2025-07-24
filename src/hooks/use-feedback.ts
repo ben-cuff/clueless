@@ -49,19 +49,21 @@ export default function useFeedback(interviewId: string) {
 
   useEffect(() => {
     (async () => {
+      if (!userId) return;
       setIsLoading(true);
       try {
         const data = await FeedbackAPI.getFeedback(interviewId);
 
-        const feedbackFromModel = await generateFeedback();
-        if (feedbackFromModel) {
-          FeedbackAPI.createFeedback(
-            userId,
-            interviewId,
-            feedbackFromModel as string
-          );
-        } else {
+        if (data) {
           setFeedbackContent(data.feedback);
+        } else {
+          const feedbackFromModel = await generateFeedback();
+          if (feedbackFromModel) {
+            setFeedbackContent(feedbackFromModel);
+            FeedbackAPI.createFeedback(userId, interviewId, feedbackFromModel);
+          } else {
+            setError('No feedback available');
+          }
         }
       } catch (err) {
         handleFeedbackAPIError(
