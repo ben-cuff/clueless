@@ -57,7 +57,7 @@ export default function OutputArea({
         </div>
         <div
           className="w-full overflow-auto"
-          style={{ height: `${height - 95}px` }}
+          style={{ height: `calc(${height}px - 95px)` }} // 95px is to account for above button's height
         >
           {output.status.id != 0 ? (
             <pre className="whitespace-pre-wrap break-words">
