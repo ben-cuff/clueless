@@ -8,10 +8,9 @@ import { InteractionAPI } from '@/utils/interaction-api';
 import { Question } from '@prisma/client';
 import { RefObject, useEffect } from 'react';
 import ChatArea from './chat-area';
-import CodeEditor from './code-editor';
+import EditorOutputContainer from './editor-output-container';
 import InterviewLoading from './interview-loading';
 import LanguagesSelect from './language-select';
-import OutputArea from './output-area';
 import QuestionHeader from './question-header';
 import QuestionPrompt from './question-prompt';
 import ThemeSelect from './theme-select';
@@ -83,31 +82,27 @@ export default function CodePlayground({
         />
         <ThemeSelect handleThemeChange={handleThemeChange} theme={theme} />
       </div>
-      <div className="flex flex-row gap-1 m-1">
+      <div className="flex flex-row gap-1 m-1 w-full">
         <QuestionPrompt
           title={question.title}
           prompt={question.prompt}
           difficulty={question.difficulty}
           questionNumber={question.id}
         />
-        <div className="min-w-1/3 w-full">
+        <div className="flex min-w-1/3">
           <ChatArea
             messages={messages}
             handleMessageSubmit={handleMessageSubmit}
           />
         </div>
-        <div className="flex flex-col gap-1 w-1/2">
-          <CodeEditor
-            languageValue={language.value}
+        <div className="flex h-vh min-w-1/3 w-full">
+          <EditorOutputContainer
+            language={language}
             theme={theme}
+            question={question}
             code={code}
             setCode={setCode}
-          />
-          <OutputArea
-            question={question}
-            language={language}
-            code={code}
-            handleOutputChange={handleMessageSubmit}
+            handleMessageSubmit={handleMessageSubmit}
           />
         </div>
       </div>

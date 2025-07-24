@@ -24,7 +24,7 @@ export default function CodeEditor({
         <ErrorFallback text="Error while trying to display code editor, try again later" />
       }
     >
-      <div className="shadow h-3/4">
+      <div className="shadow flex h-full">
         <Editor
           height="100%"
           language={languageValue}

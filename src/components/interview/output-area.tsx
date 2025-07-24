@@ -16,11 +16,13 @@ export default function OutputArea({
   language,
   code,
   handleOutputChange,
+  height,
 }: {
   question: Question;
   language: LanguageOption;
   code: string;
   handleOutputChange: (outputMessage: string) => Promise<void>;
+  height: number;
 }) {
   const { handleSubmitCode, isLoading, output } = useCodeOutput(
     question,
@@ -42,7 +44,7 @@ export default function OutputArea({
   }, [handleOutputChange, output]);
 
   return (
-    <Card className="flex flex-col items-center rounded-lg w-200 h-1/4">
+    <Card className="flex flex-col items-center rounded-lg w-full h-full">
       <CardContent className="w-full">
         <div className="w-full flex mb-4">
           <Button
@@ -53,9 +55,12 @@ export default function OutputArea({
             {isLoading ? 'Submitting...' : 'Run Testcases'}
           </Button>
         </div>
-        <pre className="w-full overflow-auto max-h-28">
+        <div
+          className="w-full overflow-auto"
+          style={{ height: `${height - 95}px` }}
+        >
           {output.status.id != 0 ? (
-            <div className="whitespace-pre-wrap break-words">
+            <pre className="whitespace-pre-wrap break-words">
               <div>Status: {output.status.description}</div>
               {output.stdout ? (
                 <div>Output: {output.stdout}</div>
@@ -63,13 +68,13 @@ export default function OutputArea({
                 <div>No output was produced by your code.</div>
               )}
               {output.stderr && <div>Errors: {output.stderr}</div>}
-            </div>
+            </pre>
           ) : (
-            <div className="whitespace-pre-wrap break-words">
+            <pre className="whitespace-pre-wrap break-words">
               Your testcase output will appear here
-            </div>
+            </pre>
           )}
-        </pre>
+        </div>
       </CardContent>
     </Card>
   );
