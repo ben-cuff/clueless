@@ -3,13 +3,25 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Markdown from 'react-markdown';
 
 export default function FeedbackContent({ feedback }: { feedback: string }) {
+  console.log(feedback);
   return (
     <ErrorBoundary
       fallback={
         <ErrorFallback text="Error while displaying feedback content, try again later" />
       }
     >
-      <Markdown>{feedback}</Markdown>
+      <Markdown
+        components={{
+          strong: ({ children }) => (
+            <strong className="font-extrabold">{children}</strong>
+          ),
+          em: ({ children }) => (
+            <em className="italic font-extralight">{children}</em>
+          ),
+        }}
+      >
+        {feedback}
+      </Markdown>
     </ErrorBoundary>
   );
 }
