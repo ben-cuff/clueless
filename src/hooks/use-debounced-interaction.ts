@@ -1,5 +1,5 @@
 import { Optional } from '@/types/util';
-import { interactionAPI } from '@/utils/interaction-api';
+import { InteractionAPI } from '@/utils/interaction-api';
 import { useCallback, useEffect } from 'react';
 import useDebounce from './use-debouncer';
 
@@ -15,7 +15,7 @@ export default function useDebouncedInteraction(
     async (value: string) => {
       const pathname = window.location.pathname;
       const name = interactionName ?? defaultInteractionName;
-      interactionAPI.addEvent(name, pathname, value);
+      InteractionAPI.addEvent(name, pathname, value);
     },
     [defaultInteractionName, interactionName]
   );

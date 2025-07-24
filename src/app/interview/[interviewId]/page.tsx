@@ -1,6 +1,6 @@
 import InterviewLoading from '@/components/interview/interview-loading';
 import InterviewQuestionPage from '@/components/interview/interview-question-page';
-import { apiQuestions } from '@/utils/questions-api';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { Question } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -26,11 +26,11 @@ export default async function ResumeInterviewPage({
     redirect('/interview');
   }
 
-  const question: Question = await apiQuestions.getQuestionById(
-    Number(questionId)
-  );
-
-  if (question == null) {
+  let question: Question;
+  try {
+    question = await QuestionsAPI.getQuestionById(Number(questionId));
+  } catch (error) {
+    handleQuestionsAPIError(error as Error, 'While getting specific question');
     redirect('/interview');
   }
 

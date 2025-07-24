@@ -1,4 +1,4 @@
-import { AccountAPI } from '@/utils/account-api';
+import { AccountAPI, handleAccountAPIError } from '@/utils/account-api';
 import { Company } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
@@ -13,15 +13,17 @@ export default function useAddCompany() {
   const handleSubmitCompanies = useCallback(async () => {
     if (session?.user.id) {
       setIsLoading(true);
-      const { companies: updatedCompanies } = await AccountAPI.UpdateCompanies(
-        session.user.id,
-        companies ?? []
-      );
+      try {
+        const { companies: updatedCompanies } =
+          await AccountAPI.updateCompanies(session.user.id, companies ?? []);
 
-      if (updatedCompanies) {
-        setCurrentCompanies(updatedCompanies);
+        if (updatedCompanies) {
+          setCurrentCompanies(updatedCompanies);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        handleAccountAPIError(error as Error);
       }
-      setIsLoading(false);
     }
   }, [companies, session?.user.id]);
 
@@ -29,9 +31,17 @@ export default function useAddCompany() {
     setIsLoading(true);
     (async () => {
       if (session?.user.id) {
-        const updatedCompanies = await AccountAPI.getCompanies(session.user.id);
+        try {
+          const updatedCompanies = await AccountAPI.getCompanies(
+            session.user.id
+          );
 
-        setCurrentCompanies(updatedCompanies ?? []);
+          setCurrentCompanies(updatedCompanies ?? []);
+        } catch (error) {
+          handleAccountAPIError(error as Error);
+          setCurrentCompanies([]);
+          return;
+        }
       }
       setIsLoading(false);
     })();

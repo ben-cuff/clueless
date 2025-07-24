@@ -3,7 +3,7 @@ import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
 } from '@/utils/activities-progress';
-import { ActivityAPI } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
 import {
   get200Response,
   get400Response,
@@ -39,7 +39,12 @@ export async function GET(
     return get200Response({ goal: null, progress: null });
   }
 
-  const activities = (await ActivityAPI.getActivity(userId)) ?? [];
+  let activities: Activity[] = [];
+  try {
+    activities = (await ActivityAPI.getActivity(userId)) ?? [];
+  } catch (error) {
+    handleActivityAPIError(error as Error);
+  }
 
   const filteredActivities = filterActivitiesBeforeBeginAt(
     activities,

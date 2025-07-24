@@ -9,7 +9,15 @@ export default function FeedbackContent({ feedback }: { feedback: string }) {
         <ErrorFallback text="Error while displaying feedback content, try again later" />
       }
     >
-      <Markdown>{feedback}</Markdown>
+      <Markdown
+        components={{
+          strong: ({ children }) => (
+            <strong className="font-extrabold">{children}</strong>
+          ),
+        }}
+      >
+        {feedback}
+      </Markdown>
     </ErrorBoundary>
   );
 }

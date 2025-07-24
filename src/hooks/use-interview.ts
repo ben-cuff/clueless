@@ -1,11 +1,14 @@
 import { FeedbackContext } from '@/components/providers/feedback-provider';
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
+import { AuthError, InterviewAPIError } from '@/errors/api-errors';
+import { GeminiError } from '@/errors/gemini';
+import { NotFoundError } from '@/errors/not-found';
 import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
 import getMessageObject from '@/utils/ai-message';
-import { chatAPI } from '@/utils/chat-api';
-import { interviewAPI } from '@/utils/interview-api';
+import { ChatAPI } from '@/utils/chat-api';
+import { InterviewAPI } from '@/utils/interview-api';
 import { errorLog } from '@/utils/logger';
 import { InterviewType } from '@prisma/client';
 import {
@@ -42,20 +45,56 @@ export default function useInterview(
 
   const TIME_LIMIT = type === InterviewType.TIMED ? secondsInHour / 2 : null; // thirty minutes for timed interviews
 
+  const createOrUpdateInterview = useCallback(async () => {
+    try {
+      await InterviewAPI.createOrUpdateInterview(
+        userId || -1,
+        interviewId,
+        messages!,
+        questionNumber,
+        codeRef.current,
+        languageRef.current,
+        type
+      );
+    } catch (error) {
+      if (error instanceof AuthError) {
+        alert(error.message);
+        return;
+      } else if (error instanceof InterviewAPIError) {
+        errorLog('Interview API error: ' + error.message);
+        return;
+      }
+      errorLog('Unexpected error during interview update: ' + error);
+    }
+  }, [userId, interviewId, messages, questionNumber, type]);
+
   const handleCodeSave = useCallback(
     async (code: string) => {
       const MIN_MESSAGES_TO_SAVE_CODE = 3;
 
       if (code && messages && messages.length >= MIN_MESSAGES_TO_SAVE_CODE) {
-        await interviewAPI.updateCodeForInterview(
-          userId || -1,
-          interviewId,
-          code,
-          languageRef.current
-        );
+        try {
+          await InterviewAPI.updateCodeForInterview(
+            userId || -1,
+            interviewId,
+            code,
+            languageRef.current
+          );
+        } catch (error) {
+          if (error instanceof AuthError) {
+            alert(error.message);
+            return;
+          } else if (error instanceof NotFoundError) {
+            createOrUpdateInterview();
+          } else if (error instanceof InterviewAPIError) {
+            errorLog('Interview API error: ' + error.message);
+            return;
+          }
+          errorLog('Unexpected error during code save: ' + error);
+        }
       }
     },
-    [interviewId, messages, userId]
+    [createOrUpdateInterview, interviewId, messages, userId]
   );
 
   const addUserMessage = useCallback((message: string) => {
@@ -81,19 +120,30 @@ export default function useInterview(
         ],
       };
 
-      const response = await chatAPI.getGeminiResponse(
-        messages ?? [],
-        userMessageWithCode,
-        questionNumber
-      );
-
-      if (!response?.ok) {
-        handleStreamingError(setMessages, setIsStreaming);
+      let response: Response | undefined;
+      try {
+        response = await ChatAPI.getGeminiResponse(
+          messages ?? [],
+          userMessageWithCode,
+          questionNumber
+        );
+      } catch (error) {
+        if (error instanceof AuthError) {
+          alert(error.message);
+          return;
+        } else if (error instanceof GeminiError) {
+          errorLog('Gemini API error: ' + error.message);
+          handleStreamingError(setMessages, setIsStreaming);
+          return;
+        }
+        alert('An unexpected error occurred, please retry later');
+        errorLog('Unexpected error during streaming: ' + error);
         return;
       }
 
       if (!response || !response.body) {
-        alert('An unexpected error occurred');
+        errorLog('No response or response body from Gemini API');
+        handleStreamingError(setMessages, setIsStreaming);
         return;
       }
 
@@ -159,15 +209,7 @@ export default function useInterview(
     if (hasMounted.current) {
       (async () => {
         if (!isStreaming && messages && messages?.length > 1) {
-          await interviewAPI.createOrUpdateInterview(
-            userId || -1,
-            interviewId,
-            messages!,
-            questionNumber,
-            codeRef.current,
-            languageRef.current,
-            type
-          );
+          createOrUpdateInterview();
 
           const lastMessageContainsEndInterviewStatement =
             doesLastMessageContain(
@@ -193,18 +235,29 @@ export default function useInterview(
     userId,
     router,
     type,
+    createOrUpdateInterview,
   ]);
 
   // runs on mount to fetch the interview messages if they exist
   useEffect(() => {
     (async () => {
-      const interviewData = await interviewAPI.getInterview(
-        userId || -1,
-        interviewId
-      );
-      if (!interviewData.error) {
+      try {
+        const interviewData = await InterviewAPI.getInterview(
+          userId || -1,
+          interviewId
+        );
         setMessages(interviewData.messages);
-      } else {
+      } catch (error) {
+        if (error instanceof AuthError) {
+          alert('Authentication error. Please log in again.');
+        } else if (error instanceof NotFoundError) {
+          // expected to happen on first load if interview does not exist
+        } else if (error instanceof InterviewAPIError) {
+          errorLog(`Failed to fetch interview: ${error.message}`);
+          alert(`Failed to fetch interview: ${error.message}`);
+        } else {
+          errorLog(`Unexpected error fetching interview: ${error}`);
+        }
         setMessages([
           getMessageObject(
             MessageRoleType.MODEL,
@@ -213,8 +266,9 @@ export default function useInterview(
               : PROMPT_MESSAGES.INITIAL_MESSAGE_UNTIMED
           ),
         ]);
+      } finally {
+        setIsLoadingMessages(false);
       }
-      setIsLoadingMessages(false);
     })();
   }, [interviewId, type, userId]);
 

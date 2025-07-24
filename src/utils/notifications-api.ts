@@ -16,7 +16,7 @@ export const NotificationsAPI = {
       return { notify: false };
     }
 
-    return await response.json();
+    return response.json();
   },
   postNotification: async (userId: number) => {
     const response = await fetch(
@@ -33,6 +33,6 @@ export const NotificationsAPI = {
       return { notify: false };
     }
 
-    return await response.json();
+    return response.json();
   },
 };

@@ -32,8 +32,6 @@ export async function GET(
     const user = await prismaLib.user.findUnique({
       where: { id: userId },
       select: {
-        id: true,
-        username: true,
         companies: true,
       },
     });

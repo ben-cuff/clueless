@@ -24,7 +24,7 @@ export default function LeetcodeLinkImage({
         <Badge className="rounded-full p-1">
           <Image
             alt="leetcode-logo"
-            src={'/leet_code_logo_black.png'}
+            src="/leet_code_logo_black.png"
             width={40}
             height={40}
             className="object-contain min-w-8"

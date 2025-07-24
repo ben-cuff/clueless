@@ -1,6 +1,6 @@
 import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
-import { ActivityAPI } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
 import {
   ForbiddenError,
   get201Response,
@@ -59,7 +59,11 @@ export async function POST(req: Request) {
       },
     });
 
-    ActivityAPI.updateActivity(userId, GoalType.QUESTION);
+    try {
+      ActivityAPI.updateActivity(userId, GoalType.QUESTION);
+    } catch (error) {
+      handleActivityAPIError(error as Error);
+    }
 
     NotificationsAPI.postNotification(userId);
 

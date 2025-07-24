@@ -1,6 +1,7 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
+import { errorLog } from './logger';
 
-export const interactionAPI = {
+export const InteractionAPI = {
   async addEvent(eventName: string, pathname: string, value?: string) {
     const body: { eventName: string; pathname: string; value?: string } = {
       eventName,
@@ -18,6 +19,12 @@ export const interactionAPI = {
       },
       body: JSON.stringify(body),
     });
+
+    if (!response.ok) {
+      errorLog(
+        `Failed to add interaction event: ${response.status} ${response.statusText}`
+      );
+    }
     return response.json();
   },
 };

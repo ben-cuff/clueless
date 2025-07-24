@@ -1,5 +1,5 @@
 import { QuestionPartial } from '@/types/question';
-import { apiQuestions } from '@/utils/questions-api';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -16,14 +16,22 @@ export default function useRecommended() {
       if (session?.user?.id) {
         setIsLoading(true);
         setIsLoggedIn(true);
-        const data = await apiQuestions.getRecommendedQuestions(
-          session.user.id
-        );
+        try {
+          const data = await QuestionsAPI.getRecommendedQuestions(
+            session.user.id
+          );
 
-        if (data) {
-          setRecommendedQuestions(data);
+          if (data) {
+            setRecommendedQuestions(data);
+          }
+        } catch (error) {
+          handleQuestionsAPIError(
+            error as Error,
+            'While fetching recommended questions'
+          );
+        } finally {
+          setIsLoading(false);
         }
-        setIsLoading(false);
       }
     })();
   }, [session]);

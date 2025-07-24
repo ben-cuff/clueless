@@ -1,7 +1,7 @@
 import { DEFAULT_TAKE_SIZE } from '@/constants/take-sizes';
 import { TOPIC_LIST, TopicInfo } from '@/constants/topics';
 import { QuestionWithRowNumber } from '@/types/question';
-import { apiQuestions } from '@/utils/questions-api';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { useCallback, useEffect, useState } from 'react';
 import useCompanies from './use-companies';
 import useDebounce from './use-debouncer';
@@ -35,18 +35,25 @@ export default function useQuestions() {
       }
 
       const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
+      try {
+        const data = await QuestionsAPI.getQuestionsSearch(
+          topicsIdList,
+          parsedDifficulty,
+          companiesIdList,
+          refRowNum,
+          take,
+          debouncedSearch
+        );
 
-      const data = await apiQuestions.getQuestions(
-        topicsIdList,
-        parsedDifficulty,
-        companiesIdList,
-        refRowNum,
-        take,
-        debouncedSearch
-      );
-
-      setQuestionsData(data);
-      setIsLoading(false);
+        setQuestionsData(data);
+      } catch (error) {
+        handleQuestionsAPIError(
+          error as Error,
+          'While fetching searched questions'
+        );
+      } finally {
+        setIsLoading(false);
+      }
     },
     [takeSize, topics, companies, debouncedSearch, difficulty]
   );

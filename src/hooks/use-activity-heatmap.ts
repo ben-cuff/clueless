@@ -1,5 +1,5 @@
 import { ActivityForHeatmap } from '@/types/activity';
-import { ActivityAPI } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
 import { Activity } from '@prisma/client';
 import { secondsInHour } from 'date-fns/constants';
 import { useSession } from 'next-auth/react';
@@ -14,11 +14,16 @@ export default function useActivityHeatmap() {
     (async () => {
       setIsLoading(true);
       if (session?.user?.id !== undefined) {
-        const activityData = await ActivityAPI.getActivity(session.user.id);
+        try {
+          const activityData = await ActivityAPI.getActivity(session.user.id);
 
-        const mappedActivity = getActivityForHeatmap(activityData ?? []);
-        setActivity(mappedActivity);
-        setIsLoading(false);
+          const mappedActivity = getActivityForHeatmap(activityData ?? []);
+          setActivity(mappedActivity);
+        } catch (error) {
+          handleActivityAPIError(error as Error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     })();
   }, [session?.user.id]);

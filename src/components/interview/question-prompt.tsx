@@ -1,5 +1,6 @@
 import React from 'react';
 import DifficultyBadge from '../difficulty-badge';
+import { Card, CardContent } from '../ui/card';
 
 export default function QuestionPrompt({
   title,
@@ -15,16 +16,18 @@ export default function QuestionPrompt({
   const formattedPrompt = formatPromptWithBreaks(prompt);
 
   return (
-    <div className="rounded-lg shadow p-6 max-w-128 bg-card ml-2 overflow-auto max-h-200 min-w-82">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium">Question {questionNumber}</span>
-        <DifficultyBadge difficulty={difficulty as 1 | 2 | 3} />
-      </div>
-      <h2 className="text-xl font-bold  mb-2">{title}</h2>
-      <div className="text-sm">
-        <p>{formattedPrompt}</p>
-      </div>
-    </div>
+    <Card className="overflow-auto max-h-200 min-w-100 max-w-1/4 w-full">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium">Question {questionNumber}</span>
+          <DifficultyBadge difficulty={difficulty as 1 | 2 | 3} />
+        </div>
+        <h2 className="text-xl font-bold mb-2">{title}</h2>
+        <div className="text-sm">
+          <p>{formattedPrompt}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
