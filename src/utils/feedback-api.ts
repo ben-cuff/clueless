@@ -24,9 +24,8 @@ export const FeedbackAPI = {
       if (response.status === 401 || response.status === 403) {
         throw new AuthError('Unauthorized to get feedback');
       } else if (response.status === 404) {
-        throw new NotFoundError(
-          `Feedback for interview ${interviewId} not found.`
-        );
+        // this is expected if feedback does not exist
+        return null;
       }
       const errorData = await response.json();
       throw new FeedbackAPIError(errorData.error || 'Failed to get feedback');
@@ -63,6 +62,8 @@ export const FeedbackAPI = {
     let interview: Interview = {} as Interview;
     try {
       interview = await InterviewAPI.getInterview(userId, interviewId);
+
+      console.log('interview', interview);
     } catch (error) {
       if (error instanceof NotFoundError) {
         throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
@@ -74,7 +75,9 @@ export const FeedbackAPI = {
       }
     }
 
-    const messages = Array.isArray(interview?.messages) ? interview.messages : [];
+    const messages = Array.isArray(interview?.messages)
+      ? interview.messages
+      : [];
     const finalCode = interview?.code || '';
 
     const codeMessage = getMessageObject(

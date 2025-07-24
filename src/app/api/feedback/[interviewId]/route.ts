@@ -2,6 +2,7 @@ import { prismaLib } from '@/lib/prisma';
 import {
   get200Response,
   get400Response,
+  get404Response,
   UnknownServerError,
 } from '@/utils/api-responses';
 
@@ -22,7 +23,7 @@ export async function GET(
     });
 
     if (!feedback) {
-      return get400Response('Feedback not found');
+      return get404Response('Feedback not found');
     }
     return get200Response(feedback);
   } catch {
