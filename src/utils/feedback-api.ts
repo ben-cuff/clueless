@@ -62,8 +62,6 @@ export const FeedbackAPI = {
     let interview: Interview = {} as Interview;
     try {
       interview = await InterviewAPI.getInterview(userId, interviewId);
-
-      console.log('interview', interview);
     } catch (error) {
       if (error instanceof NotFoundError) {
         throw new NotFoundError(`Interview with ID ${interviewId} not found.`);
