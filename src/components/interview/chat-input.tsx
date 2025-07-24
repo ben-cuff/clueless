@@ -1,11 +1,11 @@
 'use client';
 
+import INTERACTION_NAMES from '@/constants/interaction-names';
 import useChatInput from '@/hooks/use-chat-input';
 import { useContext } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import INTERACTION_NAMES from '@/constants/interaction-names';
 
 export default function ChatInput({
   handleMessageSubmit,
@@ -21,14 +21,14 @@ export default function ChatInput({
 
   return (
     <form
-      className="flex flex-row items-end p-2"
+      className="flex flex-row items-end max-h-1/3"
       onSubmit={(e) => {
         e.preventDefault();
         handleSubmit();
       }}
     >
       <Textarea
-        className="m-2 flex-1"
+        className="m-2 flex-1 overflow-auto h-full"
         name="message"
         placeholder="Your message here"
         interactionName={INTERACTION_NAMES.textarea.chatInput}
