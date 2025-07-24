@@ -21,14 +21,14 @@ export default function ChatInput({
 
   return (
     <form
-      className="flex flex-row items-end max-h-1/3"
+      className="flex flex-row items-end max-h-1/3 gap-2 m-2"
       onSubmit={(e) => {
         e.preventDefault();
         handleSubmit();
       }}
     >
       <Textarea
-        className="m-2 flex-1 overflow-auto h-full"
+        className="flex-1 overflow-auto h-full"
         name="message"
         placeholder="Your message here"
         interactionName={INTERACTION_NAMES.textarea.chatInput}
@@ -40,7 +40,7 @@ export default function ChatInput({
       <Button
         type="submit"
         interactionName={INTERACTION_NAMES.button.submitChatMessage}
-        className="m-2 h-10"
+        className="h-10"
         disabled={isReadOnly}
       >
         Submit
