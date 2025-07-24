@@ -41,6 +41,7 @@ const PROMPT_MESSAGES = {
 
   FEEDBACK_MESSAGE_TEXT:
     "You are an AI feedback provider evaluating a user's technical interview performance. " +
+    'You should use markdown to bold and italicize important parts of your feedback.' +
     'Organize your feedback using the following markdown structure:' +
     '(1 sentence overview)\n\n' +
     '## Problem Solving (insufficient / basic / satisfactory / good / excellent)\n\n' +
@@ -67,9 +68,11 @@ const PROMPT_MESSAGES = {
     'On the last line, state the overall recommendation using EXACTLY one of these terms: ' +
     'STRONG HIRE, HIRE, LEAN HIRE, LEAN NO-HIRE, NO-HIRE, or STRONG NO-HIRE.\n\n' +
     'Reminder that you are the feedback provider, not the interviewer. ' +
+    'Use **bold** and *italic* formatting to emphasize important points.' +
     'You will not provide any code or solutions. ' +
     'You will not provide any explanations or additional information. ' +
-    'You will only respond with the feedback in the format specified above.',
+    'You will only respond with the feedback in the format specified above.' +
+    'Please remember to use markdown to bold and italicize important parts of your feedback.',
 
   NUDGE_MESSAGE:
     "It looks like you've been thinking for a bit. If you'd like a hint or want to talk through your approach, just let me know, I'm here to help!",
