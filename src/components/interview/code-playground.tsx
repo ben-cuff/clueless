@@ -11,7 +11,6 @@ import ChatArea from './chat-area';
 import EditorOutputContainer from './editor-output-container';
 import InterviewLoading from './interview-loading';
 import LanguagesSelect from './language-select';
-import QuestionHeader from './question-header';
 import QuestionPrompt from './question-prompt';
 import ThemeSelect from './theme-select';
 
@@ -69,13 +68,8 @@ export default function CodePlayground({
   }
 
   return (
-    <div className="flex flex-col">
-      <QuestionHeader
-        title={question.title ?? 'Error'}
-        questionNumber={question.id}
-        difficulty={question.difficulty}
-      />
-      <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20">
+    <>
+      <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20 mt-3">
         <LanguagesSelect
           handleLanguageChange={handleLanguageChange}
           initialLanguage={language}
@@ -106,6 +100,6 @@ export default function CodePlayground({
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

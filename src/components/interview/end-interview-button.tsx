@@ -6,7 +6,7 @@ export default function EndInterviewButton({
   handleEndInterview: () => void;
 }) {
   return (
-    <Button onClick={handleEndInterview} className="fixed top-20 left-4 z-50">
+    <Button onClick={handleEndInterview} className="fixed top-16 left-4 z-50">
       End Interview Early
     </Button>
   );
