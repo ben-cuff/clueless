@@ -14,9 +14,6 @@ export default function FeedbackContent({ feedback }: { feedback: string }) {
           strong: ({ children }) => (
             <strong className="font-extrabold">{children}</strong>
           ),
-          em: ({ children }) => (
-            <em className="italic font-extralight">{children}</em>
-          ),
         }}
       >
         {feedback}
