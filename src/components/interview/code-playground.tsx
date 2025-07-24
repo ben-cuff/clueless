@@ -90,13 +90,13 @@ export default function CodePlayground({
           difficulty={question.difficulty}
           questionNumber={question.id}
         />
-        <div className="min-w-1/3">
+        <div className="min-w-1/3 w-full">
           <ChatArea
             messages={messages}
             handleMessageSubmit={handleMessageSubmit}
           />
         </div>
-        <div className="flex flex-col w-full gap-1">
+        <div className="flex flex-col gap-1 w-1/2">
           <CodeEditor
             languageValue={language.value}
             theme={theme}

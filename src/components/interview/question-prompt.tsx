@@ -16,7 +16,7 @@ export default function QuestionPrompt({
   const formattedPrompt = formatPromptWithBreaks(prompt);
 
   return (
-    <Card className="overflow-auto max-h-200 min-w-82">
+    <Card className="overflow-auto max-h-200 w-full">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">Question {questionNumber}</span>

@@ -42,7 +42,7 @@ export default function OutputArea({
   }, [handleOutputChange, output]);
 
   return (
-    <Card className="flex flex-col items-center rounded-lg w-200 h-49">
+    <Card className="flex flex-col items-center rounded-lg w-200 h-1/4">
       <CardContent className="w-full">
         <div className="w-full flex mb-4">
           <Button
