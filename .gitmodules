@@ -1,0 +1,6 @@
+[submodule "clueless-notification-worker"]
+	path = clueless-notification-worker
+	url = https://github.com/clueless-interview-web-app/clueless-notification-worker
+[submodule "clueless-interaction-client"]
+	path = clueless-interaction-client
+	url = https://github.com/clueless-interview-web-app/clueless-interaction-client
