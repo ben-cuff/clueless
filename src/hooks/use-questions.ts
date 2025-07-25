@@ -18,51 +18,6 @@ export default function useQuestions() {
 
   const debouncedSearch = useDebounce(searchInput, 500) as string;
 
-  const fetchQuestions = useCallback(
-    async (
-      direction: 'next' | 'prev' | 'init' = 'init',
-      refRowNum?: number
-    ) => {
-      setIsLoading(true);
-      const topicsIdList = topics?.map((topic) => topic.id);
-      const companiesIdList = companies?.map((company) => company.id);
-
-      let take = takeSize;
-
-      if (direction === 'prev') {
-        take = -takeSize;
-        refRowNum = refRowNum! - 1;
-      }
-
-      const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
-      try {
-        const data = await QuestionsAPI.getQuestionsSearch(
-          topicsIdList,
-          parsedDifficulty,
-          companiesIdList,
-          refRowNum,
-          take,
-          debouncedSearch
-        );
-
-        setQuestionsData(data);
-      } catch (error) {
-        handleQuestionsAPIError(
-          error as Error,
-          'While fetching searched questions'
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [takeSize, topics, companies, debouncedSearch, difficulty]
-  );
-
-  useEffect(() => {
-    fetchQuestions('init');
-    setCurrentPage(1);
-  }, [takeSize, topics, fetchQuestions]);
-
   const getPageNumber = useCallback(
     async (page: number) => {
       setIsLoading(true);
@@ -123,6 +78,10 @@ export default function useQuestions() {
   const handleDifficultySelectChange = useCallback((difficulty: string) => {
     setDifficulty(difficulty);
   }, []);
+
+  useEffect(() => {
+    getPageNumber(1);
+  }, [getPageNumber]);
 
   return {
     companies,
