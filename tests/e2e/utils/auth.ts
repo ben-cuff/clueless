@@ -12,7 +12,11 @@ async function doRegister(page: Page) {
   await page.getByRole('textbox', { name: 'Confirm Password:' }).fill(password);
   await page.getByRole('button', { name: 'Register' }).click();
   await expect(page).toHaveURL(`/`);
-  await page.getByRole('button').first().click();
+  await page
+    .getByRole('banner')
+    .getByRole('button')
+    .filter({ hasText: /^$/ })
+    .click();
   await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeVisible();
 }
 
@@ -22,7 +26,11 @@ async function doLogin(page: Page) {
   await page.getByRole('textbox', { name: 'Password:' }).fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await page.waitForURL(`/`);
-  await page.getByRole('button').first().click();
+  await page
+    .getByRole('banner')
+    .getByRole('button')
+    .filter({ hasText: /^$/ })
+    .click();
   await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeVisible();
 }
 
