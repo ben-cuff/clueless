@@ -96,7 +96,6 @@ export default function useCodePlayground(
 
   useEffect(() => {
     const newTheme = getThemeFromSystem(systemTheme ?? 'light');
-    setTheme(newTheme);
     handleThemeChange(newTheme);
   }, [handleThemeChange, systemTheme]);
 
