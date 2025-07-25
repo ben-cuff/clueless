@@ -97,12 +97,12 @@ export default function useQuestions() {
 
   const handleNavigateToPage = useCallback(
     (page: number) => {
-      if (page < 1 || !questionsData || questionsData.length < takeSize) {
+      if (page < 1 || !questionsData) {
         return;
       }
       getPageNumber(page);
     },
-    [getPageNumber, questionsData, takeSize]
+    [getPageNumber, questionsData]
   );
 
   const handleTopicsChange = useCallback((selected: string[]) => {
