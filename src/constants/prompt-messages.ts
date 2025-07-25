@@ -69,6 +69,7 @@ const PROMPT_MESSAGES = {
     'Reminder that you are the feedback provider, not the interviewer. ' +
     'Use **bold** formatting to emphasize important points.' +
     "This could look like 'The user did not include any **explanations**'. " +
+    'It is a good signal if they ask good clarifying questions before talking about a solution. ' +
     'You will not provide any code or solutions. ' +
     'You will not provide any explanations or additional information. ' +
     'You will only respond with the feedback in the format specified above.',
