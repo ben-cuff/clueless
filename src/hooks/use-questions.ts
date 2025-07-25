@@ -63,23 +63,47 @@ export default function useQuestions() {
     setCurrentPage(1);
   }, [takeSize, topics, fetchQuestions]);
 
-  function handleNextPage() {
-    if (!questionsData || questionsData.length < takeSize) {
-      return;
-    }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.row_num;
-    fetchQuestions('next', Number(lastQuestionNumber));
-    setCurrentPage((prev) => prev + 1);
-  }
+  const getPageNumber = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
+      const topicsIdList = topics?.map((topic) => topic.id);
+      const companiesIdList = companies?.map((company) => company.id);
+      const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
 
-  const handlePreviousPage = useCallback(() => {
-    if (!questionsData || questionsData.length === 0) {
-      return;
-    }
-    const firstQuestionNumber = questionsData[0]?.row_num;
-    fetchQuestions('prev', Number(firstQuestionNumber));
-    setCurrentPage((prev) => prev - 1);
-  }, [fetchQuestions, questionsData]);
+      const cursor = (page - 1) * takeSize;
+
+      try {
+        const data = await QuestionsAPI.getQuestionsSearch(
+          topicsIdList,
+          parsedDifficulty,
+          companiesIdList,
+          cursor,
+          takeSize,
+          debouncedSearch
+        );
+        setQuestionsData(data);
+        setCurrentPage(page);
+      } catch (error) {
+        handleQuestionsAPIError(
+          error as Error,
+          'While fetching searched questions'
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [takeSize, topics, companies, debouncedSearch, difficulty]
+  );
+
+  const handleNavigateToPage = useCallback(
+    (page: number) => {
+      if (page < 1 || !questionsData || questionsData.length < takeSize) {
+        return;
+      }
+      getPageNumber(page);
+    },
+    [getPageNumber, questionsData, takeSize]
+  );
 
   const handleTopicsChange = useCallback((selected: string[]) => {
     const selectedTopics = TOPIC_LIST.filter((topic) =>
@@ -108,11 +132,10 @@ export default function useQuestions() {
     isLoading,
     questionsData,
     currentPage,
-    handlePreviousPage,
-    handleNextPage,
     takeSize,
     handleTakeSizeChange,
     handleSearchInputChange,
     handleDifficultySelectChange,
+    handleNavigateToPage,
   };
 }

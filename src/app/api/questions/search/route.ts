@@ -54,13 +54,16 @@ export async function GET(req: Request) {
               )`
             : ''
         }
+    ),
+    total_count AS (
+      SELECT COUNT(*) AS count FROM ranked_questions
     )
-    SELECT *
-    FROM ranked_questions
+    SELECT rq.*, tc.count as total_count
+    FROM ranked_questions rq, total_count tc
     WHERE
-      row_num > ${min_number}
-      AND row_num <= ${max_number}
-    ORDER BY row_num
+      rq.row_num > ${min_number}
+      AND rq.row_num <= ${max_number}
+    ORDER BY rq.row_num
   `;
 
   // should be safe based on prisma docs
@@ -77,6 +80,10 @@ export async function GET(req: Request) {
   const questionsSerialized = questions.map((q) => ({
     ...q,
     row_num: typeof q.row_num === 'bigint' ? q.row_num.toString() : q.row_num,
+    total_count:
+      typeof q.total_count === 'bigint'
+        ? q.total_count.toString()
+        : q.total_count,
   }));
 
   return get200Response(questionsSerialized);
