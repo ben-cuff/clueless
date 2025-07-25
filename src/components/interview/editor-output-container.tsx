@@ -58,7 +58,7 @@ export default function EditorOutputContainer({
         setCode={setCode}
       />
       <div
-        className="absolute left-0 right-0 bottom-0 z-10 flex flex-col"
+        className="absolute left-0 right-0 bottom-0 z-10 flex flex-col mb-1"
         style={{ height: `${outputHeight}px` }}
       >
         <div

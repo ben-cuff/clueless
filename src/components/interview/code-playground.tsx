@@ -68,7 +68,7 @@ export default function CodePlayground({
   }
 
   return (
-    <>
+    <div className="w-full h-[88vh]">
       <div className="flex flex-row min-w-128 mb-1 justify-end mr-40 gap-20 mt-3">
         <LanguagesSelect
           handleLanguageChange={handleLanguageChange}
@@ -76,20 +76,20 @@ export default function CodePlayground({
         />
         <ThemeSelect handleThemeChange={handleThemeChange} theme={theme} />
       </div>
-      <div className="flex flex-row gap-1 m-1 w-full">
+      <div className="flex flex-row gap-1 m-1 w-full h-full">
         <QuestionPrompt
           title={question.title}
           prompt={question.prompt}
           difficulty={question.difficulty}
           questionNumber={question.id}
         />
-        <div className="flex min-w-1/3">
+        <div className="flex min-w-1/3 flex-1">
           <ChatArea
             messages={messages}
             handleMessageSubmit={handleMessageSubmit}
           />
         </div>
-        <div className="flex h-vh min-w-1/3 w-full">
+        <div className="flex min-w-1/3 w-full">
           <EditorOutputContainer
             language={language}
             theme={theme}
@@ -100,6 +100,6 @@ export default function CodePlayground({
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
