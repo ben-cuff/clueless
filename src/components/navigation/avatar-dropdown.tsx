@@ -28,6 +28,7 @@ export default function AvatarDropdown() {
         variant="ghost"
         onClick={() => signIn()}
         className="rounded-4xl cursor-pointer p-0"
+        data-testid="profile-not-logged-in"
       >
         <Avatar>
           <AvatarFallback>?</AvatarFallback>
@@ -39,7 +40,11 @@ export default function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="rounded-4xl cursor-pointer p-0">
+        <Button
+          variant="ghost"
+          className="rounded-4xl cursor-pointer p-0"
+          data-testid="profile-logged-in"
+        >
           <Avatar>
             <AvatarImage src="/person.svg" className="bg-gray-300 p-1" />
             <AvatarFallback>ME</AvatarFallback>
