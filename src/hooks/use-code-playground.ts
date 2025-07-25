@@ -95,8 +95,10 @@ export default function useCodePlayground(
   ]);
 
   useEffect(() => {
-    setTheme(getThemeFromSystem(systemTheme ?? 'light'));
-  }, [systemTheme]);
+    const newTheme = getThemeFromSystem(systemTheme ?? 'light');
+    setTheme(newTheme);
+    handleThemeChange(newTheme);
+  }, [handleThemeChange, systemTheme]);
 
   return {
     theme,
@@ -114,8 +116,8 @@ const getThemeFromSystem = (systemTheme: string): Theme => {
       '(prefers-color-scheme: dark)'
     ).matches;
 
-    return prefersDark ? 'vs-dark' : 'light';
+    return prefersDark ? 'night-owl' : 'light';
   } else {
-    return systemTheme === 'dark' ? 'vs-dark' : 'light';
+    return systemTheme === 'dark' ? 'night-owl' : 'light';
   }
 };
