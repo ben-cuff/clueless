@@ -18,34 +18,26 @@ export default function useQuestions() {
 
   const debouncedSearch = useDebounce(searchInput, 500) as string;
 
-  const fetchQuestions = useCallback(
-    async (
-      direction: 'next' | 'prev' | 'init' = 'init',
-      refRowNum?: number
-    ) => {
+  const getPageNumber = useCallback(
+    async (page: number) => {
       setIsLoading(true);
       const topicsIdList = topics?.map((topic) => topic.id);
       const companiesIdList = companies?.map((company) => company.id);
-
-      let take = takeSize;
-
-      if (direction === 'prev') {
-        take = -takeSize;
-        refRowNum = refRowNum! - 1;
-      }
-
       const parsedDifficulty = difficulty === 'none' ? undefined : [difficulty];
+
+      const cursor = (page - 1) * takeSize;
+
       try {
         const data = await QuestionsAPI.getQuestionsSearch(
           topicsIdList,
           parsedDifficulty,
           companiesIdList,
-          refRowNum,
-          take,
+          cursor,
+          takeSize,
           debouncedSearch
         );
-
         setQuestionsData(data);
+        setCurrentPage(page);
       } catch (error) {
         handleQuestionsAPIError(
           error as Error,
@@ -58,28 +50,15 @@ export default function useQuestions() {
     [takeSize, topics, companies, debouncedSearch, difficulty]
   );
 
-  useEffect(() => {
-    fetchQuestions('init');
-    setCurrentPage(1);
-  }, [takeSize, topics, fetchQuestions]);
-
-  function handleNextPage() {
-    if (!questionsData || questionsData.length < takeSize) {
-      return;
-    }
-    const lastQuestionNumber = questionsData[takeSize - 1]?.row_num;
-    fetchQuestions('next', Number(lastQuestionNumber));
-    setCurrentPage((prev) => prev + 1);
-  }
-
-  const handlePreviousPage = useCallback(() => {
-    if (!questionsData || questionsData.length === 0) {
-      return;
-    }
-    const firstQuestionNumber = questionsData[0]?.row_num;
-    fetchQuestions('prev', Number(firstQuestionNumber));
-    setCurrentPage((prev) => prev - 1);
-  }, [fetchQuestions, questionsData]);
+  const handleNavigateToPage = useCallback(
+    (page: number) => {
+      if (page < 1 || !questionsData) {
+        return;
+      }
+      getPageNumber(page);
+    },
+    [getPageNumber, questionsData]
+  );
 
   const handleTopicsChange = useCallback((selected: string[]) => {
     const selectedTopics = TOPIC_LIST.filter((topic) =>
@@ -100,6 +79,10 @@ export default function useQuestions() {
     setDifficulty(difficulty);
   }, []);
 
+  useEffect(() => {
+    getPageNumber(1);
+  }, [getPageNumber]);
+
   return {
     companies,
     handleCompaniesChange,
@@ -108,11 +91,10 @@ export default function useQuestions() {
     isLoading,
     questionsData,
     currentPage,
-    handlePreviousPage,
-    handleNextPage,
     takeSize,
     handleTakeSizeChange,
     handleSearchInputChange,
     handleDifficultySelectChange,
+    handleNavigateToPage,
   };
 }

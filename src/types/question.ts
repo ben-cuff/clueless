@@ -16,6 +16,7 @@ export type QuestionPartial = Pick<
 
 export interface QuestionWithRowNumber extends QuestionPartial {
   row_num?: bigint | number;
+  total_count?: bigint | number;
 }
 
 export type TestcasesKey = keyof Question['testCases'];

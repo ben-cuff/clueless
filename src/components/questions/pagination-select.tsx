@@ -1,7 +1,7 @@
-import { QuestionPartial } from '@/types/question';
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -10,28 +10,44 @@ import {
 
 export default function PaginationSelect({
   currentPage,
-  handlePreviousPage,
-  handleNextPage,
-  questionsData,
   takeSize,
+  handleNavigateToPage,
+  numQuestions,
 }: {
   currentPage: number;
-  handlePreviousPage: () => void;
-  handleNextPage: () => void;
-  questionsData: QuestionPartial[];
   takeSize: number;
+  handleNavigateToPage: (page: number) => void;
+  numQuestions: number;
 }) {
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          {currentPage !== 1 && (
-            <PaginationPrevious onClick={handlePreviousPage} />
+          {currentPage > 1 && (
+            <PaginationPrevious
+              onClick={() => handleNavigateToPage(currentPage - 1)}
+            />
           )}
         </PaginationItem>
+        {currentPage > 2 && (
+          <>
+            <PaginationItem>
+              <PaginationLink onClick={() => handleNavigateToPage(1)}>
+                1
+              </PaginationLink>
+            </PaginationItem>
+            {currentPage > 3 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+          </>
+        )}
         {currentPage > 1 && (
           <PaginationItem>
-            <PaginationLink onClick={handlePreviousPage}>
+            <PaginationLink
+              onClick={() => handleNavigateToPage(currentPage - 1)}
+            >
               {currentPage - 1}
             </PaginationLink>
           </PaginationItem>
@@ -39,18 +55,41 @@ export default function PaginationSelect({
         <PaginationItem>
           <PaginationLink isActive>{currentPage}</PaginationLink>
         </PaginationItem>
-        {questionsData && questionsData.length === takeSize && (
+        {currentPage < Math.ceil(numQuestions / takeSize) && (
           <PaginationItem>
-            <PaginationLink onClick={handleNextPage}>
+            <PaginationLink
+              onClick={() => handleNavigateToPage(currentPage + 1)}
+            >
               {currentPage + 1}
             </PaginationLink>
           </PaginationItem>
         )}
+        {(() => {
+          const lastPage = Math.ceil(numQuestions / takeSize);
+          if (currentPage < lastPage - 1) {
+            return (
+              <>
+                {currentPage < lastPage - 2 && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => handleNavigateToPage(lastPage)}
+                  >
+                    {lastPage}
+                  </PaginationLink>
+                </PaginationItem>
+              </>
+            );
+          }
+          return null;
+        })()}
         <PaginationItem>
-          {questionsData && questionsData.length === takeSize && (
+          {currentPage < Math.ceil(numQuestions / takeSize) && (
             <PaginationNext
-              onClick={handleNextPage}
-              isActive={!questionsData || questionsData.length < takeSize}
+              onClick={() => handleNavigateToPage(currentPage + 1)}
             />
           )}
         </PaginationItem>

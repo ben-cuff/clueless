@@ -82,11 +82,7 @@ test('navigate-between-register-and-login', async ({ page }) => {
 
 async function signOut(page: Page) {
   await page.goto('http://localhost:3000/');
-  await page
-    .getByRole('banner')
-    .getByRole('button')
-    .filter({ hasText: /^$/ })
-    .click();
+  await page.getByTestId('profile-logged-in').click();
   await page.getByRole('menuitem', { name: 'Sign Out' }).click();
   await page.waitForTimeout(2000);
 }

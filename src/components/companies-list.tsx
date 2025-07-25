@@ -1,5 +1,6 @@
 import { READABLE_COMPANIES } from '@/constants/companies';
-import { Question } from '@prisma/client';
+import { cn } from '@/lib/utils';
+import { Company, Question } from '@prisma/client';
 
 export default function CompaniesList({
   companies,
@@ -10,15 +11,16 @@ export default function CompaniesList({
   text?: string;
   className?: string;
 }) {
-  return (
-    <div className={className}>
-      {text}
-      {companies
-        .map(
-          (company) =>
-            READABLE_COMPANIES[company as keyof typeof READABLE_COMPANIES]
-        )
-        .join(', ')}
-    </div>
-  );
+  if (companies.length > 0) {
+    return (
+      <div className={cn(className, 'flex flex-row min-w-20')}>
+        <p className="text-sm">
+          {text}
+          {companies
+            .map((company) => READABLE_COMPANIES[company as Company])
+            .join(', ')}
+        </p>
+      </div>
+    );
+  }
 }

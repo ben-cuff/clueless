@@ -52,11 +52,7 @@ test('navigate-home', async ({ page }) => {
 
 test('navigate-to-settings', async ({ page }) => {
   await page.goto('http://localhost:3000/');
-  await page
-    .getByRole('banner')
-    .getByRole('button')
-    .filter({ hasText: /^$/ })
-    .click();
+  await page.getByTestId('profile-logged-in').click();
   await page.getByRole('menuitem', { name: 'Settings' }).click();
   await expect(
     page.getByRole('button', { name: 'Delete Account' })

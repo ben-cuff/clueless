@@ -17,12 +17,11 @@ export default function QuestionsPage() {
     isLoading,
     questionsData,
     currentPage,
-    handlePreviousPage,
-    handleNextPage,
     takeSize,
     handleTakeSizeChange,
     handleSearchInputChange,
     handleDifficultySelectChange,
+    handleNavigateToPage,
   } = useQuestions();
 
   return (
@@ -44,11 +43,10 @@ export default function QuestionsPage() {
             <QuestionsList questionsData={questionsData} />
             <QuestionsPagination
               currentPage={currentPage}
-              handlePreviousPage={handlePreviousPage}
-              handleNextPage={handleNextPage}
-              questionsData={questionsData}
               takeSize={takeSize}
               handleTakeSizeChange={handleTakeSizeChange}
+                numQuestions={Number(questionsData[0].total_count) ?? 0}
+                handleNavigateToPage={handleNavigateToPage}
             />
           </div>
         ) : (

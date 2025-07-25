@@ -12,7 +12,7 @@ export default function QuestionCardHeader({
       className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
       data-testid={`question-card-${questionNumber}`}
     >
-      <h2 className="text-xl font-semibold min-w-60">
+      <h2 className="text-lg font-semibold min-w-60">
         {questionNumber}. {title}
       </h2>
       {children}

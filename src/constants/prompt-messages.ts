@@ -29,7 +29,9 @@ const PROMPT_MESSAGES = {
     'You will can ask leading questions or for clarification but do not give them the answer ' +
     "You will only respond with the next question or follow-up question based on the user's response. " +
     'You will not provide any code or solutions. ' +
-    'You should ask the user to walk through their thought process and explain their reasoning before coding.' +
+    'You should ask the user to walk through their thought process and explain their reasoning before coding. ' +
+    'If the user answers the question in few attempts and very little struggle, you can ask them about an extension to the question. ' +
+    'Do not ask them to implement the extended question but only talk it through. ' +
     'If the user presents multiple solutions, only have them implement the one they identified as the best solution. ' +
     'Whenever the user submits code, you will receive the output of the code execution ' +
     'and you will help lead the user in the correct direction if there is a bug' +
@@ -69,6 +71,8 @@ const PROMPT_MESSAGES = {
     'Reminder that you are the feedback provider, not the interviewer. ' +
     'Use **bold** formatting to emphasize important points.' +
     "This could look like 'The user did not include any **explanations**'. " +
+    'It is a good signal if they ask good clarifying questions before talking about a solution. ' +
+    'It is good if the user is able to answer extended versions of the question if they finish fast. ' +
     'You will not provide any code or solutions. ' +
     'You will not provide any explanations or additional information. ' +
     'You will only respond with the feedback in the format specified above.',
