@@ -13,6 +13,7 @@ export default function QuestionsLoading({ takeSize }: { takeSize: number }) {
           <Skeleton className="h-6 w-12 rounded ml-2" />
           <Skeleton className="h-8 w-8 rounded-4xl ml-5" />
           <Skeleton className="h-8 w-20 rounded ml-5" />
+          <Skeleton className="h-8 w-20 rounded ml-5" />
 
           <div className="flex flex-wrap gap-2 ml-auto">
             <Skeleton className="h-8 w-16 rounded-full" />
