@@ -15,7 +15,7 @@ export default function QuestionsPagination({
   handleNavigateToPage: (page: number) => void;
 }) {
   return (
-    <div className="flex w-full ">
+    <div className="flex w-full">
       <PaginationSelect
         currentPage={currentPage}
         takeSize={takeSize}
