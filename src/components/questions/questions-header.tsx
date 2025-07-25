@@ -24,7 +24,7 @@ export default function QuestionsHeader({
   return (
     <>
       <h1 className="w-full text-2xl font-bold mb-6">Questions</h1>
-      <div className="flex flex-row text-2xl mb-2">
+      <div className="flex flex-row text-2xl mb-2 space-x-2">
         <Label className="mr-4">Search:</Label>
         <Input
           placeholder="Search for questions..."
