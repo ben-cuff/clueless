@@ -33,7 +33,7 @@ export default async function QuestionPage({ id }: { id: number }) {
 
   if (hasPythonSolution) {
     return (
-      <div className="flex flex-row mt-10 gap-1 h-[90vh] max-w-screen">
+      <div className="flex flex-row gap-1 mt-5 h-[92vh] max-w-screen">
         <QuestionPrompt
           title={question.title}
           difficulty={question.difficulty}
@@ -57,7 +57,7 @@ export default async function QuestionPage({ id }: { id: number }) {
   }
 
   return (
-    <div className="flex flex-row mt-10 gap-1 h-[90vh] max-w-screen overflow-auto">
+    <div className="flex flex-row mt-5 gap-1 h-[90vh] max-w-screen overflow-auto">
       <QuestionPrompt
         title={question.title}
         difficulty={question.difficulty}
