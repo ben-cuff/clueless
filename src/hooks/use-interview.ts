@@ -353,7 +353,6 @@ export default function useInterview(
       )
     ) {
       setIsCoding(true);
-      console.log('User is coding'); // Debug log
     }
   }, [messages]);
 
