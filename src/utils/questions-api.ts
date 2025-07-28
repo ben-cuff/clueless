@@ -89,12 +89,20 @@ export const QuestionsAPI = {
   },
 };
 
-function handleQuestionsAPIError(error: Error, context: string = '') {
+function handleQuestionsAPIError(
+  error: Error,
+  context: string = '',
+  alertUser: boolean = true
+) {
   if (error instanceof NotFoundError) {
-    alert(`${context} Not found: ${error.message}`);
+    if (alertUser) {
+      alert(`${context} Not found: ${error.message}`);
+    }
     errorLog(`${context} Not found: ${error.message}`);
   } else if (error instanceof AuthError) {
-    alert(`${context} Authentication error: ${error.message}`);
+    if (alertUser) {
+      alert(`${context} Authentication error: ${error.message}`);
+    }
     errorLog(`${context} Authentication error: ${error.message}`);
   } else if (error instanceof QuestionsAPIError) {
     errorLog(`${context} Questions API error: ${error.message}`);
