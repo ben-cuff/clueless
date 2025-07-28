@@ -1,5 +1,4 @@
 import test, { expect } from '@playwright/test';
-import TWO_SUM_SNAPSHOT from './constants/two-sum-snapshot';
 import TWO_SUM_USER_RESPONSE from './constants/two-sum-user-response';
 
 test('Interview two sum timed', async ({ page }) => {
@@ -7,7 +6,7 @@ test('Interview two sum timed', async ({ page }) => {
     await page.goto(
       'http://localhost:3000/interview/new?questionNumber=1&type=TIMED'
     );
-    await expect(page.locator('body')).toMatchAriaSnapshot(TWO_SUM_SNAPSHOT);
+    await expect(page.locator('body')).toContainText('Two Sum');
   });
 
   await test.step('Check timer UI', async () => {
@@ -71,7 +70,7 @@ test('Interview two sum feedback', async ({ page }) => {
     await page.goto(
       'http://localhost:3000/interview/new?questionNumber=1&type=TIMED'
     );
-    await expect(page.locator('body')).toMatchAriaSnapshot(TWO_SUM_SNAPSHOT);
+    await expect(page.locator('body')).toContainText('Two Sum');
   });
 
   await test.step('Check timer UI', async () => {

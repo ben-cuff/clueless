@@ -31,8 +31,33 @@ export default async function QuestionPage({ id }: { id: number }) {
     typeof (question.solutions as Record<string, unknown>)['python'] ===
       'string';
 
+  if (hasPythonSolution) {
+    return (
+      <div className="flex flex-row gap-1 mt-5 h-[92vh] max-w-screen">
+        <QuestionPrompt
+          title={question.title}
+          difficulty={question.difficulty}
+          questionNumber={question.id}
+          prompt={question.prompt}
+          width="max-w-full"
+        />
+        <PythonSolutionCard
+          pythonSolution={
+            (question.solutions as Record<string, unknown>)['python'] as string
+          }
+        />
+        <QuestionAdditionalInfoCard
+          id={question.id}
+          companies={question.companies}
+          accuracy={question.accuracy}
+          className="h-full w-1/3 min-w-100 my-auto"
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-row mt-10 gap-1 h-90vh max-w-screen">
+    <div className="flex flex-row mt-5 gap-1 h-[90vh] max-w-screen overflow-auto">
       <QuestionPrompt
         title={question.title}
         difficulty={question.difficulty}
@@ -40,13 +65,6 @@ export default async function QuestionPage({ id }: { id: number }) {
         prompt={question.prompt}
         width="max-w-full"
       />
-      {hasPythonSolution && (
-        <PythonSolutionCard
-          pythonSolution={
-            (question.solutions as Record<string, unknown>)['python'] as string
-          }
-        />
-      )}
       <QuestionAdditionalInfoCard
         id={question.id}
         companies={question.companies}

@@ -7,13 +7,15 @@ export default function QuestionAdditionalInfoCard({
   companies,
   id,
   accuracy,
+  className = 'h-full min-w-100',
 }: {
   companies: Company[];
   id: number;
   accuracy: number;
+  className?: string;
 }) {
   return (
-    <Card className="h-full w-1/3 min-w-100 my-auto">
+    <Card className={className}>
       <CardHeader>Additional Information</CardHeader>
       <CardContent>
         <CompaniesList text="Tagged Companies: " companies={companies} />

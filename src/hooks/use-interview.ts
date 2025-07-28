@@ -36,6 +36,7 @@ export default function useInterview(
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [timer, setTimer] = useState<Nullable<number>>(null);
+  const [isCoding, setIsCoding] = useState(false);
   const userId = useContext(UserIdContext);
   const isFeedback = useContext(FeedbackContext);
   const codeRef = useRef('');
@@ -339,6 +340,21 @@ export default function useInterview(
     }
   }, [type, TIME_LIMIT, timer, handleEndInterview]);
 
+  useEffect(() => {
+    if (
+      !isCoding &&
+      messages &&
+      messages.some(
+        (msg) =>
+          msg.parts &&
+          msg.parts.length > 0 &&
+          msg.parts[0].text.includes(PROMPT_MESSAGES.BEGIN_CODING_MESSAGE)
+      )
+    ) {
+      setIsCoding(true);
+    }
+  }, [messages, isCoding]);
+
   return {
     handleCodeSave,
     messages,
@@ -349,6 +365,7 @@ export default function useInterview(
     userId,
     languageRef,
     timer,
+    isCoding,
   };
 }
 

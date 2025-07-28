@@ -22,6 +22,7 @@ export default function CodePlayground({
   codeRef,
   interviewId,
   languageRef,
+  isCoding,
 }: {
   question: Question;
   handleCodeSave(code: string): Promise<void>;
@@ -30,6 +31,7 @@ export default function CodePlayground({
   codeRef: RefObject<string>;
   interviewId: string;
   languageRef: RefObject<string>;
+  isCoding: boolean;
 }) {
   const {
     theme,
@@ -97,6 +99,7 @@ export default function CodePlayground({
             code={code}
             setCode={setCode}
             handleMessageSubmit={handleMessageSubmit}
+            isCoding={isCoding}
           />
         </div>
       </div>

@@ -37,6 +37,7 @@ export default function InterviewQuestionPage({
     handleEndInterview,
     languageRef,
     timer,
+    isCoding,
   } = useInterview(interviewId, question.id, interviewType);
   const isFeedback = useContext(FeedbackContext);
 
@@ -57,6 +58,7 @@ export default function InterviewQuestionPage({
         codeRef={codeRef}
         interviewId={interviewId}
         languageRef={languageRef}
+        isCoding={isCoding}
       />
       {isFeedback ? (
         <FeedbackModal interviewId={interviewId} />

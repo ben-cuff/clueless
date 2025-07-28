@@ -1,5 +1,7 @@
 import DifficultyBadge from '../difficulty-badge';
-import formatPromptWithBreaks from '../formatted-prompt';
+import formatPromptWithBreaks, {
+  getTwoSumFormattedPrompt,
+} from '../formatted-prompt';
 import { Card, CardContent } from '../ui/card';
 
 export default function QuestionPrompt({
@@ -15,7 +17,10 @@ export default function QuestionPrompt({
   prompt: string;
   width?: string;
 }) {
-  const formattedPrompt = formatPromptWithBreaks(prompt);
+  const formattedPrompt =
+    questionNumber === 1
+      ? getTwoSumFormattedPrompt()
+      : formatPromptWithBreaks(prompt);
 
   return (
     <Card className={`overflow-auto h-full min-w-100 w-full ${width}`}>
@@ -25,9 +30,7 @@ export default function QuestionPrompt({
           <DifficultyBadge difficulty={difficulty as 1 | 2 | 3} />
         </div>
         <h2 className="text-xl font-bold mb-2">{title}</h2>
-        <div className="text-sm">
-          <p>{formattedPrompt}</p>
-        </div>
+        <div className="text-sm">{formattedPrompt}</div>
       </CardContent>
     </Card>
   );
