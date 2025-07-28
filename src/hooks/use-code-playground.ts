@@ -27,13 +27,18 @@ export default function useCodePlayground(
   const [language, setLanguage] = useState<Optional<LanguageOption>>();
   const [code, setCode] = useState<string>('');
 
-  const handleThemeChange = useCallback((newTheme: Theme) => {
-    if (['light', 'vs-dark'].includes(newTheme)) {
-      setTheme(newTheme);
-    } else {
-      defineTheme(newTheme).then(() => setTheme(newTheme));
-    }
-  }, []);
+  const handleThemeChange = useCallback(
+    (newTheme: Theme) => {
+      if (['light', 'vs-dark'].includes(newTheme)) {
+        setTheme(newTheme);
+        saveThemeToLocalStorage(newTheme, systemTheme ?? 'light');
+      } else {
+        defineTheme(newTheme).then(() => setTheme(newTheme));
+        saveThemeToLocalStorage(newTheme, systemTheme ?? 'light');
+      }
+    },
+    [systemTheme]
+  );
 
   const handleStarterCodeChange = useCallback(
     (language: string) => {
@@ -109,13 +114,38 @@ export default function useCodePlayground(
   };
 }
 
-const getThemeFromSystem = (systemTheme: string): Theme => {
-  if (systemTheme === 'system') {
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
+const THEME_STORAGE_KEY_LIGHT = 'code-playground-theme-light';
+const THEME_STORAGE_KEY_DARK = 'code-playground-theme-dark';
 
-    return prefersDark ? 'night-owl' : 'light';
+const saveThemeToLocalStorage = (theme: Theme, systemTheme: string) => {
+  const isDark =
+    systemTheme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : systemTheme === 'dark';
+
+  localStorage.setItem(
+    isDark ? THEME_STORAGE_KEY_DARK : THEME_STORAGE_KEY_LIGHT,
+    theme
+  );
+};
+
+const getThemeFromSystem = (systemTheme: string): Theme => {
+  const isDark =
+    systemTheme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : systemTheme === 'dark';
+
+  const storageKey = isDark ? THEME_STORAGE_KEY_DARK : THEME_STORAGE_KEY_LIGHT;
+
+  const storedTheme =
+    typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+
+  if (storedTheme) {
+    return storedTheme as Theme;
+  }
+
+  if (systemTheme === 'system') {
+    return isDark ? 'night-owl' : 'light';
   } else {
     return systemTheme === 'dark' ? 'night-owl' : 'light';
   }
