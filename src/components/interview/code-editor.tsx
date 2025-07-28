@@ -11,11 +11,13 @@ export default function CodeEditor({
   theme,
   code,
   setCode,
+  isDisabled,
 }: {
   languageValue: string;
   theme: string;
   code: string;
   setCode: (value: string) => void;
+  isDisabled: boolean;
 }) {
   const isFeedback = useContext(FeedbackContext);
   return (
@@ -33,7 +35,7 @@ export default function CodeEditor({
           onChange={(value) => setCode(value ?? '')}
           options={{
             minimap: { enabled: false },
-            readOnly: isFeedback,
+            readOnly: isDisabled || isFeedback,
           }}
         />
       </div>

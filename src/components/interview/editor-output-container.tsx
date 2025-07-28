@@ -11,6 +11,7 @@ export default function EditorOutputContainer({
   question,
   handleMessageSubmit,
   setCode,
+  isCoding,
 }: {
   language: LanguageOption;
   theme: string;
@@ -18,6 +19,7 @@ export default function EditorOutputContainer({
   question: Question;
   setCode: Dispatch<SetStateAction<string>>;
   handleMessageSubmit: (message: string) => Promise<void>;
+  isCoding: boolean;
 }) {
   const [outputHeight, setOutputHeight] = useState(200);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +58,7 @@ export default function EditorOutputContainer({
         theme={theme}
         code={code}
         setCode={setCode}
+        isDisabled={!isCoding}
       />
       <div
         className="absolute left-0 right-0 bottom-0 z-10 flex flex-col mb-1"
