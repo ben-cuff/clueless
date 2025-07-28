@@ -31,9 +31,7 @@ export default function QuestionPrompt({
           <DifficultyBadge difficulty={difficulty as 1 | 2 | 3} />
         </div>
         <h2 className="text-xl font-bold mb-2">{title}</h2>
-        <div className="text-sm">
-          <p>{formattedPrompt}</p>
-        </div>
+        <div className="text-sm">{formattedPrompt}</div>
       </CardContent>
     </Card>
   );
