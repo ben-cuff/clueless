@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function QuestionCardHeader({
   children,
   title,
@@ -12,9 +14,11 @@ export default function QuestionCardHeader({
       className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
       data-testid={`question-card-${questionNumber}`}
     >
-      <h2 className="text-lg font-semibold min-w-60">
-        {questionNumber}. {title}
-      </h2>
+      <Link href={`/questions/${questionNumber}`}>
+        <h2 className="text-lg font-semibold min-w-60 hover:underline">
+          {questionNumber}. {title}
+        </h2>
+      </Link>
       {children}
     </div>
   );
