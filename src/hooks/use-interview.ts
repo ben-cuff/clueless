@@ -341,9 +341,8 @@ export default function useInterview(
   }, [type, TIME_LIMIT, timer, handleEndInterview]);
 
   useEffect(() => {
-    // Set isCoding to true if the last message is the BEGIN_CODING_MESSAGE,
-    // or if any previous message contains BEGIN_CODING_MESSAGE (for resume)
     if (
+      !isCoding &&
       messages &&
       messages.some(
         (msg) =>
@@ -354,7 +353,7 @@ export default function useInterview(
     ) {
       setIsCoding(true);
     }
-  }, [messages]);
+  }, [messages, isCoding]);
 
   return {
     handleCodeSave,
