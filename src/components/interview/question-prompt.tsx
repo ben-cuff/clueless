@@ -17,7 +17,6 @@ export default function QuestionPrompt({
   prompt: string;
   width?: string;
 }) {
-  console.log(prompt);
   const formattedPrompt =
     questionNumber === 1
       ? getTwoSumFormattedPrompt()
