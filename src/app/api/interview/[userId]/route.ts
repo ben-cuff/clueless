@@ -5,9 +5,9 @@ import {
   get201Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
+import { NotificationsAPI } from '@/utils/api/notifications-api';
 import { errorLog } from '@/utils/logger';
-import { NotificationsAPI } from '@/utils/notifications-api';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/options';
 

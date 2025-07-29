@@ -5,7 +5,7 @@ import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 
 export async function POST(req: Request) {
   let body;

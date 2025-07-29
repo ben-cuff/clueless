@@ -9,7 +9,7 @@ import { NotFoundError } from '@/errors/not-found';
 import { defineTheme } from '@/lib/define-theme';
 import { Theme } from '@/types/theme';
 import { Optional } from '@/types/util';
-import { InterviewAPI } from '@/utils/interview-api';
+import { InterviewAPI } from '@/utils/api/interview-api';
 import { errorLog } from '@/utils/logger';
 import { Question } from '@prisma/client';
 import { useTheme } from 'next-themes';

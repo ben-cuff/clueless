@@ -1,8 +1,8 @@
-import { AccountAPI, handleAccountAPIError } from '@/utils/account-api';
+import { AccountAPI, handleAccountAPIError } from '@/utils/api/account-api';
 import { Company } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
-import useCompanies from './use-companies';
+import useCompanies from '../use-companies';
 
 export default function useAddCompany() {
   const { companies, handleCompaniesChange } = useCompanies();

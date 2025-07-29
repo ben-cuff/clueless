@@ -1,14 +1,14 @@
 import PRISMA_ERROR_CODES from '@/constants/prisma-error-codes';
 import { prismaLib } from '@/lib/prisma';
-import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/api/activity-api';
 import {
   ForbiddenError,
   get201Response,
   get400Response,
   get409Response,
   UnknownServerError,
-} from '@/utils/api-responses';
-import { NotificationsAPI } from '@/utils/notifications-api';
+} from '@/utils/api/api-responses';
+import { NotificationsAPI } from '@/utils/api/notifications-api';
 import { GoalType, Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';

@@ -1,6 +1,9 @@
 import { QuestionPartial } from '@/types/question';
 import { Nullable } from '@/types/util';
-import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
+import {
+  handleQuestionsAPIError,
+  QuestionsAPI,
+} from '@/utils/api/questions-api';
 import { useCallback, useState } from 'react';
 
 export default function useAskAIQuestions() {

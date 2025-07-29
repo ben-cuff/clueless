@@ -3,7 +3,7 @@ import { NotFoundError } from '@/errors/not-found';
 import { prismaLib } from '@/lib/prisma';
 import { MessageRoleType } from '@/types/message';
 import getMessageObject from '@/utils/ai-message';
-import { get400Response, UnknownServerError } from '@/utils/api-responses';
+import { get400Response, UnknownServerError } from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { GoogleGenAI } from '@google/genai';
 import { Question } from '@prisma/client';

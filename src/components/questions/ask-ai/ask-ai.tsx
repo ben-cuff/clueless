@@ -1,5 +1,5 @@
 import ClickOutsideContainer from '@/components/click-outside-container';
-import useOpen from '@/hooks/use-open';
+import useOpen from '@/hooks/ui/use-open';
 import AskAICard from './ask-ai-card';
 import AskAIContainer from './ask-ai-container';
 import CircleButton from './circle-button';

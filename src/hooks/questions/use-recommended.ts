@@ -1,5 +1,8 @@
 import { QuestionPartial } from '@/types/question';
-import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
+import {
+  handleQuestionsAPIError,
+  QuestionsAPI,
+} from '@/utils/api/questions-api';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 

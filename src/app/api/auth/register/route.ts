@@ -5,7 +5,7 @@ import {
   get400Response,
   get409Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { Prisma } from '@prisma/client';
 import argon2 from 'argon2';

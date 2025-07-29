@@ -1,7 +1,7 @@
 'use client';
 
 import { COMPANY_LIST } from '@/constants/companies';
-import useAddCompany from '@/hooks/use-add-company';
+import useAddCompany from '@/hooks/goals/use-add-company';
 import { ErrorBoundary } from 'react-error-boundary';
 import CompaniesList from './companies-list';
 import ErrorFallback from './error-fallback';

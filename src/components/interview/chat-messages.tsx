@@ -1,5 +1,5 @@
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
-import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom';
+import { useAutoScrollToBottom } from '@/hooks/ui/use-auto-scroll-to-bottom';
 import { Message, MessageRoleType } from '@/types/message';
 import Markdown from 'react-markdown';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';

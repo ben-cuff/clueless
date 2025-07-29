@@ -1,10 +1,9 @@
 'use client';
 
 import INTERACTION_NAMES from '@/constants/interaction-names';
-import useCodePlayground from '@/hooks/use-code-playground';
+import useCodePlayground from '@/hooks/interview/use-code-playground';
 import useDebounce from '@/hooks/use-debouncer';
 import { Message } from '@/types/message';
-import { InteractionAPI } from '@/utils/interaction-api';
 import { Question } from '@prisma/client';
 import { RefObject, useEffect } from 'react';
 import ChatArea from './chat-area';
@@ -13,6 +12,7 @@ import InterviewLoading from './interview-loading';
 import LanguagesSelect from './language-select';
 import QuestionPrompt from './question-prompt';
 import ThemeSelect from './theme-select';
+import { InteractionAPI } from '@/utils/api/interaction-api';
 
 export default function CodePlayground({
   question,

@@ -1,6 +1,6 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { GoalCategoryTabs, GoalTabModes } from '@/types/goal-tab';
-import { GoalsAPI, handleGoalsAPIError } from '@/utils/goals-api';
+import { GoalsAPI, handleGoalsAPIError } from '@/utils/api/goals-api';
 import { millisecondsInWeek } from 'date-fns/constants';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { DateRange } from 'react-day-picker';

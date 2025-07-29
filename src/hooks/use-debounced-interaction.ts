@@ -1,5 +1,5 @@
 import { Optional } from '@/types/util';
-import { InteractionAPI } from '@/utils/interaction-api';
+import { InteractionAPI } from '@/utils/api/interaction-api';
 import { useCallback, useEffect } from 'react';
 import useDebounce from './use-debouncer';
 

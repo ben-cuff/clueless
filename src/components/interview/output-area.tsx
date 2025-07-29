@@ -3,7 +3,7 @@
 import INTERACTION_NAMES from '@/constants/interaction-names';
 import { LanguageOption } from '@/constants/language-options';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
-import useCodeOutput from '@/hooks/use-code-output';
+import useCodeOutput from '@/hooks/interview/use-code-output';
 import { Nullable } from '@/types/util';
 import { Question } from '@prisma/client';
 import { useContext, useEffect, useRef } from 'react';

@@ -8,9 +8,9 @@ import {
   get404Response,
   get409Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
+import { NotificationsAPI } from '@/utils/api/notifications-api';
 import { errorLog } from '@/utils/logger';
-import { NotificationsAPI } from '@/utils/notifications-api';
 import { GoalType, Prisma } from '@prisma/client';
 import { secondsInHour } from 'date-fns/constants';
 import { getServerSession } from 'next-auth';

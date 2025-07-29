@@ -1,5 +1,5 @@
 import ErrorFallback from '@/components/error-fallback';
-import useRecommended from '@/hooks/use-recommended';
+import useRecommended from '@/hooks/questions/use-recommended';
 import { ErrorBoundary } from 'react-error-boundary';
 import QuestionsList from '../questions-list';
 import QuestionsLoading from '../questions-loading';

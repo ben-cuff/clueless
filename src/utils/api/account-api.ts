@@ -1,7 +1,7 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import { CompanyInfo } from '@/constants/companies';
 import { AccountAPIError, AuthError } from '@/errors/api-errors';
-import { errorLog } from './logger';
+import { errorLog } from '../logger';
 
 export const AccountAPI = {
   createAccount: async (username: string, password: string) => {

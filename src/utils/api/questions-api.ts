@@ -1,7 +1,7 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import { AuthError, QuestionsAPIError } from '@/errors/api-errors';
 import { NotFoundError } from '@/errors/not-found';
-import { errorLog } from './logger';
+import { errorLog } from '../logger';
 
 export const QuestionsAPI = {
   async getQuestionsSearch(

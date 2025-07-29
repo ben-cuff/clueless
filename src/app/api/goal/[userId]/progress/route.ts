@@ -3,12 +3,12 @@ import {
   filterActivitiesBeforeBeginAt,
   getTimeProgressPercentage,
 } from '@/utils/activities-progress';
-import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/api/activity-api';
 import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { Activity, Goal, GoalType } from '@prisma/client';
 

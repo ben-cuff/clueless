@@ -8,7 +8,7 @@ import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { debugLog, errorLog } from '@/utils/logger';
 import { GoogleGenAI } from '@google/genai';
 import { getServerSession } from 'next-auth';
