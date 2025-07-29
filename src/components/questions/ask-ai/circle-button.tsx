@@ -3,19 +3,19 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 export default function CircleButton({
-  className,
-  onClick,
   containerClassName,
+  buttonClassName,
+  onClick,
 }: {
-  className?: string;
-  onClick: () => void;
   containerClassName?: string;
+  buttonClassName?: string;
+  onClick: () => void;
 }) {
   return (
     <div className={containerClassName}>
       <Button
         className={cn(
-          className,
+          buttonClassName,
           'rounded-full w-16 h-16 p-2 flex items-center justify-center'
         )}
         variant="secondary"
