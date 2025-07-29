@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     return get400Response('Invalid query parameter');
   }
 
-  const NUM_RANDOM_QUESTIONS = 300;
+  const NUM_RANDOM_QUESTIONS = 500;
 
   let questions: QuestionPartial[] = [];
   try {
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   let response;
   try {
     response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-flash-lite',
       contents: [
         getMessageObject(MessageRoleType.USER, JSON.stringify(questions)),
         getMessageObject(MessageRoleType.USER, query),
