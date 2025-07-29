@@ -5,8 +5,10 @@ import QuestionCard from './question-card';
 
 export default function QuestionsList({
   questionsData,
+  showButtons = true,
 }: {
   questionsData: QuestionPartial[];
+  showButtons?: boolean;
 }) {
   return (
     <ErrorBoundary
@@ -15,7 +17,7 @@ export default function QuestionsList({
       }
     >
       {questionsData.map((question, idx) => (
-        <QuestionCard key={idx} question={question} />
+        <QuestionCard key={idx} question={question} showButtons={showButtons} />
       ))}
     </ErrorBoundary>
   );

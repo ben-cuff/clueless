@@ -65,27 +65,44 @@ export const QuestionsAPI = {
     return response.json();
   },
   async getRecommendedQuestions(userId: number) {
-    try {
-      const response = await fetch(
-        CLUELESS_API_ROUTES.recommendedQuestions(userId),
-        {
-          method: 'GET',
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          throw new AuthError('Unauthorized to get recommended questions');
-        }
-        throw new QuestionsAPIError(
-          `Failed to get recommended questions for user ${userId}`
-        );
+    const response = await fetch(
+      CLUELESS_API_ROUTES.recommendedQuestions(userId),
+      {
+        method: 'GET',
       }
+    );
 
-      return response.json();
-    } catch (error) {
-      errorLog('Error fetching recommended questions: ' + error);
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to get recommended questions');
+      }
+      throw new QuestionsAPIError(
+        `Failed to get recommended questions for user ${userId}`
+      );
     }
+
+    return response.json();
+  },
+  async getAskAIQuestions(query: string) {
+    const response = await fetch(CLUELESS_API_ROUTES.questionsAskAI, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new AuthError('Unauthorized to ask AI for questions');
+      }
+      const errorData = await response.json();
+      throw new QuestionsAPIError(
+        errorData.error || 'Failed to ask AI for questions'
+      );
+    }
+
+    return response.json();
   },
 };
 

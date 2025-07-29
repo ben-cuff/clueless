@@ -20,6 +20,7 @@ const CLUELESS_API_ROUTES = {
     `${BASE_URL}/api/interview/${userId}/code`,
   interviewWithUserIdAndInterviewId: (userId: number, interviewId: string) =>
     `${BASE_URL}/api/interview/${userId}/${interviewId}`,
+  questionsAskAI: `${BASE_URL}/api/questions/ask-ai`,
   questionsSearch: (params: URLSearchParams) =>
     `${BASE_URL}/api/questions/search?${params.toString()}`,
   questionsById: (id: number) => `${BASE_URL}/api/questions/${id}`,

@@ -1,6 +1,7 @@
 'use client';
 
 import { NotificationProvider } from '@/components/providers/notifications-provider';
+import AskAI from '@/components/questions/ask-ai/ask-ai';
 import QuestionsHeader from '@/components/questions/questions-header';
 import QuestionsList from '@/components/questions/questions-list';
 import QuestionsLoading from '@/components/questions/questions-loading';
@@ -45,8 +46,8 @@ export default function QuestionsPage() {
               currentPage={currentPage}
               takeSize={takeSize}
               handleTakeSizeChange={handleTakeSizeChange}
-                numQuestions={Number(questionsData[0].total_count) ?? 0}
-                handleNavigateToPage={handleNavigateToPage}
+              numQuestions={Number(questionsData[0].total_count) ?? 0}
+              handleNavigateToPage={handleNavigateToPage}
             />
           </div>
         ) : (
@@ -55,6 +56,7 @@ export default function QuestionsPage() {
           </div>
         )}
       </div>
+      <AskAI />
     </NotificationProvider>
   );
 }

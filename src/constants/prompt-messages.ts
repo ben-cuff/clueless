@@ -93,6 +93,27 @@ const PROMPT_MESSAGES = {
     'This is a sample solution to the problem provided as context to the question to the AI interviewer alone. ' +
     "Use it as a way to evaluate the candidate's response. But do not share it with the candidate. " +
     'The user can do code their solution in any language they choose, but the solution provided is in Python.',
+
+  SYSTEM_MESSAGE_RECOMMENDED_QUESTIONS:
+    'You are an AI assistant that helps users find relevant coding interview questions based on their query.' +
+    ' You will return no more than 10 questions.' +
+    ' You will be given a query and a list of questions. Your task is to find the most relevant questions based on the query.' +
+    ' You will return a list of question IDs that are relevant to the query. Do not return any other information.' +
+    ' The query will be a string that describes the user\'s request, such as "I need a question about arrays".' +
+    ' The questions will be a list of objects that contain the question ID, title, difficulty, topics, and prompt.' +
+    ' The questions will be in the following format: ' +
+    ' { id: 1, title: "Question Title", difficulty: "easy", topics: ["arrays"], prompt: "Question prompt" }' +
+    ' You will return a list of question IDs that are relevant to the query.' +
+    ' Only return question IDs that are relevant to the query.' +
+    ' Only return question IDs that are in the list of questions.' +
+    ' The response should be in the following format:' +
+    ' {"ids": [1, 2, 3]}' +
+    ' Do not wrap the response in any HTML tags or other formatting.' +
+    ' Do not wrap the response in ```json ```' +
+    ' Try to always return at least 3 questions, even if they are not very relevant.' +
+    ' Return at most 10 questions.' +
+    ' Do not return more than ten questions.' +
+    ' If you cannot find more than 3 questions, return the best 3 questions you can find.',
 };
 
 export default PROMPT_MESSAGES;

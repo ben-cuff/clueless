@@ -55,10 +55,6 @@ export const FeedbackAPI = {
     return response.json();
   },
   getGeminiResponse: async (interviewId: string, userId: number) => {
-    const systemMessage = getMessageObject(
-      MessageRoleType.MODEL,
-      PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT
-    );
     let interview: Interview = {} as Interview;
     try {
       interview = await InterviewAPI.getInterview(userId, interviewId);
@@ -83,11 +79,7 @@ export const FeedbackAPI = {
       `This is the state of the users code at the end of the interview: ${finalCode}`
     );
 
-    const newMessagesWithSystemAndUser = [
-      systemMessage,
-      ...messages,
-      codeMessage,
-    ];
+    const newMessagesWithUserCode = [...messages, codeMessage];
 
     const response = await fetch(CLUELESS_API_ROUTES.chat, {
       method: 'POST',
@@ -95,8 +87,9 @@ export const FeedbackAPI = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages: newMessagesWithSystemAndUser,
+        messages: newMessagesWithUserCode,
         interviewId,
+        systemInstruction: PROMPT_MESSAGES.FEEDBACK_MESSAGE_TEXT,
       }),
     });
 
