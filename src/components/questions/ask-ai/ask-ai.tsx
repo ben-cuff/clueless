@@ -9,9 +9,10 @@ export default function AskAI() {
   return (
     <AskAIContainer>
       <AskAICard open={open} />
-      <div className="absolute -bottom-6 -right-6">
-        <CircleButton onClick={() => setOpen((prev) => !prev)} />
-      </div>
+      <CircleButton
+        containerClassName="absolute -bottom-6 -right-6"
+        onClick={() => setOpen((prev) => !prev)}
+      />
     </AskAIContainer>
   );
 }
