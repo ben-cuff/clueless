@@ -31,7 +31,7 @@ import {
   get400Response,
   get500Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { checkIfGoalProgressNotification } from '@/utils/goal-progress';
 import { errorLog } from '@/utils/logger';
 import {

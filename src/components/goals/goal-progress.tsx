@@ -1,4 +1,4 @@
-import useGoalProgress from '@/hooks/use-goal-progress';
+import useGoalProgress from '@/hooks/goals/use-goal-progress';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
 import InterviewLoading from '../interview/interview-loading';

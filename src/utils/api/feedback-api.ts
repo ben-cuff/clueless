@@ -10,9 +10,9 @@ import { NotFoundError } from '@/errors/not-found';
 import { MessageRoleType } from '@/types/message';
 import { Interview } from '@prisma/client';
 import { Dispatch, SetStateAction } from 'react';
-import getMessageObject from './ai-message';
+import getMessageObject from '../ai-message';
+import { errorLog } from '../logger';
 import { InterviewAPI } from './interview-api';
-import { errorLog } from './logger';
 
 export const FeedbackAPI = {
   async getFeedback(interviewId: string) {

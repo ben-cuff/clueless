@@ -10,7 +10,7 @@ import {
   get400Response,
   get409Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { getPagination, getWhereClause } from '@/utils/search-helpers';
 import {

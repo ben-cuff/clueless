@@ -4,7 +4,7 @@ import InterviewList from '@/components/interview/interview-list';
 import InterviewLoading from '@/components/interview/interview-loading';
 import { NotificationProvider } from '@/components/providers/notifications-provider';
 import { Button } from '@/components/ui/button';
-import usePastInterviews from '@/hooks/use-past-interviews';
+import usePastInterviews from '@/hooks/interview/use-past-interviews';
 import { useRouter } from 'next/navigation';
 
 export default function InterviewPage() {

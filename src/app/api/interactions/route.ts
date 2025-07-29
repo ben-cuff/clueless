@@ -1,5 +1,5 @@
 import { cluelessInteractionsLib } from '@/lib/interactions';
-import { get200Response, get400Response } from '@/utils/api-responses';
+import { get200Response, get400Response } from '@/utils/api/api-responses';
 import type { Prisma as CluelessPrisma } from 'clueless-interactions/dist/generated/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';

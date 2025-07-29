@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import useFeedback from '@/hooks/use-feedback';
+import useFeedback from '@/hooks/interview/use-feedback';
 import FeedbackContent from './feedback-content';
 import FeedbackError from './feedback-error';
 

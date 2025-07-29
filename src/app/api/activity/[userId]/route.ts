@@ -16,13 +16,13 @@
 import INTERACTION_NAMES from '@/constants/interaction-names';
 import { cluelessInteractionsLib } from '@/lib/interactions';
 import { prismaLib } from '@/lib/prisma';
-import { ActivityAPI, handleActivityAPIError } from '@/utils/activity-api';
+import { ActivityAPI, handleActivityAPIError } from '@/utils/api/activity-api';
 import {
   get200Response,
   get201Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { Activity, GoalType, Prisma } from '@prisma/client';
 import { millisecondsInSecond } from 'date-fns/constants';

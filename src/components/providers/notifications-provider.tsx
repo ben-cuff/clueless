@@ -6,7 +6,7 @@ import {
   NotificationItem,
   NotificationType,
 } from '@/types/notifications';
-import { NotificationsAPI } from '@/utils/notifications-api';
+import { NotificationsAPI } from '@/utils/api/notifications-api';
 import { millisecondsInMinute, millisecondsInSecond } from 'date-fns/constants';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect } from 'react';

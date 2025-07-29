@@ -4,7 +4,7 @@ import {
   get400Response,
   get401Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import argon2 from 'argon2';
 

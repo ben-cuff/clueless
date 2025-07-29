@@ -7,8 +7,8 @@ import { NotFoundError } from '@/errors/not-found';
 import { Message, MessageRoleType } from '@/types/message';
 import { Nullable } from '@/types/util';
 import getMessageObject from '@/utils/ai-message';
-import { ChatAPI } from '@/utils/chat-api';
-import { InterviewAPI } from '@/utils/interview-api';
+import { ChatAPI } from '@/utils/api/chat-api';
+import { InterviewAPI } from '@/utils/api/interview-api';
 import { errorLog } from '@/utils/logger';
 import { InterviewType } from '@prisma/client';
 import {

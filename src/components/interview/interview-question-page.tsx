@@ -1,7 +1,7 @@
 'use client';
 
 import CodePlayground from '@/components/interview/code-playground';
-import useInterview from '@/hooks/use-interview';
+import useInterview from '@/hooks/interview/use-interview';
 import { InterviewType, Question } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import { useContext } from 'react';

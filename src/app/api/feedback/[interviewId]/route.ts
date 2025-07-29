@@ -4,7 +4,7 @@ import {
   get400Response,
   get404Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 
 export async function GET(
   req: Request,

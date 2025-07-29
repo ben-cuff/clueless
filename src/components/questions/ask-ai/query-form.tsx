@@ -31,6 +31,14 @@ export default function QueryForm({
           value={message}
           className="w-full resize-none max-h-10 max-w-80"
           disabled={isLoading}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              if (message.trim() !== '') {
+                submitQuestionQuery();
+              }
+            }
+          }}
         />
         <Button
           type="submit"

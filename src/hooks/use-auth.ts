@@ -1,4 +1,4 @@
-import { AccountAPI, handleAccountAPIError } from '@/utils/account-api';
+import { AccountAPI, handleAccountAPIError } from '@/utils/api/account-api';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';

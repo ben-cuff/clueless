@@ -38,7 +38,7 @@ import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { debugLog } from '@/utils/logger';
 import { getRecommendedQuestions } from '@/utils/recommendation/get-recommendations';
 import { secondsInHour } from 'date-fns/constants';

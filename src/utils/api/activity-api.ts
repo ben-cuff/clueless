@@ -1,7 +1,7 @@
 import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import { ActivityAPIError, AuthError } from '@/errors/api-errors';
 import { Activity, GoalType } from '@prisma/client';
-import { errorLog } from './logger';
+import { errorLog } from '../logger';
 
 export const ActivityAPI = {
   updateActivity: async (userId: number, type: GoalType) => {

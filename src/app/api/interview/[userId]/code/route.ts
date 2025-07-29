@@ -6,7 +6,7 @@ import {
   get400Response,
   get404Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 import { Language } from '@prisma/client';
 import { getServerSession } from 'next-auth';

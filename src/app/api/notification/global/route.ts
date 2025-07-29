@@ -3,7 +3,7 @@ import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { errorLog } from '@/utils/logger';
 
 export async function POST(req: Request) {

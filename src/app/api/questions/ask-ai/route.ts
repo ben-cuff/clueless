@@ -8,7 +8,7 @@ import {
   get200Response,
   get400Response,
   UnknownServerError,
-} from '@/utils/api-responses';
+} from '@/utils/api/api-responses';
 import { debugLog, errorLog } from '@/utils/logger';
 import { GoogleGenAI } from '@google/genai';
 import { getServerSession } from 'next-auth';
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     return get400Response('Invalid query parameter');
   }
 
-  const NUM_RANDOM_QUESTIONS = 500;
+  const NUM_RANDOM_QUESTIONS = 100;
 
   let questions: QuestionPartial[] = [];
   try {
@@ -58,9 +58,9 @@ export async function POST(req: Request) {
   let response;
   try {
     response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: 'gemini-2.0-flash-lite',
       contents: [
-        getMessageObject(MessageRoleType.USER, JSON.stringify(questions)),
+        getMessageObject(MessageRoleType.MODEL, JSON.stringify(questions)),
         getMessageObject(MessageRoleType.USER, query),
       ],
       config: {

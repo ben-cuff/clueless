@@ -1,10 +1,10 @@
 import { DEFAULT_TAKE_SIZE } from '@/constants/take-sizes';
 import { TOPIC_LIST, TopicInfo } from '@/constants/topics';
 import { QuestionWithRowNumber } from '@/types/question';
-import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { useCallback, useEffect, useState } from 'react';
-import useCompanies from './use-companies';
-import useDebounce from './use-debouncer';
+import useCompanies from '../use-companies';
+import useDebounce from '../use-debouncer';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/api/questions-api';
 
 export default function useQuestions() {
   const [questionsData, setQuestionsData] = useState<QuestionWithRowNumber[]>();

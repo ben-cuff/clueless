@@ -1,6 +1,6 @@
 import { prismaLib } from '@/lib/prisma';
 import { QuestionWithRowNumber } from '@/types/question';
-import { get200Response } from '@/utils/api-responses';
+import { get200Response } from '@/utils/api/api-responses';
 import { getWhereClause } from '@/utils/search-helpers';
 import { Prisma } from '@prisma/client';
 

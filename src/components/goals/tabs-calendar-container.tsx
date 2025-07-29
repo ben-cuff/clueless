@@ -1,4 +1,4 @@
-import useCreateUpdateGoal from '@/hooks/use-create-update-goal';
+import useCreateUpdateGoal from '@/hooks/goals/use-create-update-goal';
 import { GoalTabModes } from '@/types/goal-tab';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';

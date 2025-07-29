@@ -1,7 +1,7 @@
 'use client';
 
 import INTERACTION_NAMES from '@/constants/interaction-names';
-import useChatInput from '@/hooks/use-chat-input';
+import useChatInput from '@/hooks/interview/use-chat-input';
 import { useContext } from 'react';
 import { FeedbackContext } from '../providers/feedback-provider';
 import { Button } from '../ui/button';
@@ -36,6 +36,12 @@ export default function ChatInput({
         disabled={isReadOnly}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+          }
+        }}
       />
       <Button
         type="submit"

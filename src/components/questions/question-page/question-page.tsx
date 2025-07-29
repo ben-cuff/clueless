@@ -1,10 +1,10 @@
 import { Nullable } from '@/types/util';
-import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/questions-api';
 import { Question } from '@prisma/client';
 import { notFound } from 'next/navigation';
 import QuestionPrompt from '../../interview/question-prompt';
 import PythonSolutionCard from './python-solution-card';
 import QuestionAdditionalInfoCard from './question-additional-info-card';
+import { handleQuestionsAPIError, QuestionsAPI } from '@/utils/api/questions-api';
 
 export default async function QuestionPage({ id }: { id: number }) {
   let question: Nullable<Question> = null;

@@ -1,5 +1,5 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
-import { FeedbackAPI, handleFeedbackAPIError } from '@/utils/feedback-api';
+import { FeedbackAPI, handleFeedbackAPIError } from '@/utils/api/feedback-api';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function useFeedback(interviewId: string) {

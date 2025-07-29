@@ -1,7 +1,7 @@
 import { UserIdContext } from '@/components/providers/user-id-provider';
 import { GoalProgress } from '@/types/goal-progress';
 import { Nullable } from '@/types/util';
-import { GoalsAPI, handleGoalsAPIError } from '@/utils/goals-api';
+import { GoalsAPI, handleGoalsAPIError } from '@/utils/api/goals-api';
 import { Goal } from '@prisma/client';
 import { useContext, useEffect, useState } from 'react';
 

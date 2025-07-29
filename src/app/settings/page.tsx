@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { AccountAPIError, AuthError } from '@/errors/api-errors';
-import { AccountAPI } from '@/utils/account-api';
+import { AccountAPI } from '@/utils/api/account-api';
 import { errorLog } from '@/utils/logger';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

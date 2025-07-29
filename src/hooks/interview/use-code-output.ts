@@ -1,7 +1,7 @@
 import { LanguageOption } from '@/constants/language-options';
 import { CodeOutput } from '@/types/code-output';
 import { TestcasesKey } from '@/types/question';
-import { codeExecutionAPI } from '@/utils/code-execution-api';
+import { codeExecutionAPI } from '@/utils/api/code-execution-api';
 import { Question } from '@prisma/client';
 import { useCallback, useState } from 'react';
 

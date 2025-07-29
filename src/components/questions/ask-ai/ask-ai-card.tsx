@@ -1,6 +1,6 @@
 import LoadingSpinner from '@/components/loading-spinner';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import useAskAIQuestions from '@/hooks/use-ask-ai-questions';
+import useAskAIQuestions from '@/hooks/questions/use-ask-ai-questions';
 import QueryForm from './query-form';
 import QuestionsDisplay from './questions-display';
 
