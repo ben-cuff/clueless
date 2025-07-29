@@ -2,7 +2,7 @@ import { CLUELESS_API_ROUTES } from '@/constants/api-urls';
 import PROMPT_MESSAGES from '@/constants/prompt-messages';
 import { AuthError } from '@/errors/api-errors';
 import { GeminiError } from '@/errors/gemini';
-import { Message, MessageRoleType } from '@/types/message';
+import { Message } from '@/types/message';
 
 export const ChatAPI = {
   getGeminiResponse: async (
@@ -10,20 +10,7 @@ export const ChatAPI = {
     userMessage: Message,
     questionNumber: number
   ) => {
-    const systemMessage = {
-      role: MessageRoleType.MODEL,
-      parts: [
-        {
-          text: PROMPT_MESSAGES.SYSTEM_MESSAGE_TEXT,
-        },
-      ],
-    };
-
-    const newMessagesWithSystemAndUser = [
-      systemMessage,
-      ...messages,
-      userMessage,
-    ];
+    const newMessagesWithUserMessage = [...messages, userMessage];
 
     const response = await fetch(CLUELESS_API_ROUTES.chat, {
       method: 'POST',
@@ -31,8 +18,9 @@ export const ChatAPI = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages: newMessagesWithSystemAndUser,
+        messages: newMessagesWithUserMessage,
         questionNumber: questionNumber,
+        systemInstruction: PROMPT_MESSAGES.SYSTEM_MESSAGE_TEXT,
       }),
     });
 

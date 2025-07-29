@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     return get400Response('Invalid JSON body');
   }
 
-  const { messages, questionNumber, interviewId } = body;
+  const { messages, systemInstruction, questionNumber, interviewId } = body;
 
   if (questionNumber && interviewId) {
     return get400Response(
@@ -101,6 +101,9 @@ export async function POST(req: Request) {
     response = await ai.models.generateContentStream({
       model: 'gemini-2.5-flash',
       contents: messages,
+      config: {
+        systemInstruction: systemInstruction,
+      },
     });
   } catch (error) {
     if (
