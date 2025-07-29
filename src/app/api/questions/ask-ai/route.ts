@@ -87,7 +87,6 @@ export async function POST(req: Request) {
   try {
     // remove any code block formatting from the AI response
     const aiText = response.candidates[0].content?.parts[0].text.trim();
-    console.log('AI Response:', aiText);
     const cleanedText = aiText.replace(/^```json|^```|```$/g, '').trim();
     questionIdList = JSON.parse(cleanedText);
   } catch (error) {
