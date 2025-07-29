@@ -111,7 +111,9 @@ const PROMPT_MESSAGES = {
     ' Do not wrap the response in any HTML tags or other formatting.' +
     ' Do not wrap the response in ```json ```' +
     ' Try to always return at least 3 questions, even if they are not very relevant.' +
-    ' Return at most 10 questions.',
+    ' Return at most 10 questions.' +
+    ' Do not return more than ten questions.' +
+    ' If you cannot find more than 3 questions, return the best 3 questions you can find.',
 };
 
 export default PROMPT_MESSAGES;
