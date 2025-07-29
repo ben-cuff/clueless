@@ -9,8 +9,10 @@ import TopicsBadges from './topics-badges';
 
 export default function QuestionCard({
   question,
+  showButtons = true,
 }: {
   question: QuestionPartial;
+  showButtons?: boolean;
 }) {
   const leetcodeLink = `https://leetcode.com/problems/${question.titleSlug}`;
 
@@ -22,12 +24,16 @@ export default function QuestionCard({
         companies={question.companies}
       />
       <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
-      <StartInterviewButton questionNumber={question.id} />
-      <StartInterviewButton
-        questionNumber={question.id}
-        text="Start Timed Interview"
-        type={InterviewType.TIMED}
-      />
+      {showButtons && (
+        <>
+          <StartInterviewButton questionNumber={question.id} />
+          <StartInterviewButton
+            questionNumber={question.id}
+            text="Start Timed Interview"
+            type={InterviewType.TIMED}
+          />
+        </>
+      )}
       <TopicsBadges topics={question.topics} />
     </QuestionCardHeader>
   );
