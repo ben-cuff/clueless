@@ -42,7 +42,11 @@ export default function InterviewQuestionPage({
   } = useInterview(interviewId, question.id, interviewType);
   const isFeedback = useContext(FeedbackContext);
 
-  return !isLoadingMessages ? (
+  if (isLoadingMessages) {
+    return <InterviewLoading />;
+  }
+
+  return (
     <ErrorBoundary
       fallback={
         <ErrorFallback text="Error Loading this page, try again later" />
@@ -71,7 +75,5 @@ export default function InterviewQuestionPage({
         />
       )}
     </ErrorBoundary>
-  ) : (
-    <InterviewLoading />
   );
 }
