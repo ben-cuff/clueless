@@ -9,8 +9,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../error-fallback';
 import { FeedbackContext } from '../providers/feedback-provider';
 import Timer from '../timer';
-import EndInterviewButton from './end-interview-button';
 import FeedbackModal from './feedback/feedback-modal';
+import FixedButtons from './fixed-buttons';
 import InterviewLoading from './interview-loading';
 
 export default function InterviewQuestionPage({
@@ -38,12 +38,15 @@ export default function InterviewQuestionPage({
     languageRef,
     timer,
     isCoding,
+    setIsCoding,
   } = useInterview(interviewId, question.id, interviewType);
   const isFeedback = useContext(FeedbackContext);
 
-  const MIN_MESSAGES_TO_END_EARLY = 5;
+  if (isLoadingMessages) {
+    return <InterviewLoading />;
+  }
 
-  return !isLoadingMessages ? (
+  return (
     <ErrorBoundary
       fallback={
         <ErrorFallback text="Error Loading this page, try again later" />
@@ -60,16 +63,17 @@ export default function InterviewQuestionPage({
         languageRef={languageRef}
         isCoding={isCoding}
       />
+
       {isFeedback ? (
         <FeedbackModal interviewId={interviewId} />
       ) : (
-        messages &&
-        messages.length >= MIN_MESSAGES_TO_END_EARLY && (
-          <EndInterviewButton handleEndInterview={handleEndInterview} />
-        )
+        <FixedButtons
+          isCoding={isCoding}
+          messages={messages}
+          handleEndInterview={handleEndInterview}
+          setIsCoding={setIsCoding}
+        />
       )}
     </ErrorBoundary>
-  ) : (
-    <InterviewLoading />
   );
 }
