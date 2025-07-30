@@ -22,8 +22,13 @@ export async function POST(req: Request) {
     return get400Response('Invalid JSON body');
   }
 
-  const session = await getServerSession(authOptions);
-
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
+  
   if (!session?.user.id) {
     return ForbiddenError;
   }

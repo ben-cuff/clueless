@@ -1,12 +1,23 @@
 import { cluelessInteractionsLib } from '@/lib/interactions';
-import { get200Response, get400Response } from '@/utils/api/api-responses';
+import {
+  get200Response,
+  get400Response,
+  get500Response,
+  UnknownServerError,
+} from '@/utils/api/api-responses';
+import { errorLog } from '@/utils/logger';
 import type { Prisma as CluelessPrisma } from 'clueless-interactions/dist/generated/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
+  
   const userId = session?.user.id;
 
   let body;
@@ -22,13 +33,18 @@ export async function POST(req: Request) {
     return get400Response('Missing eventName in request body');
   }
 
-  const interaction = await cluelessInteractionsLib.addEvent(eventName, {
-    userId,
-    pathname,
-    value,
-  });
+  try {
+    const interaction = await cluelessInteractionsLib.addEvent(eventName, {
+      userId,
+      pathname,
+      value,
+    });
 
-  return get200Response(interaction);
+    return get200Response(interaction);
+  } catch (error) {
+    errorLog('Error while adding interaction event: ' + error);
+    return get500Response('Server error while adding interaction event');
+  }
 }
 
 export async function GET(req: Request) {
@@ -76,9 +92,14 @@ export async function GET(req: Request) {
     ];
   }
 
-  const interactions = await cluelessInteractionsLib.queryEvents(filters);
+  try {
+    const interactions = await cluelessInteractionsLib.queryEvents(filters);
 
-  return get200Response(interactions);
+    return get200Response(interactions);
+  } catch (error) {
+    errorLog('Error while querying interactions: ' + error);
+    return get500Response('Server error while querying interactions');
+  }
 }
 type ContextFilters = {
   contextField?: string;

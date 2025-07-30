@@ -55,8 +55,13 @@ export async function GET(
     return get400Response('Invalid user ID');
   }
 
-  const session = await getServerSession(authOptions);
-
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
+  
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
