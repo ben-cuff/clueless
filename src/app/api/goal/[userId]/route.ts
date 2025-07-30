@@ -27,7 +27,12 @@ export async function POST(
     return get400Response('Invalid user ID');
   }
 
-  const session = await getServerSession(authOptions);
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
 
   if (session?.user.id !== userId) {
     return ForbiddenError;
@@ -120,8 +125,12 @@ export async function PUT(
     return get400Response('Invalid user ID');
   }
 
-  const session = await getServerSession(authOptions);
-
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
@@ -190,8 +199,12 @@ export async function DELETE(
     return get400Response('Invalid user ID');
   }
 
-  const session = await getServerSession(authOptions);
-
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }

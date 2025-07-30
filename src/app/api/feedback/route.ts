@@ -27,7 +27,12 @@ export async function POST(req: Request) {
     return get400Response('Missing required fields:  interviewId, feedback');
   }
 
-  const session = await getServerSession(authOptions);
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
 
   if (session?.user.id !== userId) {
     return ForbiddenError;

@@ -27,7 +27,13 @@ export async function GET(
     return get400Response('Invalid interview ID');
   }
 
-  const session = await getServerSession(authOptions);
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
+  
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
@@ -63,7 +69,12 @@ export async function DELETE(
     return get400Response('Invalid interview ID');
   }
 
-  const session = await getServerSession(authOptions);
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    return UnknownServerError;
+  }
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
