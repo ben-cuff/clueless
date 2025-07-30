@@ -366,6 +366,7 @@ export default function useInterview(
     languageRef,
     timer,
     isCoding,
+    setIsCoding,
   };
 }
 
