@@ -11,11 +11,13 @@ const PROMPT_MESSAGES = {
     'Welcome to the interview! Before we begin, do you have any questions? ' +
     "When you're ready, please talk through your approach to the problem before you start coding. " +
     'Explaining your thought process and communication skills are an important part of the interview. ' +
+    'The code editor will be disabled until I decide you are ready to begin coding. ' +
     'If you get stuck, you can ask for hints or clarifications at any time.',
 
   INITIAL_MESSAGE_TIMED:
     'Welcome to the timed interview! You have a limited time to complete this interview. ' +
     'You cannot resume this interview if you happen to leave the page. ' +
+    'The code editor will be disabled until I decide you are ready to begin coding. ' +
     'Please talk through your approach to the problem before you start coding. ' +
     'Explaining your thought process and communication skills are an important part of the interview. ' +
     'You can ask for hints or clarifications at any time, but remember that time is limited.',
