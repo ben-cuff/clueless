@@ -1,7 +1,7 @@
 import { Interview } from '@/types/interview';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
-export default function InterviewCardTooltip({
+export default function InterviewCardWithTooltip({
   interview,
 }: {
   interview: Interview;
@@ -11,7 +11,7 @@ export default function InterviewCardTooltip({
       <TooltipTrigger>
         <div className="flex flex-row items-center text-center p-2">
           <div className="font-medium">
-            Question {interview.questionNumber}: {interview.question.title}
+            {interview.questionNumber}. {interview.question.title}
           </div>
           <div className="text-xs ml-4">
             {new Date(interview.createdAt).toLocaleDateString()}
