@@ -14,6 +14,9 @@ export interface Interview {
   updatedAt: string;
   userId: number;
   question: { difficulty: 1 | 2 | 3; title: string };
+  feedback?: {
+    feedbackNumber: number;
+  };
   type: InterviewType;
 }
 

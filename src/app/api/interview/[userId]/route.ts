@@ -28,7 +28,7 @@ export async function POST(
   } catch {
     return UnknownServerError;
   }
-  
+
   if (session?.user.id !== userId) {
     return ForbiddenError;
   }
@@ -110,6 +110,11 @@ export async function GET(
       include: {
         question: {
           select: { title: true, difficulty: true },
+        },
+        feedback: {
+          select: {
+            feedbackNumber: true,
+          },
         },
       },
     });
