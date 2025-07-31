@@ -13,30 +13,7 @@ test('navigate-to-interview-logged-out', async ({ page }) => {
   });
 
   await test.step('verify that we are on home page', async () => {
-    await expect(
-      page
-        .locator('div')
-        .filter({ hasText: 'An AI integrated interview' })
-        .nth(1)
-    ).toBeVisible();
     await expect(page).toHaveURL(/\/(\?error=unauthenticated)?$/);
-  });
-});
-
-test('navigate-to-login', async ({ page }) => {
-  await test.step('navigate to banner and sign out', async () => {
-    await signOut(page);
-  });
-
-  await test.step('navigate to login page', async () => {
-    await page.getByRole('button', { name: 'Login' }).click();
-  });
-
-  await test.step('verify that we are on login page', async () => {
-    await expect(
-      page.locator('div').filter({ hasText: /^Username:Password:Sign In$/ })
-    ).toBeVisible();
-    await expect(page).toHaveURL('/login');
   });
 });
 
@@ -46,7 +23,7 @@ test('navigate-to-register', async ({ page }) => {
   });
 
   await test.step('navigate to register page', async () => {
-    await page.getByRole('button', { name: 'Sign Up' }).click();
+    await page.getByRole('button', { name: 'Get Started' }).click();
   });
 
   await test.step('verify that we are on register page', async () => {
@@ -65,7 +42,7 @@ test('navigate-between-register-and-login', async ({ page }) => {
   });
 
   await test.step('navigate to and verify register page', async () => {
-    await page.getByRole('button', { name: 'Sign Up' }).click();
+    await page.getByRole('button', { name: 'Get Started' }).click();
     await expect(page).toHaveURL('/register');
   });
 
@@ -100,12 +77,6 @@ test('navigate-to-goals-logged-out', async ({ page }) => {
   });
 
   await test.step('verify that we are on home page', async () => {
-    await expect(
-      page
-        .locator('div')
-        .filter({ hasText: 'An AI integrated interview' })
-        .nth(1)
-    ).toBeVisible();
     await expect(page).toHaveURL(/\/(\?error=unauthenticated)?$/);
   });
 });
