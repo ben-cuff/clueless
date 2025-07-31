@@ -31,10 +31,12 @@ export default async function Home({
     <NotificationProvider>
       <div className="flex flex-1 justify-center items-center text-center flex-col h-[88vh] p-6">
         <h1 className="text-4xl font-bold mb-4">Welcome to Clueless</h1>
-        <Link href="/interview" className="mb-4">
+        <div className="mb-4">
+          <ActivityHeatmap />
+        </div>
+        <Link href="/interview">
           <Button>Get Started</Button>
         </Link>
-        <ActivityHeatmap />
         <AlertClient message={error} />
       </div>
     </NotificationProvider>
