@@ -18,7 +18,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   } = useAuth(mode);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center h-[88vh]">
       <Card className="w-full max-w-sm">
         <form onSubmit={handleSubmit}>
           <CardContent>
