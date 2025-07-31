@@ -17,7 +17,7 @@ export default async function Home({
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <header className="w-full flex flex-col items-center justify-center p-6 text-center">
-          <h1 className="text-3xl font-bold">Welcome to Clueless</h1>
+          <h1 className="text-5xl font-bold">Welcome to Clueless</h1>
         </header>
         <LandingCard />
         <AlertClient message={error} />
