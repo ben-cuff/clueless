@@ -14,7 +14,7 @@ export default function InterviewPage() {
 
   return (
     <NotificationProvider>
-      <div className="flex flex-col w-full min-h-[88vh] justify-center items-center">
+      <div className="flex flex-col w-full min-h-[88vh] items-center">
         <div className="flex mt-10 gap-2">
           <Button onClick={() => router.push('/interview/new')}>
             Start Random Interview

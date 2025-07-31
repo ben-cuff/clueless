@@ -20,7 +20,7 @@ export default function FeedbackModal({
 
   return (
     <>
-      <Button onClick={toggleModal} className="fixed top-20 left-4 z-50">
+      <Button onClick={toggleModal} className="fixed top-16 left-4 z-50">
         Open Feedback
       </Button>
       <Dialog open={isModalOpen} onOpenChange={toggleModal}>
