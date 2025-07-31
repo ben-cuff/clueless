@@ -5,7 +5,7 @@ import QuestionCard from './question-card';
 
 export default function QuestionsList({
   questionsData,
-  showButtons = true,
+  showButtons = false,
 }: {
   questionsData: QuestionPartial[];
   showButtons?: boolean;

@@ -8,7 +8,7 @@ export default function TopicsBadges({
   topics: Question['topics'];
 }) {
   return (
-    <div className="flex flex-wrap gap-2 justify-end w-full">
+    <div className="flex flex-wrap gap-2 ml-auto">
       {topics.map((topic: string) => (
         <Badge key={topic} className="px-2 py-1 rounded-full text-sm">
           {READABLE_TOPICS[topic]}

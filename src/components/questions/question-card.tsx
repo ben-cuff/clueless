@@ -18,12 +18,16 @@ export default function QuestionCard({
 
   return (
     <QuestionCardHeader title={question.title} questionNumber={question.id}>
-      <DifficultyBadge difficulty={question.difficulty as 1 | 2 | 3} />
+      <DifficultyBadge
+        className="flex justify-center w-1/20"
+        difficulty={question.difficulty as 1 | 2 | 3}
+      />
+
+      <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
       <CompaniesList
-        className="font-bold ml-5"
+        className="font-bold max-w-1/8"
         companies={question.companies}
       />
-      <LeetcodeLinkImage leetcodeURL={leetcodeLink} />
       {showButtons && (
         <>
           <StartInterviewButton questionNumber={question.id} />

@@ -13,7 +13,7 @@ export default function CompaniesList({
 }) {
   if (companies.length > 0) {
     return (
-      <div className={cn(className, 'flex flex-row min-w-20')}>
+      <div className={cn(className, 'flex min-w-20')}>
         <p className="text-sm">
           {text}
           {companies
