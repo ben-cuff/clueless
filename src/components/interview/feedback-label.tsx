@@ -5,7 +5,7 @@ export default function FeedbackLabel({
 }) {
   return (
     <div className="flex justify-center w-1/6">
-      <p>{feedbackLabels[feedbackNumber]}</p>
+      <p className="font-bold">{feedbackLabels[feedbackNumber]}</p>
     </div>
   );
 }
