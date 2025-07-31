@@ -2,7 +2,9 @@ import AlertClient from '@/components/alert-client';
 import ActivityHeatmap from '@/components/home/activity-heatmap';
 import LandingCard from '@/components/landing-card';
 import { NotificationProvider } from '@/components/providers/notifications-provider';
+import { Button } from '@/components/ui/button';
 import { getServerSession } from 'next-auth';
+import Link from 'next/link';
 import { authOptions } from './api/auth/[...nextauth]/options';
 
 export default async function Home({
@@ -15,9 +17,9 @@ export default async function Home({
 
   if (!session?.user.id) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center h-[88vh]">
         <header className="w-full flex flex-col items-center justify-center p-6 text-center">
-          <h1 className="text-3xl font-bold">Welcome to Clueless</h1>
+          <h1 className="text-5xl font-bold">Welcome to Clueless</h1>
         </header>
         <LandingCard />
         <AlertClient message={error} />
@@ -27,9 +29,11 @@ export default async function Home({
 
   return (
     <NotificationProvider>
-      <div className="flex flex-1 justify-center items-center text-center flex-col min-h-screen p-6">
+      <div className="flex flex-1 justify-center items-center text-center flex-col h-[88vh] p-6">
         <h1 className="text-4xl font-bold mb-4">Welcome to Clueless</h1>
-        <h3 className="text-xl  mb-8">Use the navbar to get started</h3>
+        <Link href="/interview" className="mb-4">
+          <Button>Get Started</Button>
+        </Link>
         <ActivityHeatmap />
         <AlertClient message={error} />
       </div>

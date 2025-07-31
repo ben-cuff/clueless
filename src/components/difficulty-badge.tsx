@@ -2,8 +2,10 @@ import { READABLE_DIFFICULTIES } from '@/constants/difficulties';
 
 export default function DifficultyBadge({
   difficulty,
+  className,
 }: {
   difficulty: 1 | 2 | 3;
+  className?: string;
 }) {
   const difficultyStyledColors =
     difficulty === 1
@@ -13,10 +15,12 @@ export default function DifficultyBadge({
       : 'bg-red-300 text-red-800';
 
   return (
-    <div
-      className={`px-2 py-1 rounded text-xs font-semibold ${difficultyStyledColors}`}
-    >
-      {READABLE_DIFFICULTIES[difficulty]}
+    <div className={className}>
+      <p
+        className={`px-2 py-1 rounded text-xs font-semibold ${difficultyStyledColors}`}
+      >
+        {READABLE_DIFFICULTIES[difficulty]}
+      </p>
     </div>
   );
 }

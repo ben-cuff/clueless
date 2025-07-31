@@ -14,8 +14,11 @@ export default function QuestionCardHeader({
       className="flex flex-row items-center w-full px-4 py-2 border rounded shadow space-x-6"
       data-testid={`question-card-${questionNumber}`}
     >
-      <Link href={`/questions/${questionNumber}`}>
-        <h2 className="text-lg font-semibold min-w-60 hover:underline">
+      <Link
+        className="flex w-1/5"
+        href={`/questions/${questionNumber}`}
+      >
+        <h2 className="text-lg font-semibold hover:underline">
           {questionNumber}. {title}
         </h2>
       </Link>
