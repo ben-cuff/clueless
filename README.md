@@ -46,5 +46,4 @@ If you prefer to use your own keys and databases:
      ```bash
      npm run dev
      ```
-
-**[Project Plan](https://docs.google.com/document/d/1B2Hm8enXvcohJGuzSjPWdjvDlfEop8BRz_GVGimsBlg/edit?usp=sharing)**
+     
